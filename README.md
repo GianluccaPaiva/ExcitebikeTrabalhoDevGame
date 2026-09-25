@@ -10,10 +10,11 @@ A ideia deste trabalho é que o(s) aluno(s) possa(m) desenvolver um pequeno prot
 Um representante (e apenas um) do grupo deverá submeter, via Google Classroom, um link para o repositório do jogo no GitHub. Dentro do repositório deve haver uma pasta “build”, contendo um executável do jogo para Linux. Teste o executável antes da submissão. Certifique-se também de deixar o repositório público para que o acesso possa ser realizado.
 ## Avaliação
 O aluno será avaliado quanto à adequação da sua implementação ao jogo original. A fidelidade aos elementos gráficos de cada jogo não será exigida, uma vez que o aluno pode não conseguir encontrar ou replicar com precisão esses elementos, e em alguns casos pode não ter os direitos autorais para uso dos mesmos. Os critérios utilizados serão:
-Replicação adequada das mecânicas do jogo original;
-Atendimento aos itens de implementação especificados;
-Execução correta do projeto;
-Qualidade do código apresentado;
-Entrega dentro do prazo (desconto de 5% por dia de atraso);
-Apresentação em sala de aula.
+  1. Replicação adequada das mecânicas do jogo original;
+  2. Atendimento aos itens de implementação especificados;
+  3. Execução correta do projeto;
+  4. Qualidade do código apresentado;
+  5. Entrega dentro do prazo (desconto de 5% por dia de atraso);
+  6. *Apresentação em sala de aula*.
+
 *Obs.*: Qualquer identificação de plágio ou de não-autoria do código desenvolvido resultará em nota 0.
