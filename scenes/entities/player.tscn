@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://c28ch660pqk5w"]
+
+[ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="1_ucweq"]
+
+[node name="Player" type="CharacterBody2D" unique_id=1096744221]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=539002940]
+texture = ExtResource("1_ucweq")
+hframes = 6
+vframes = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1770780693]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1963412353]
