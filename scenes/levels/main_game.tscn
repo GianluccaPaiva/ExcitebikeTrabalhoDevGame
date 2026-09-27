@@ -7,6 +7,8 @@
 atlas = ExtResource("2_valbi")
 region = Rect2(192.614, 0, 18.607, 112)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d0u6y"]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(18, 13)
 
@@ -77,6 +79,14 @@ texture = ExtResource("2_valbi")
 centered = false
 region_enabled = true
 region_rect = Rect2(1693.2595, 0, 99.53931, 112)
+
+[node name="SensorChegada" type="Area2D" parent="PistaVisual/Chegada" unique_id=2038563375]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Chegada/SensorChegada" unique_id=1024115546]
+visible = false
+position = Vector2(122, 63)
+scale = Vector2(2.217844, 12.383252)
+shape = SubResource("RectangleShape2D_d0u6y")
 
 [node name="Boost" type="Sprite2D" parent="PistaVisual" unique_id=642589253]
 position = Vector2(694, 64)
