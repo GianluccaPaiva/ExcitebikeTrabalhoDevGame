@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://weh8uai5hh1x"
-path="res://.godot/imported/medals sem fundo.png-e72d3e63b849181937b8dcb1f0b21557.ctex"
+uid="uid://5p0wsoh8g3a1"
+path="res://.godot/imported/medals.png-a72347366b980dcb34148f12d5a00e75.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/medals sem fundo.png"
-dest_files=["res://.godot/imported/medals sem fundo.png-e72d3e63b849181937b8dcb1f0b21557.ctex"]
+source_file="res://assets/ui/medals.png"
+dest_files=["res://.godot/imported/medals.png-a72347366b980dcb34148f12d5a00e75.ctex"]
 
 [params]
 
