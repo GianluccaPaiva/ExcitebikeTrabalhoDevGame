@@ -7,6 +7,15 @@
 atlas = ExtResource("2_valbi")
 region = Rect2(192.614, 0, 18.607, 112)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(18, 13)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
+size = Vector2(22.33905, 23.008423)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
+size = Vector2(20, 17)
+
 [node name="MainGame" type="Node2D" unique_id=869416145]
 
 [node name="FundoArquibancada" type="Parallax2D" parent="." unique_id=344981667]
@@ -29,7 +38,7 @@ region_rect = Rect2(0, 0, 65.00426, 112)
 [node name="PistaLonga" type="TextureRect" parent="PistaVisual" unique_id=1454793469]
 offset_left = 65.0
 offset_top = 64.0
-offset_right = 1586.0
+offset_right = 1806.0
 offset_bottom = 176.0
 texture = SubResource("AtlasTexture_g4v7s")
 stretch_mode = 1
@@ -42,7 +51,7 @@ region_enabled = true
 region_rect = Rect2(221.74576, 0, 30.108368, 112)
 
 [node name="RampaMedia" type="Sprite2D" parent="PistaVisual" unique_id=1513992775]
-position = Vector2(538, 63)
+position = Vector2(537, 64)
 texture = ExtResource("2_valbi")
 centered = false
 region_enabled = true
@@ -76,6 +85,13 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
+[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost" unique_id=1264876512]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost/SensorBoost" unique_id=171414402]
+visible = false
+position = Vector2(26, 90.5)
+shape = SubResource("RectangleShape2D_g4v7s")
+
 [node name="Boost2" type="Sprite2D" parent="PistaVisual" unique_id=362077360]
 position = Vector2(1310, 64)
 texture = ExtResource("2_valbi")
@@ -83,9 +99,30 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
+[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost2" unique_id=153903201]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost2/SensorBoost" unique_id=508303033]
+visible = false
+position = Vector2(26, 90.13214)
+scale = Vector2(0.8057663, 0.53303313)
+shape = SubResource("RectangleShape2D_yf5fn")
+
 [node name="Slower" type="Sprite2D" parent="PistaVisual" unique_id=683380539]
 position = Vector2(984, 64)
 texture = ExtResource("2_valbi")
 centered = false
 region_enabled = true
 region_rect = Rect2(685.75323, 0, 32.317932, 112)
+
+[node name="SensorSlower" type="Area2D" parent="PistaVisual/Slower" unique_id=898313715]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Slower/SensorSlower" unique_id=1421079995]
+visible = false
+position = Vector2(16, 90.5)
+scale = Vector2(1.0735289, 0.86929125)
+shape = SubResource("RectangleShape2D_57qmd")
+
+[node name="FisicaPista" type="StaticBody2D" parent="." unique_id=1566662175]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FisicaPista" unique_id=518070433]
+polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 160, 558, 143, 565, 143, 581, 160, 810, 160, 843, 127, 850, 127, 882, 160, 1170, 160, 1203, 144, 1210, 144, 1243, 160, 1462, 160, 1487, 136, 1534, 136, 1560, 161, 1722, 160, 1724, 228)
