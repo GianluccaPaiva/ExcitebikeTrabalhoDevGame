@@ -141,4 +141,4 @@ polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 
 [node name="Entities" type="Node2D" parent="." unique_id=1937540672]
 
 [node name="Player" parent="Entities" unique_id=1096744221 instance=ExtResource("3_viahy")]
-position = Vector2(18, 144)
+position = Vector2(18, 143)
