@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://d18md8rcnvnar" path="res://assets/levels/Stadium.png" id="1_mcewg"]
 [ext_resource type="Texture2D" uid="uid://b8gse8cxrv4ef" path="res://assets/levels/Level_1.png" id="2_valbi"]
+[ext_resource type="PackedScene" uid="uid://c28ch660pqk5w" path="res://scenes/entities/player.tscn" id="3_viahy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g4v7s"]
 atlas = ExtResource("2_valbi")
@@ -136,3 +137,8 @@ shape = SubResource("RectangleShape2D_57qmd")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FisicaPista" unique_id=518070433]
 polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 160, 558, 143, 565, 143, 581, 160, 810, 160, 843, 127, 850, 127, 882, 160, 1170, 160, 1203, 144, 1210, 144, 1243, 160, 1462, 160, 1487, 136, 1534, 136, 1560, 161, 1722, 160, 1724, 228)
+
+[node name="Entities" type="Node2D" parent="." unique_id=1937540672]
+
+[node name="Player" parent="Entities" unique_id=1096744221 instance=ExtResource("3_viahy")]
+position = Vector2(18, 144)
