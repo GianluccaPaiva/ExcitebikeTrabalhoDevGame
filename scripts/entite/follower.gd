@@ -15,10 +15,11 @@ func _ready() -> void:
 	rotates = false # Controle suave de curvamento idêntico ao player
 	loop = false
 	
-	if initial_progress > 0.0:
+	if initial_progress > 0.0 and progress == 0.0:
 		progress = initial_progress
 	
 	_last_position = global_position
+	rotation = 0.0
 	
 	# Se uma textura customizada foi definida (ex: Racer_2.png), aplica ao Sprite2D
 	if enemy_texture:

@@ -164,10 +164,11 @@ position = Vector2(19, 143)
 curve = SubResource("Curve2D_meio")
 
 [node name="SeguidorMeio" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigoMeio" unique_id=662664191]
-position = Vector2(0, 132)
+position = Vector2(37, 132)
+progress = 37.0
 loop = false
 script = ExtResource("4_follower")
-initial_progress = 30.0
+initial_progress = 37.0
 
 [node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigoMeio/SeguidorMeio" unique_id=101010101 instance=ExtResource("5_enemy")]
 position = Vector2(0, 0)
@@ -176,11 +177,12 @@ position = Vector2(0, 0)
 curve = SubResource("Curve2D_cima")
 
 [node name="SeguidorCima" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigoCima" unique_id=662664192]
-position = Vector2(0, 110)
+position = Vector2(53, 110)
+progress = 53.0
 loop = false
 script = ExtResource("4_follower")
 speed = 165.0
-initial_progress = 55.0
+initial_progress = 53.0
 enemy_texture = ExtResource("6_racer2")
 
 [node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigoCima/SeguidorCima" unique_id=101010102 instance=ExtResource("5_enemy")]
