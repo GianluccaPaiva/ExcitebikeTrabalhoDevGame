@@ -31,6 +31,7 @@ enum State {
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 # --- VARIÁVEIS DE ESTADO E VELOCIDADE ESCALAR ---
+@export var controles_bloqueados: bool = true
 var state: State = State.NO_CHAO
 var was_on_floor: bool = true
 var crash_timer: float = 0.0
@@ -77,7 +78,9 @@ func _process_chao(delta: float) -> void:
 	rotation = ground_angle
 
 	# Aceleração, freio e atrito na magnitude da velocidade
-	if Input.is_action_pressed("acelerar"):
+	if controles_bloqueados:
+		current_speed = move_toward(current_speed, 0.0, friction * delta)
+	elif Input.is_action_pressed("acelerar"):
 		current_speed = move_toward(current_speed, max_speed, acceleration * delta)
 	elif Input.is_action_pressed("frear"):
 		current_speed = move_toward(current_speed, 0.0, brake_force * delta)
@@ -217,3 +220,8 @@ func _recuperar_de_acidente() -> void:
 	if animation_player:
 		animation_player.play("parado")
 		animation_player.speed_scale = 1.0
+
+
+## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
+func liberar_controles() -> void:
+	controles_bloqueados = false

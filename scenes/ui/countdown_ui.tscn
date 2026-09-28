@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://dmqm7u5q1x3n4"]
+
+[ext_resource type="Script" uid="uid://b7v8k9w0y1z2a" path="res://scripts/ui/countdown_ui.gd" id="1_script"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_countdown"]
+font_size = 28
+font_color = Color(1, 0.901961, 0, 1)
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_offset = Vector2(1, 1)
+
+[node name="CountdownUI" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LabelContagem" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -24.0
+offset_right = 80.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(80, 24)
+text = "3"
+label_settings = SubResource("LabelSettings_countdown")
+horizontal_alignment = 1
+vertical_alignment = 1
