@@ -143,6 +143,11 @@ scale = Vector2(0.9566554, 0.8792398)
 shape = SubResource("RectangleShape2D_ucweq")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1963412353]
+offset = Vector2(70, 0)
+limit_left = 0
+limit_top = 0
+limit_bottom = 240
+position_smoothing_enabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1218155467]
 libraries/ = SubResource("AnimationLibrary_5u6hq")
