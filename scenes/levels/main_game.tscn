@@ -3,6 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://d18md8rcnvnar" path="res://assets/levels/Stadium.png" id="1_mcewg"]
 [ext_resource type="Texture2D" uid="uid://b8gse8cxrv4ef" path="res://assets/levels/Level_1.png" id="2_valbi"]
 [ext_resource type="PackedScene" uid="uid://c28ch660pqk5w" path="res://scenes/entities/player.tscn" id="3_viahy"]
+[ext_resource type="Script" uid="uid://cnu3a0ljteopf" path="res://scripts/entite/follower.gd" id="4_follower"]
+[ext_resource type="PackedScene" uid="uid://bvyg7k4g1xhnx" path="res://scenes/entities/enemy.tscn" id="5_enemy"]
+[ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="6_racer2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g4v7s"]
 atlas = ExtResource("2_valbi")
@@ -18,6 +21,18 @@ size = Vector2(22.33905, 23.008423)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
 size = Vector2(20, 17)
+
+[sub_resource type="Curve2D" id="Curve2D_meio"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 132, 0, 0, 0, 0, 331, 132, 0, 0, 0, 0, 345, 128, 0, 0, 0, 0, 357, 132, 0, 0, 0, 0, 537, 132, 0, 0, 0, 0, 558, 125, 0, 0, 0, 0, 575, 126, 0, 0, 0, 0, 595, 132, 0, 0, 0, 0, 807, 132, 0, 0, 0, 0, 843, 123, 0, 0, 0, 0, 875, 120, 0, 0, 0, 0, 900, 126, 0, 0, 0, 0, 915, 132, 0, 0, 0, 0, 1168, 132, 0, 0, 0, 0, 1203, 126, 0, 0, 0, 0, 1210, 126, 0, 0, 0, 0, 1243, 132, 0, 0, 0, 0, 1460, 132, 0, 0, 0, 0, 1487, 124, 0, 0, 0, 0, 1534, 124, 0, 0, 0, 0, 1560, 132, 0, 0, 0, 0, 1722, 132)
+}
+point_count = 23
+
+[sub_resource type="Curve2D" id="Curve2D_cima"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 110, 0, 0, 0, 0, 331, 110, 0, 0, 0, 0, 345, 106, 0, 0, 0, 0, 357, 110, 0, 0, 0, 0, 537, 110, 0, 0, 0, 0, 558, 103, 0, 0, 0, 0, 575, 104, 0, 0, 0, 0, 595, 110, 0, 0, 0, 0, 807, 110, 0, 0, 0, 0, 843, 101, 0, 0, 0, 0, 875, 98, 0, 0, 0, 0, 900, 104, 0, 0, 0, 0, 915, 110, 0, 0, 0, 0, 1168, 110, 0, 0, 0, 0, 1203, 104, 0, 0, 0, 0, 1210, 104, 0, 0, 0, 0, 1243, 110, 0, 0, 0, 0, 1460, 110, 0, 0, 0, 0, 1487, 102, 0, 0, 0, 0, 1534, 102, 0, 0, 0, 0, 1560, 110, 0, 0, 0, 0, 1722, 110)
+}
+point_count = 23
 
 [node name="MainGame" type="Node2D" unique_id=869416145]
 
@@ -141,4 +156,32 @@ polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 
 [node name="Entities" type="Node2D" parent="." unique_id=1937540672]
 
 [node name="Player" parent="Entities" unique_id=1096744221 instance=ExtResource("3_viahy")]
-position = Vector2(18, 143)
+position = Vector2(19, 143)
+
+[node name="PistasInimigos" type="Node2D" parent="Entities" unique_id=2114183652]
+
+[node name="TrilhaInimigoMeio" type="Path2D" parent="Entities/PistasInimigos" unique_id=141497780]
+curve = SubResource("Curve2D_meio")
+
+[node name="SeguidorMeio" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigoMeio" unique_id=662664191]
+position = Vector2(0, 132)
+loop = false
+script = ExtResource("4_follower")
+initial_progress = 30.0
+
+[node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigoMeio/SeguidorMeio" unique_id=101010101 instance=ExtResource("5_enemy")]
+position = Vector2(0, 0)
+
+[node name="TrilhaInimigoCima" type="Path2D" parent="Entities/PistasInimigos" unique_id=141497781]
+curve = SubResource("Curve2D_cima")
+
+[node name="SeguidorCima" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigoCima" unique_id=662664192]
+position = Vector2(0, 110)
+loop = false
+script = ExtResource("4_follower")
+speed = 165.0
+initial_progress = 55.0
+enemy_texture = ExtResource("6_racer2")
+
+[node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigoCima/SeguidorCima" unique_id=101010102 instance=ExtResource("5_enemy")]
+position = Vector2(0, 0)
