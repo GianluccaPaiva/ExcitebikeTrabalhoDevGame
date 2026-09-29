@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://dtfque4ef88tp"]
+
+[ext_resource type="Texture2D" uid="uid://c4ghktq1385il" path="res://assets/sprites/podium.png" id="1_lhpdl"]
+[ext_resource type="Texture2D" uid="uid://4fxxx8ayamaw" path="res://assets/sprites/Racer_1.png" id="2_yv8jb"]
+[ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="3_hjwqk"]
+
+[node name="Colocacao" type="CanvasLayer" unique_id=838415918]
+
+[node name="Control" type="Control" parent="." unique_id=2034051111]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 254.0
+offset_bottom = 245.0
+
+[node name="Label" type="Label" parent="Control" unique_id=745362859]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_right = 4.0
+offset_bottom = 78.0
+grow_horizontal = 2
+
+[node name="Podium" type="Sprite2D" parent="Control" unique_id=1256037257]
+position = Vector2(129, 119)
+scale = Vector2(0.061836407, 0.05562239)
+texture = ExtResource("1_lhpdl")
+
+[node name="PrimeiroColocado" type="Sprite2D" parent="Control" unique_id=283911379]
+position = Vector2(128, 98)
+texture = ExtResource("2_yv8jb")
+hframes = 6
+vframes = 6
+
+[node name="SegundoColocado" type="Sprite2D" parent="Control" unique_id=1064245631]
+position = Vector2(103, 110)
+scale = Vector2(1, 1.0625)
+texture = ExtResource("2_yv8jb")
+hframes = 6
+vframes = 6
+
+[node name="TerceiroColocado" type="Sprite2D" parent="Control" unique_id=1794424661]
+position = Vector2(153, 111)
+texture = ExtResource("3_hjwqk")
+hframes = 6
+vframes = 6
+
+[node name="QuartoColocado" type="Sprite2D" parent="Control" unique_id=82426405]
+position = Vector2(182, 125)
+texture = ExtResource("3_hjwqk")
+hframes = 6
+vframes = 6

@@ -100,7 +100,7 @@ region_enabled = true
 region_rect = Rect2(1693.2595, 0, 99.53931, 112)
 
 [node name="SensorChegada" type="Area2D" parent="PistaVisual/Chegada" unique_id=2038563375]
-position = Vector2(50, 46)
+position = Vector2(2, 66)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Chegada/SensorChegada" unique_id=1024115546]
 visible = false
