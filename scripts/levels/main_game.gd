@@ -13,6 +13,12 @@ signal barramento_atingido(corredor: Node2D)
 ## Vetor dinâmico que armazena os competidores na exata ordem de chegada (1º, 2º, 3º...)
 var colocacoes: Array[Node2D] = []
 
+## Rastreamento de conclusão do percurso e transição de cena
+var bots: Array[Node2D] = []
+var bots_concluidos: Array[Node2D] = []
+var player_desacelerou: bool = false
+var transicao_em_andamento: bool = false
+
 @onready var player: CharacterBody2D = get_node_or_null("Entities/Player")
 @onready var sensor_chegada: Area2D = get_node_or_null("PistaVisual/Chegada/SensorChegada")
 @onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
@@ -20,19 +26,85 @@ var colocacoes: Array[Node2D] = []
 
 func _ready() -> void:
 	colocacoes.clear()
+	bots.clear()
+	bots_concluidos.clear()
+	player_desacelerou = false
+	transicao_em_andamento = false
 	_conectar_sensores()
 	_conectar_player()
+	_conectar_bots()
 
 
 ## Conecta sinais emitidos pelo Player
 func _conectar_player() -> void:
-	if player and player.has_signal("hospital"):
-		if not player.hospital.is_connected(_on_hospital):
+	if player:
+		if player.has_signal("hospital") and not player.hospital.is_connected(_on_hospital):
 			player.hospital.connect(_on_hospital)
+		if player.has_signal("desaceleracao_concluida") and not player.desaceleracao_concluida.is_connected(_on_player_desaceleracao_concluida):
+			player.desaceleracao_concluida.connect(_on_player_desaceleracao_concluida)
+
+
+## Mapeia e conecta os adversários autônomos na pista
+func _conectar_bots() -> void:
+	bots.clear()
+	bots_concluidos.clear()
+	var pistas: Node = get_node_or_null("Entities/PistasInimigos")
+	if pistas:
+		for trilha in pistas.get_children():
+			for child in trilha.get_children():
+				if child is PathFollow2D:
+					var bot_node: Node2D = child as Node2D
+					bots.append(bot_node)
+					if bot_node.has_signal("percurso_concluido"):
+						if not bot_node.percurso_concluido.is_connected(_on_bot_percurso_concluido):
+							bot_node.percurso_concluido.connect(_on_bot_percurso_concluido)
+
+
+## Callback executado quando um bot conclui seu percurso na trilha
+func _on_bot_percurso_concluido(bot: Node2D) -> void:
+	if bot and not bots_concluidos.has(bot):
+		bots_concluidos.append(bot)
+	_verificar_condicao_transicao()
+
+
+## Callback executado quando o jogador conclui a desaceleração após cruzar a chegada
+func _on_player_desaceleracao_concluida() -> void:
+	player_desacelerou = true
+	_verificar_condicao_transicao()
+
+
+## Verifica se todos os bots concluíram o percurso da pista
+func _todos_bots_concluiram() -> bool:
+	if bots.is_empty():
+		return true
+	for bot in bots:
+		if bot.has_method("is_percurso_finalizado"):
+			if not bot.is_percurso_finalizado():
+				return false
+		elif not bots_concluidos.has(bot):
+			return false
+	return true
+
+
+## Verifica se as condições da transição foram simultaneamente atendidas:
+## 1) Player concluiu a desaceleração
+## 2) Todos os bots concluíram o percurso
+func _verificar_condicao_transicao() -> void:
+	if transicao_em_andamento:
+		return
+	if not player_desacelerou:
+		return
+	if not _todos_bots_concluiram():
+		return
+
+	transicao_em_andamento = true
+	await get_tree().create_timer(1.2).timeout
+	get_tree().change_scene_to_file("res://scenes/ui/colocacao.tscn")
 
 
 ## Callback executado quando o jogador atinge o limite de acidentes
 func _on_hospital() -> void:
+	transicao_em_andamento = true
 	await get_tree().create_timer(1.4).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/hospital.tscn")
 

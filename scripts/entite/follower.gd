@@ -4,6 +4,8 @@ extends PathFollow2D
 ## Script do Seguidor de Trilha dos Adversários
 ## Trabalho 1 - DCC148 (UFJF) | Gabriel Lineker & Gianlucca Paiva
 
+signal percurso_concluido(bot: Node2D)
+
 @export var speed: float = 140.0
 @export var initial_progress: float = 0.0
 @export var rotation_smoothing_speed: float = 14.0
@@ -15,6 +17,7 @@ extends PathFollow2D
 @export var corrida_iniciada: bool = false
 
 var _last_position: Vector2 = Vector2.ZERO
+var percurso_finalizado: bool = false
 
 
 func _ready() -> void:
@@ -60,6 +63,9 @@ func _process(delta: float) -> void:
 				anim.pause()
 			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
 			_last_position = global_position
+			if not percurso_finalizado:
+				percurso_finalizado = true
+				percurso_concluido.emit(self)
 			return
 
 	progress += speed * delta
@@ -112,3 +118,8 @@ func iniciar_corrida() -> void:
 	var anim: AnimationPlayer = _obter_animation_player()
 	if anim:
 		anim.play("andar")
+
+
+## Retorna se o bot concluiu todo o percurso da trilha
+func is_percurso_finalizado() -> bool:
+	return percurso_finalizado

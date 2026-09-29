@@ -6,6 +6,7 @@ enum State {
 	ACIDENTE
 }
 signal hospital 
+signal desaceleracao_concluida
 
 # --- CONFIGURAÇÕES DE FÍSICA E MOVIMENTO (Ajustáveis no Inspetor) ---
 @export_group("Movimento no Solo")
@@ -104,6 +105,7 @@ func _process_chao(delta: float) -> void:
 			if animation_player:
 				animation_player.play("parado")
 				animation_player.speed_scale = 1.0
+			desaceleracao_concluida.emit()
 			return
 	elif controles_bloqueados:
 		current_speed = move_toward(current_speed, 0.0, friction * delta)
