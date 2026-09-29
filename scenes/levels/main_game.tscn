@@ -7,7 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://bvyg7k4g1xhnx" path="res://scenes/entities/enemy.tscn" id="5_enemy"]
 [ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="6_racer2"]
 [ext_resource type="PackedScene" uid="uid://dmqm7u5q1x3n4" path="res://scenes/ui/countdown_ui.tscn" id="7_countdown"]
+[ext_resource type="Texture2D" uid="uid://bnxv5dcm4cfb6" path="res://assets/sprites/guysCut/guys.png" id="8_k5j8j"]
 [ext_resource type="Script" uid="uid://cmhxnmry2lt4y" path="res://scripts/levels/main_game.gd" id="8_maingame"]
+[ext_resource type="Texture2D" uid="uid://bcywccnyhsyl8" path="res://assets/sprites/guysCut/guys2.png" id="9_rlb4v"]
+[ext_resource type="Texture2D" uid="uid://cfx3el7jabxdh" path="res://assets/sprites/guysCut/guys3.png" id="10_bvlx0"]
+[ext_resource type="Texture2D" uid="uid://cy8a2rwuoxkth" path="res://assets/sprites/guysCut/guys4.png" id="11_gpckr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g4v7s"]
 atlas = ExtResource("2_valbi")
@@ -24,17 +28,20 @@ size = Vector2(22.33905, 23.008423)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
 size = Vector2(20, 17)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_barramento"]
+size = Vector2(20, 220)
+
 [sub_resource type="Curve2D" id="Curve2D_inimigo1"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 132, 0, 0, 0, 0, 331, 132, 0, 0, 0, 0, 345, 128, 0, 0, 0, 0, 357, 132, 0, 0, 0, 0, 537, 132, 0, 0, 0, 0, 558, 125, 0, 0, 0, 0, 575, 126, 0, 0, 0, 0, 595, 132, 0, 0, 0, 0, 807, 132, 0, 0, 0, 0, 848, 116, 0, 0, 0, 0, 884, 118, 0, 0, 0, 0, 906, 123, 0, 0, 0, 0, 928, 129, 0, 0, 0, 0, 1168, 132, 0, 0, 0, 0, 1203, 126, 0, 0, 0, 0, 1210, 126, 0, 0, 0, 0, 1243, 132, 0, 0, 0, 0, 1460, 132, 0, 0, 0, 0, 1487, 124, 0, 0, 0, 0, 1534, 124, 0, 0, 0, 0, 1560, 132, 0, 0, 0, 0, 1722, 132, 0, 0, 0, 0, 1800, 132)
+"points": PackedVector2Array(0, 0, 0, 0, 0, 132, 0, 0, 0, 0, 331, 132, 0, 0, 0, 0, 345, 128, 0, 0, 0, 0, 357, 132, 0, 0, 0, 0, 537, 132, 0, 0, 0, 0, 558, 125, 0, 0, 0, 0, 575, 126, 0, 0, 0, 0, 595, 132, 0, 0, 0, 0, 807, 132, 0, 0, 0, 0, 848, 116, 0, 0, 0, 0, 884, 118, 0, 0, 0, 0, 906, 123, 0, 0, 0, 0, 928, 129, 0, 0, 0, 0, 1168, 132, 0, 0, 0, 0, 1203, 126, 0, 0, 0, 0, 1210, 126, 0, 0, 0, 0, 1243, 132, 0, 0, 0, 0, 1460, 132, 0, 0, 0, 0, 1487, 124, 0, 0, 0, 0, 1534, 124, 0, 0, 0, 0, 1560, 132, 0, 0, 0, 0, 1722, 132, 0, 0, 0, 0, 1800, 132, 0, 0, 0, 0, 1950, 132)
 }
-point_count = 23
+point_count = 24
 
 [sub_resource type="Curve2D" id="Curve2D_inimigo2"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 110, 0, 0, 0, 0, 331, 110, 0, 0, 0, 0, 345, 106, 0, 0, 0, 0, 357, 110, 0, 0, 0, 0, 537, 110, 0, 0, 0, 0, 558, 103, 0, 0, 0, 0, 575, 104, 0, 0, 0, 0, 595, 110, 0, 0, 0, 0, 807, 110, 0, 0, 0, 0, 848, 96, 0, 0, 0, 0, 886, 101, 0, 0, 0, 0, 919, 105, 0, 0, 0, 0, 949, 110, 0, 0, 0, 0, 1168, 110, 0, 0, 0, 0, 1203, 104, 0, 0, 0, 0, 1210, 104, 0, 0, 0, 0, 1243, 110, 0, 0, 0, 0, 1460, 110, 0, 0, 0, 0, 1487, 102, 0, 0, 0, 0, 1534, 102, 0, 0, 0, 0, 1560, 110, 0, 0, 0, 0, 1722, 110, 0, 0, 0, 0, 1800, 110)
+"points": PackedVector2Array(0, 0, 0, 0, 0, 110, 0, 0, 0, 0, 331, 110, 0, 0, 0, 0, 345, 106, 0, 0, 0, 0, 357, 110, 0, 0, 0, 0, 537, 110, 0, 0, 0, 0, 558, 103, 0, 0, 0, 0, 575, 104, 0, 0, 0, 0, 595, 110, 0, 0, 0, 0, 807, 110, 0, 0, 0, 0, 848, 96, 0, 0, 0, 0, 886, 101, 0, 0, 0, 0, 919, 105, 0, 0, 0, 0, 949, 110, 0, 0, 0, 0, 1168, 110, 0, 0, 0, 0, 1203, 104, 0, 0, 0, 0, 1210, 104, 0, 0, 0, 0, 1243, 110, 0, 0, 0, 0, 1460, 110, 0, 0, 0, 0, 1487, 102, 0, 0, 0, 0, 1534, 102, 0, 0, 0, 0, 1560, 110, 0, 0, 0, 0, 1722, 110, 0, 0, 0, 0, 1800, 110, 0, 0, 0, 0, 1950, 110)
 }
-point_count = 23
+point_count = 24
 
 [node name="MainGame" type="Node2D" unique_id=869416145]
 script = ExtResource("8_maingame")
@@ -44,6 +51,8 @@ scroll_scale = Vector2(0.5, 0.5)
 repeat_size = Vector2(256, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="FundoArquibancada" unique_id=181275346]
+position = Vector2(-6, -10.999999)
+scale = Vector2(3.3437498, 1.171875)
 texture = ExtResource("1_mcewg")
 centered = false
 
@@ -59,7 +68,7 @@ region_rect = Rect2(0, 0, 65.00426, 112)
 [node name="PistaLonga" type="TextureRect" parent="PistaVisual" unique_id=1454793469]
 offset_left = 65.0
 offset_top = 64.0
-offset_right = 1806.0
+offset_right = 2198.0
 offset_bottom = 176.0
 texture = SubResource("AtlasTexture_g4v7s")
 stretch_mode = 1
@@ -152,11 +161,19 @@ position = Vector2(16, 90.5)
 scale = Vector2(1.0735289, 0.86929125)
 shape = SubResource("RectangleShape2D_57qmd")
 
+[node name="Barramento" type="Sprite2D" parent="PistaVisual" unique_id=1228882294]
+
+[node name="SensorBarramento" type="Area2D" parent="PistaVisual/Barramento" unique_id=651520128]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Barramento/SensorBarramento" unique_id=1619961697]
+position = Vector2(1802, 148)
+shape = SubResource("RectangleShape2D_barramento")
+
 [node name="FisicaPista" type="StaticBody2D" parent="." unique_id=1566662175]
 position = Vector2(0, -7.2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FisicaPista" unique_id=518070433]
-polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 160, 558, 143, 565, 143, 581, 160, 810, 160, 843, 127, 850, 127, 882, 160, 1170, 160, 1203, 144, 1210, 144, 1243, 160, 1462, 160, 1487, 136, 1534, 136, 1560, 161, 1807, 160, 1807, 226)
+polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 160, 558, 143, 565, 143, 581, 160, 810, 160, 843, 127, 850, 127, 882, 160, 1170, 160, 1203, 144, 1210, 144, 1243, 160, 1462, 160, 1487, 136, 1534, 136, 1560, 161, 2151, 159.2, 2151, 232.2)
 
 [node name="Entities" type="Node2D" parent="." unique_id=1937540672]
 
@@ -172,12 +189,13 @@ curve = SubResource("Curve2D_inimigo1")
 [node name="Inimigo1" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigo1" unique_id=662664191]
 position = Vector2(37.099457, 131.99998)
 progress = 37.0
+rotates = false
 loop = false
 script = ExtResource("4_follower")
 initial_progress = 37.0
 
 [node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigo1/Inimigo1" unique_id=101010101 instance=ExtResource("5_enemy")]
-position = Vector2(8.900543, -10.999985)
+position = Vector2(-4.099457, 1.5258789e-05)
 
 [node name="TrilhaInimigo2" type="Path2D" parent="Entities/PistasInimigos" unique_id=141497781]
 curve = SubResource("Curve2D_inimigo2")
@@ -185,6 +203,7 @@ curve = SubResource("Curve2D_inimigo2")
 [node name="Inimigo2" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigo2" unique_id=662664192]
 position = Vector2(52.99265, 110)
 progress = 53.0
+rotates = false
 loop = false
 script = ExtResource("4_follower")
 speed = 165.0
@@ -192,11 +211,40 @@ initial_progress = 53.0
 enemy_texture = ExtResource("6_racer2")
 
 [node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigo2/Inimigo2" unique_id=101010102 instance=ExtResource("5_enemy")]
+position = Vector2(11.007351, -2)
+
+[node name="Filmers" type="Node2D" parent="Entities" unique_id=1348857219]
+
+[node name="Sprite2D" type="Sprite2D" parent="Entities/Filmers" unique_id=1989603555]
+position = Vector2(1988.0001, 114.00001)
+scale = Vector2(0.29545444, 0.2570422)
+texture = ExtResource("8_k5j8j")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Entities/Filmers" unique_id=468988870]
+position = Vector2(1986.0001, 120)
+scale = Vector2(0.3416646, 0.28603604)
+texture = ExtResource("9_rlb4v")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Entities/Filmers" unique_id=779143375]
+position = Vector2(1986.9998, 135.125)
+scale = Vector2(0.33730108, 0.30523258)
+texture = ExtResource("10_bvlx0")
+
+[node name="Sprite2D4" type="Sprite2D" parent="Entities/Filmers" unique_id=1681626832]
+position = Vector2(1443, 98)
+scale = Vector2(0.3243243, 0.25531915)
+texture = ExtResource("11_gpckr")
+
+[node name="Sprite2D5" type="Sprite2D" parent="Entities/Filmers" unique_id=1813690351]
+position = Vector2(1986.0001, 151.00002)
+scale = Vector2(0.28030166, 0.2429577)
+texture = ExtResource("8_k5j8j")
 
 [node name="CountdownUI" parent="." unique_id=999888777 instance=ExtResource("7_countdown")]
 
 [connection signal="area_entered" from="PistaVisual/Chegada/SensorChegada" to="." method="_on_sensor_chegada_area_entered"]
 [connection signal="body_entered" from="PistaVisual/Chegada/SensorChegada" to="." method="_on_sensor_chegada_body_entered"]
+[connection signal="body_entered" from="PistaVisual/Barramento/SensorBarramento" to="." method="_on_sensor_barramento_body_entered"]
 [connection signal="corrida_iniciada" from="CountdownUI" to="Entities/Player" method="liberar_controles"]
 [connection signal="corrida_iniciada" from="CountdownUI" to="Entities/PistasInimigos/TrilhaInimigo1/Inimigo1" method="iniciar_corrida"]
 [connection signal="corrida_iniciada" from="CountdownUI" to="Entities/PistasInimigos/TrilhaInimigo2/Inimigo2" method="iniciar_corrida"]

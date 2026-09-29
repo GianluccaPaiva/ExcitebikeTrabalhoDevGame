@@ -36,12 +36,15 @@ var state: State = State.NO_CHAO
 var was_on_floor: bool = true
 var crash_timer: float = 0.0
 var current_speed: float = 0.0 # Magnitude da velocidade ao longo da pista
+var em_desaceleracao_automatica: bool = false
+var limite_x_parada: float = 0.0
+var taxa_freio_automatico: float = 350.0
 
 
 func _ready() -> void:
 	# Permite que rampas de até 60 graus sejam tratadas perfeitamente como piso
 	floor_max_angle = deg_to_rad(60.0)
-	floor_snap_length = 0.0
+	floor_snap_length = 8.0
 	
 	if moto_caida_sprite:
 		moto_caida_sprite.visible = false
@@ -51,7 +54,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	# Enquanto a contagem regressiva estiver rodando, mantém o player perfeitamente estático no grid
-	if controles_bloqueados:
+	if controles_bloqueados and not em_desaceleracao_automatica:
 		velocity = Vector2.ZERO
 		current_speed = 0.0
 		if animation_player and animation_player.current_animation != "parado":
@@ -86,7 +89,20 @@ func _process_chao(delta: float) -> void:
 	rotation = ground_angle
 
 	# Aceleração, freio e atrito na magnitude da velocidade
-	if controles_bloqueados:
+	if em_desaceleracao_automatica:
+		current_speed = move_toward(current_speed, 0.0, taxa_freio_automatico * delta)
+		if limite_x_parada > 0.0 and global_position.x >= (limite_x_parada - 18.0):
+			current_speed = move_toward(current_speed, 0.0, brake_force * delta)
+		if current_speed <= 1.0:
+			current_speed = 0.0
+			velocity = Vector2.ZERO
+			em_desaceleracao_automatica = false
+			controles_bloqueados = true
+			if animation_player:
+				animation_player.play("parado")
+				animation_player.speed_scale = 1.0
+			return
+	elif controles_bloqueados:
 		current_speed = move_toward(current_speed, 0.0, friction * delta)
 	elif Input.is_action_pressed("acelerar"):
 		current_speed = move_toward(current_speed, max_speed, acceleration * delta)
@@ -126,15 +142,19 @@ func _process_ar(delta: float) -> void:
 	# 2. INPUT DE VELOCIDADE: ESTRITAMENTE DESABILITADO NO AR
 	# No ar, a moto segue o momento/inércia balística adquirida na rampa.
 	# Inputs como 'acelerar' e 'frear' não têm efeito de tração em voo.
+	if em_desaceleracao_automatica:
+		velocity.x = move_toward(velocity.x, 0.0, (taxa_freio_automatico * 0.5) * delta)
+		current_speed = move_toward(current_speed, 0.0, (taxa_freio_automatico * 0.5) * delta)
 
 	# 3. INPUT DE ROTAÇÃO: HABILITADO PARA CONTROLE DO ÂNGULO NO SALTO (W / S)
 	var rot_input: float = 0.0
-	if Input.is_action_pressed("inclinar_tras"):
-		# W: inclina para trás / sobe o nariz da moto (Backflip)
-		rot_input -= 1.0
-	if Input.is_action_pressed("inclinar_frente"):
-		# S: inclina para frente / desce o nariz da moto (Frontflip)
-		rot_input += 1.0
+	if not em_desaceleracao_automatica:
+		if Input.is_action_pressed("inclinar_tras"):
+			# W: inclina para trás / sobe o nariz da moto (Backflip)
+			rot_input -= 1.0
+		if Input.is_action_pressed("inclinar_frente"):
+			# S: inclina para frente / desce o nariz da moto (Frontflip)
+			rot_input += 1.0
 
 	# Aplica a rotação angular via transformação física (rotation)
 	rotation += rot_input * air_rotation_speed * delta
@@ -193,13 +213,28 @@ func _processar_aterrissagem() -> void:
 		rotation = ground_angle
 		# Preserva a projeção da velocidade aérea ao longo da pista (conservação vetorial de momento)
 		var projected_speed: float = velocity.dot(ground_dir)
-		current_speed = 0.0 if controles_bloqueados else clampf(projected_speed, 0.0, max_speed * 1.1)
+		if controles_bloqueados and not em_desaceleracao_automatica:
+			current_speed = 0.0
+		else:
+			current_speed = clampf(projected_speed, 0.0, max_speed * 1.1)
+		
+		# Se aterrissou já em desaceleração automática, recalcula a taxa para parar suavemente no alvo restante
+		if em_desaceleracao_automatica:
+			var dist_restante: float = maxf((limite_x_parada - 24.0) - global_position.x, 16.0)
+			if current_speed > 10.0:
+				taxa_freio_automatico = (current_speed * current_speed) / (2.0 * dist_restante)
+				taxa_freio_automatico = clampf(taxa_freio_automatico, 100.0, 500.0)
 		
 		if animation_player:
-			if controles_bloqueados:
+			if controles_bloqueados and not em_desaceleracao_automatica:
 				animation_player.play("parado")
 			else:
-				animation_player.play("andar")
+				if current_speed > 5.0:
+					animation_player.play("andar")
+					animation_player.speed_scale = clampf(current_speed / max_speed, 0.3, 1.3)
+				else:
+					animation_player.play("parado")
+					animation_player.speed_scale = 1.0
 	else:
 		# ACIDENTE: Aterrissou de cabeça para baixo ou desalinhado
 		_disparar_acidente()
@@ -236,3 +271,28 @@ func _recuperar_de_acidente() -> void:
 ## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
 func liberar_controles() -> void:
 	controles_bloqueados = false
+
+
+## Inicia a desaceleração automática e gradual após cruzar o barramento
+func iniciar_desaceleracao_automatica(x_alvo: float = 1986.0) -> void:
+	if em_desaceleracao_automatica:
+		return
+	em_desaceleracao_automatica = true
+	controles_bloqueados = true
+	limite_x_parada = x_alvo
+
+	# Distância disponível até os filmers (com margem de 24px da frente da moto para folga estética)
+	var margem_seguranca: float = 24.0
+	var dist_disponivel: float = maxf((limite_x_parada - margem_seguranca) - global_position.x, 16.0)
+
+	# Torricelli: calcula a desaceleração exata para parar suavemente antes dos filmers
+	if current_speed > 10.0:
+		taxa_freio_automatico = (current_speed * current_speed) / (2.0 * dist_disponivel)
+		taxa_freio_automatico = clampf(taxa_freio_automatico, 100.0, 500.0)
+	else:
+		taxa_freio_automatico = friction
+
+
+## Chamado ao atingir o fim da pista / barramento (aciona a desaceleração gradual)
+func travar_controles() -> void:
+	iniciar_desaceleracao_automatica()

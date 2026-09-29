@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://c84hmalqiep07"]
+
+[ext_resource type="Texture2D" uid="uid://bnxv5dcm4cfb6" path="res://assets/sprites/guysCut/guys.png" id="1_scq74"]
+[ext_resource type="Texture2D" uid="uid://bcywccnyhsyl8" path="res://assets/sprites/guysCut/guys2.png" id="2_kqkb1"]
+[ext_resource type="Texture2D" uid="uid://cfx3el7jabxdh" path="res://assets/sprites/guysCut/guys3.png" id="3_g7nee"]
+[ext_resource type="Texture2D" uid="uid://cy8a2rwuoxkth" path="res://assets/sprites/guysCut/guys4.png" id="4_7emvv"]
+
+[node name="Guys" type="Node2D" unique_id=1233036254]
+
+[node name="Camera" type="Sprite2D" parent="." unique_id=1061132498]
+texture = ExtResource("1_scq74")
+
+[node name="Positive" type="Sprite2D" parent="." unique_id=639515428]
+texture = ExtResource("2_kqkb1")
+
+[node name="TwoGuys" type="Sprite2D" parent="." unique_id=661275126]
+texture = ExtResource("3_g7nee")
+
+[node name="Flag" type="Sprite2D" parent="." unique_id=1058153916]
+texture = ExtResource("4_7emvv")

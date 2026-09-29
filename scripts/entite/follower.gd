@@ -18,21 +18,20 @@ var _last_position: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
+	rotates = false # Impede que a engine rotacione o seguidor automaticamente
+	loop = false
+	rotation = 0.0
 	_aplicar_textura()
 	
 	if Engine.is_editor_hint():
 		return
 	
-	rotates = false # Controle suave de curvamento idêntico ao player
-	loop = false
-	
 	if initial_progress > 0.0 and progress == 0.0:
 		progress = initial_progress
 	
 	_last_position = global_position
-	rotation = 0.0
 	
-	# Se a corrida ainda não começou, pausa a rotação das rodas no grid
+	# Se a corrida ainda não começou, pausa a animação das rodas no grid
 	if not corrida_iniciada:
 		var anim: AnimationPlayer = _obter_animation_player()
 		if anim:
@@ -42,10 +41,13 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		_aplicar_textura()
+		rotates = false
+		rotation = 0.0
 		return
 
 	if not corrida_iniciada:
 		_last_position = global_position
+		rotation = 0.0
 		return
 
 	# Checa se atingiu o fim da trilha após a rampa final
@@ -53,15 +55,28 @@ func _process(delta: float) -> void:
 		var total_length: float = get_parent().curve.get_baked_length()
 		if progress >= total_length - 2.0:
 			# Finalizou a corrida na reta final
+			var anim: AnimationPlayer = _obter_animation_player()
+			if anim and anim.is_playing() and anim.current_animation != "RESET":
+				anim.pause()
+			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
+			_last_position = global_position
 			return
 
 	progress += speed * delta
 	
-	# Interpolação suave do ângulo acompanhando a curvatura da rampa (lógica similar ao player)
+	# Fluxo de direções controlado: impede inversão de sentido e limita inclinação
 	var move_delta: Vector2 = global_position - _last_position
 	if move_delta.length_squared() > 0.0001:
-		var target_angle: float = move_delta.angle()
-		rotation = lerp_angle(rotation, target_angle, rotation_smoothing_speed * delta)
+		if move_delta.x > 0.001:
+			var target_angle: float = move_delta.angle()
+			# Clampa para ângulo seguro (~16 graus) acompanhando as rampas sem empinar excessivamente
+			target_angle = clampf(target_angle, -0.28, 0.28)
+			rotation = lerp_angle(rotation, target_angle, rotation_smoothing_speed * delta)
+		else:
+			# Sem deslocamento para a frente: mantém 0 radianos
+			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
+	else:
+		rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
 	
 	_last_position = global_position
 

@@ -7,28 +7,36 @@ extends Node2D
 ## Sinal disparado quando qualquer competidor cruza a linha de chegada
 signal corredor_chegou(corredor: Node2D, colocacao: int)
 
+## Sinal disparado quando o jogador colide com o barramento do fim da pista
+signal barramento_atingido(corredor: Node2D)
+
 ## Vetor dinâmico que armazena os competidores na exata ordem de chegada (1º, 2º, 3º...)
 var colocacoes: Array[Node2D] = []
 
 @onready var sensor_chegada: Area2D = get_node_or_null("PistaVisual/Chegada/SensorChegada")
+@onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
 
 
 func _ready() -> void:
 	colocacoes.clear()
-	_conectar_sensor_chegada()
+	_conectar_sensores()
 
 
-## Conecta os sinais de colisão do sensor de chegada de forma segura
-func _conectar_sensor_chegada() -> void:
-	if not sensor_chegada:
+## Conecta os sinais de colisão dos sensores da pista
+func _conectar_sensores() -> void:
+	if sensor_chegada:
+		if not sensor_chegada.body_entered.is_connected(_on_sensor_chegada_body_entered):
+			sensor_chegada.body_entered.connect(_on_sensor_chegada_body_entered)
+		if not sensor_chegada.area_entered.is_connected(_on_sensor_chegada_area_entered):
+			sensor_chegada.area_entered.connect(_on_sensor_chegada_area_entered)
+	else:
 		push_warning("[MainGame] SensorChegada não encontrado em PistaVisual/Chegada/SensorChegada.")
-		return
 
-	if not sensor_chegada.body_entered.is_connected(_on_sensor_chegada_body_entered):
-		sensor_chegada.body_entered.connect(_on_sensor_chegada_body_entered)
-
-	if not sensor_chegada.area_entered.is_connected(_on_sensor_chegada_area_entered):
-		sensor_chegada.area_entered.connect(_on_sensor_chegada_area_entered)
+	if sensor_barramento:
+		if not sensor_barramento.body_entered.is_connected(_on_sensor_barramento_body_entered):
+			sensor_barramento.body_entered.connect(_on_sensor_barramento_body_entered)
+	else:
+		push_warning("[MainGame] SensorBarramento não encontrado em PistaVisual/Barramento/SensorBarramento.")
 
 
 ## Callback disparado quando um corpo físico (ex: Player) entra no sensor
@@ -43,6 +51,30 @@ func _on_sensor_chegada_area_entered(area: Area2D) -> void:
 	var corredor: Node2D = _resolver_corredor(area)
 	if corredor:
 		_registrar_chegada(corredor)
+
+
+## Callback disparado quando o jogador colide com o barramento do fim da pista
+func _on_sensor_barramento_body_entered(body: Node2D) -> void:
+	if body == null:
+		return
+
+	if body is CharacterBody2D or body.name == "Player":
+		var pos_filmers_x: float = 0.0
+		var filmers_node: Node2D = get_node_or_null("Entities/Filmers")
+		if filmers_node:
+			for child in filmers_node.get_children():
+				if child is Sprite2D and child.global_position.x > 1700.0:
+					if pos_filmers_x == 0.0 or child.global_position.x < pos_filmers_x:
+						pos_filmers_x = child.global_position.x
+		if pos_filmers_x == 0.0:
+			pos_filmers_x = 1986.0
+
+		if body.has_method("iniciar_desaceleracao_automatica"):
+			body.iniciar_desaceleracao_automatica(pos_filmers_x)
+		elif body.has_method("travar_controles"):
+			body.travar_controles()
+
+		barramento_atingido.emit(body)
 
 
 ## Registra a chegada da entidade de forma única e emite o sinal com a colocação
