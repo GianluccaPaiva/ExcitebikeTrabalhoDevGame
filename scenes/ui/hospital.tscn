@@ -1,0 +1,151 @@
+[gd_scene format=3 uid="uid://xjfhy7t76up2"]
+
+[ext_resource type="Script" uid="uid://bagbwqw0wuc6y" path="res://scripts/ui/hospital.gd" id="1_hospital"]
+[ext_resource type="Texture2D" uid="uid://c67thkyr12ut" path="res://assets/ui/ambulance.png" id="2_l3lar"]
+[ext_resource type="Texture2D" uid="uid://mthdsofdodlj" path="res://assets/ui/way.png" id="3_0s3va"]
+[ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="4_font"]
+[ext_resource type="AudioStream" uid="uid://7a6qrnr0pisy" path="res://assets/sounds/Ambulance.mp3" id="5_o6res"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hospital"]
+font = ExtResource("4_font")
+font_size = 10
+font_color = Color(0.96, 0.26, 0.21, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.85)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.08, 0.08, 0.12, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.988235, 0.74902, 0.0588235, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+bg_color = Color(0.8, 0.58, 0.05, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 0.5, 0.5, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.988235, 0.74902, 0.0588235, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+anti_aliasing = false
+
+[node name="Hospital" type="Control" unique_id=914389810]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hospital")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1122334455]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.06, 0.09, 1)
+
+[node name="Label" type="Label" parent="." unique_id=1402441654]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 28.0
+offset_bottom = 54.0
+grow_horizontal = 2
+text = "QUEBROU OSSOS DEMAIS!"
+label_settings = SubResource("LabelSettings_hospital")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ParallaxWay" type="Parallax2D" parent="." unique_id=160700492]
+repeat_size = Vector2(287, 0)
+autoscroll = Vector2(-150, 0)
+repeat_times = 3
+
+[node name="Way" type="Sprite2D" parent="ParallaxWay" unique_id=1224029222]
+position = Vector2(20, 105)
+scale = Vector2(0.15820311, 0.08558557)
+texture = ExtResource("3_0s3va")
+
+[node name="Way2" type="Sprite2D" parent="ParallaxWay" unique_id=1943494552]
+position = Vector2(61, 105)
+scale = Vector2(0.15820311, 0.08558557)
+texture = ExtResource("3_0s3va")
+
+[node name="Way3" type="Sprite2D" parent="ParallaxWay" unique_id=1695070476]
+position = Vector2(102, 105)
+scale = Vector2(0.15820311, 0.08558557)
+texture = ExtResource("3_0s3va")
+
+[node name="Way4" type="Sprite2D" parent="ParallaxWay" unique_id=892738322]
+position = Vector2(143, 105)
+scale = Vector2(0.15820311, 0.08558557)
+texture = ExtResource("3_0s3va")
+
+[node name="Way5" type="Sprite2D" parent="ParallaxWay" unique_id=1823263411]
+position = Vector2(184, 105)
+scale = Vector2(0.15820311, 0.08558557)
+texture = ExtResource("3_0s3va")
+
+[node name="Way6" type="Sprite2D" parent="ParallaxWay" unique_id=280917684]
+position = Vector2(225, 105)
+scale = Vector2(0.15820311, 0.08558557)
+texture = ExtResource("3_0s3va")
+
+[node name="Way7" type="Sprite2D" parent="ParallaxWay" unique_id=1607876121]
+position = Vector2(266, 105)
+scale = Vector2(0.15820311, 0.08558557)
+texture = ExtResource("3_0s3va")
+
+[node name="Ambulance" type="Sprite2D" parent="." unique_id=1550957547]
+position = Vector2(85, 96)
+texture = ExtResource("2_l3lar")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Ambulance" unique_id=1694230239]
+position = Vector2(-85, -96)
+stream = ExtResource("5_o6res")
+volume_db = 4.86
+autoplay = true
+parameters/looping = true
+
+[node name="Button" type="Button" parent="." unique_id=1961831488]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_top = -68.0
+offset_right = 70.0
+offset_bottom = -46.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+text = "TENTAR DE NOVO"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

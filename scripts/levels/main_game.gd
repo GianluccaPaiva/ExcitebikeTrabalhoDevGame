@@ -13,6 +13,7 @@ signal barramento_atingido(corredor: Node2D)
 ## Vetor dinâmico que armazena os competidores na exata ordem de chegada (1º, 2º, 3º...)
 var colocacoes: Array[Node2D] = []
 
+@onready var player: CharacterBody2D = get_node_or_null("Entities/Player")
 @onready var sensor_chegada: Area2D = get_node_or_null("PistaVisual/Chegada/SensorChegada")
 @onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
 
@@ -20,6 +21,20 @@ var colocacoes: Array[Node2D] = []
 func _ready() -> void:
 	colocacoes.clear()
 	_conectar_sensores()
+	_conectar_player()
+
+
+## Conecta sinais emitidos pelo Player
+func _conectar_player() -> void:
+	if player and player.has_signal("hospital"):
+		if not player.hospital.is_connected(_on_hospital):
+			player.hospital.connect(_on_hospital)
+
+
+## Callback executado quando o jogador atinge o limite de acidentes
+func _on_hospital() -> void:
+	await get_tree().create_timer(1.4).timeout
+	get_tree().change_scene_to_file("res://scenes/ui/hospital.tscn")
 
 
 ## Conecta os sinais de colisão dos sensores da pista

@@ -5,6 +5,7 @@ enum State {
 	NO_AR,
 	ACIDENTE
 }
+signal hospital 
 
 # --- CONFIGURAÇÕES DE FÍSICA E MOVIMENTO (Ajustáveis no Inspetor) ---
 @export_group("Movimento no Solo")
@@ -23,6 +24,7 @@ enum State {
 @export_group("Pouso e Acidente")
 @export var max_safe_angle_degrees: float = 32.0 # Tolerância máxima de desalinhamento (pouso perfeito pós-flip)
 @export var crash_duration: float = 1.6 # Tempo bloqueado após queda
+@export var limite_acidentes_hospital: int = 3 # Quantidade de acidentes para ir ao hospital
 
 # --- REFERÊNCIAS DE NÓS ---
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
@@ -39,6 +41,7 @@ var current_speed: float = 0.0 # Magnitude da velocidade ao longo da pista
 var em_desaceleracao_automatica: bool = false
 var limite_x_parada: float = 0.0
 var taxa_freio_automatico: float = 350.0
+var qtd_acidentes: int = 0
 
 
 func _ready() -> void:
@@ -237,7 +240,10 @@ func _processar_aterrissagem() -> void:
 					animation_player.speed_scale = 1.0
 	else:
 		# ACIDENTE: Aterrissou de cabeça para baixo ou desalinhado
+		qtd_acidentes += 1
 		_disparar_acidente()
+		if qtd_acidentes >= limite_acidentes_hospital:
+			hospital.emit()
 
 
 # --- GATILHOS DE ACIDENTE E RECUPERAÇÃO ---
