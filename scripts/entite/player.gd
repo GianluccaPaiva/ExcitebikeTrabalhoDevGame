@@ -50,6 +50,14 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Enquanto a contagem regressiva estiver rodando, mantém o player perfeitamente estático no grid
+	if controles_bloqueados:
+		velocity = Vector2.ZERO
+		current_speed = 0.0
+		if animation_player and animation_player.current_animation != "parado":
+			animation_player.play("parado")
+		return
+
 	match state:
 		State.NO_CHAO:
 			_process_chao(delta)
@@ -185,10 +193,13 @@ func _processar_aterrissagem() -> void:
 		rotation = ground_angle
 		# Preserva a projeção da velocidade aérea ao longo da pista (conservação vetorial de momento)
 		var projected_speed: float = velocity.dot(ground_dir)
-		current_speed = clampf(projected_speed, 0.0, max_speed * 1.1)
+		current_speed = 0.0 if controles_bloqueados else clampf(projected_speed, 0.0, max_speed * 1.1)
 		
 		if animation_player:
-			animation_player.play("andar")
+			if controles_bloqueados:
+				animation_player.play("parado")
+			else:
+				animation_player.play("andar")
 	else:
 		# ACIDENTE: Aterrissou de cabeça para baixo ou desalinhado
 		_disparar_acidente()
