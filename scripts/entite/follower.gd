@@ -1,9 +1,6 @@
 @tool
 extends PathFollow2D
 
-## Script do Seguidor de Trilha dos Adversários
-## Trabalho 1 - DCC148 (UFJF) | Gabriel Lineker & Gianlucca Paiva
-
 signal percurso_concluido(bot: Node2D)
 
 @export var speed: float = 140.0
