@@ -1,10 +1,20 @@
 extends Control
 
-## Controlador da Tela de Hospital / Game Over
-## Trabalho 1 - DCC148 (UFJF) | Gabriel Lineker & Gianlucca Paiva
+## Lista de frases bem-humoradas sorteadas aleatoriamente a cada Game Over
+const FRASES_GAME_OVER: Array[String] = [
+	"FIM DE JOGO!",
+	"SE FODEU!",
+	"JÁ ERA!",
+	"TÁ EM COMA!",
+	"MORREU!",
+	"FOI DE VASCO!",
+	"RIP"
+]
 
+@onready var label_status: Label = $Label
 @onready var ambulance: Sprite2D = $Ambulance
-@onready var btn_restart: Button = $Button
+@onready var btn_restart: Button = $Restart
+@onready var btn_menu: Button = $Menu
 
 var _vibration_timer: float = 0.0
 var _ambulance_base_y: float = 98.0
@@ -13,9 +23,11 @@ var _ambulance_base_y: float = 98.0
 func _ready() -> void:
 	if ambulance:
 		_ambulance_base_y = ambulance.position.y
-	
+
 	if btn_restart:
 		btn_restart.grab_focus()
+
+	_sortear_frase()
 
 
 func _process(delta: float) -> void:
@@ -25,6 +37,23 @@ func _process(delta: float) -> void:
 		ambulance.position.y = _ambulance_base_y + sin(_vibration_timer) * 0.7
 
 
-func _on_button_pressed() -> void:
-	# Reinicia o circuito da corrida
+## Sorteia uma frase aleatória da lista a cada exibição da tela
+func _sortear_frase() -> void:
+	if label_status:
+		label_status.text = FRASES_GAME_OVER.pick_random()
+
+
+## Reinicia a corrida recarregando o circuito
+func _on_restart_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
+
+
+## Botão de menu: a ser integrado quando a cena de Menu for desenvolvida
+func _on_menu_pressed() -> void:
+	# TODO: Implementar a transição para a cena de Menu Principal quando ela for criada no projeto.
+	pass
+
+
+## Mantido por segurança para conexões herdadas
+func _on_button_pressed() -> void:
+	_on_restart_pressed()
