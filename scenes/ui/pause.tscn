@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cxv0kiopjkwwi" path="res://scripts/ui/pause.gd" id="1_k23cl"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="1_xld5c"]
+[ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="3_qgos8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
 font_size = 22
@@ -129,6 +130,8 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_5834a")
 text = "MENU
 
 "
+
+[node name="Sounds" parent="." unique_id=1546176675 instance=ExtResource("3_qgos8")]
 
 [connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Restart" to="." method="_on_restart_pressed"]
