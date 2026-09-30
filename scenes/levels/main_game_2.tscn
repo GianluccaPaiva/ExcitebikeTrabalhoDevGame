@@ -1,4 +1,4 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://wekk8nmtb2cr"]
 
 [ext_resource type="Texture2D" uid="uid://d18md8rcnvnar" path="res://assets/levels/Stadium.png" id="1_mcewg"]
 [ext_resource type="Texture2D" uid="uid://b8gse8cxrv4ef" path="res://assets/levels/Level_1.png" id="2_valbi"]
@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="6_racer2"]
 [ext_resource type="PackedScene" uid="uid://dmqm7u5q1x3n4" path="res://scenes/ui/countdown_ui.tscn" id="7_countdown"]
 [ext_resource type="Texture2D" uid="uid://bnxv5dcm4cfb6" path="res://assets/sprites/guysCut/guys.png" id="8_k5j8j"]
-[ext_resource type="Script" path="res://scripts/levels/main_game_2.gd" id="8_maingame"]
+[ext_resource type="Script" uid="uid://ct3dfa25aw7g8" path="res://scripts/levels/main_game_2.gd" id="8_maingame"]
 [ext_resource type="Texture2D" uid="uid://bcywccnyhsyl8" path="res://assets/sprites/guysCut/guys2.png" id="9_rlb4v"]
 [ext_resource type="Texture2D" uid="uid://cfx3el7jabxdh" path="res://assets/sprites/guysCut/guys3.png" id="10_bvlx0"]
 [ext_resource type="Texture2D" uid="uid://cy8a2rwuoxkth" path="res://assets/sprites/guysCut/guys4.png" id="11_gpckr"]
@@ -77,8 +77,8 @@ region_rect = Rect2(0, 0, 65.00426, 112)
 [node name="PistaLonga" type="TextureRect" parent="PistaVisual" unique_id=1454793469]
 offset_left = 65.0
 offset_top = 64.0
-offset_right = 2198.0
-offset_bottom = 176.0
+offset_right = 24372.0
+offset_bottom = 209.0
 texture = SubResource("AtlasTexture_g4v7s")
 stretch_mode = 1
 
@@ -266,46 +266,6 @@ texture = ExtResource("11_gpckr")
 position = Vector2(2004.3002, 154.10002)
 scale = Vector2(0.28030166, 0.2429577)
 texture = ExtResource("8_k5j8j")
-
-[node name="Sprite2D6" type="Sprite2D" parent="Entities/Filmers" unique_id=3237450]
-position = Vector2(211, 84)
-scale = Vector2(0.25757575, 0.26056337)
-texture = ExtResource("8_k5j8j")
-
-[node name="Sprite2D7" type="Sprite2D" parent="Entities/Filmers" unique_id=1000650747]
-position = Vector2(455.99997, 85)
-scale = Vector2(0.25791988, 0.24362725)
-texture = ExtResource("8_k5j8j")
-
-[node name="Sprite2D8" type="Sprite2D" parent="Entities/Filmers" unique_id=512720313]
-position = Vector2(717, 87.00001)
-scale = Vector2(0.287637, 0.24955262)
-texture = ExtResource("8_k5j8j")
-
-[node name="Sprite2D9" type="Sprite2D" parent="Entities/Filmers" unique_id=253810972]
-position = Vector2(1009.8764, 94.980484)
-scale = Vector2(0.2764726, 0.28114027)
-texture = ExtResource("8_k5j8j")
-
-[node name="Sprite2D10" type="Sprite2D" parent="Entities/Filmers" unique_id=1294281506]
-position = Vector2(605, 81)
-scale = Vector2(0.287637, 0.24955262)
-texture = ExtResource("8_k5j8j")
-
-[node name="Sprite2D11" type="Sprite2D" parent="Entities/Filmers" unique_id=1865233238]
-position = Vector2(346, 90)
-scale = Vector2(0.33743882, 0.24475162)
-texture = ExtResource("9_rlb4v")
-
-[node name="Sprite2D12" type="Sprite2D" parent="Entities/Filmers" unique_id=1681411653]
-position = Vector2(1090, 85)
-scale = Vector2(0.287637, 0.24955262)
-texture = ExtResource("10_bvlx0")
-
-[node name="Sprite2D13" type="Sprite2D" parent="Entities/Filmers" unique_id=2100299712]
-position = Vector2(1330, 98.00001)
-scale = Vector2(0.3505056, 0.30104494)
-texture = ExtResource("10_bvlx0")
 
 [node name="CountdownUI" parent="." unique_id=999888777 instance=ExtResource("7_countdown")]
 
