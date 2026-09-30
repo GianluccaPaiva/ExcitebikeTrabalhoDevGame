@@ -236,7 +236,7 @@ func _enviar_dados_para_colocacao() -> void:
 		var tex: Texture2D = _extrair_textura_corredor(c)
 		var mat: Material = _extrair_material_corredor(c)
 		var mod_cor: Color = _extrair_modulate_corredor(c)
-		var nome: String = c.name if c else ("Corredor %d" % (i + 1))
+		var nome: String = String(c.name) if c else ("Corredor %d" % (i + 1))
 		dados.append({
 			"is_player": eh_player,
 			"texture": tex,
