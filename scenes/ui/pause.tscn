@@ -1,0 +1,131 @@
+[gd_scene format=3 uid="uid://df4n765p4dknj"]
+
+[ext_resource type="Script" uid="uid://cxv0kiopjkwwi" path="res://scripts/ui/pause.gd" id="1_k23cl"]
+[ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="1_xld5c"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
+font_size = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k23cl"]
+bg_color = Color(0.08, 0.08, 0.12, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.988235, 0.74902, 0.0588235, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qgos8"]
+bg_color = Color(0.8, 0.58, 0.05, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 0.5, 0.5, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5834a"]
+bg_color = Color(0.988235, 0.74902, 0.0588235, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+anti_aliasing = false
+
+[node name="Pause" type="Control" unique_id=11370104]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_k23cl")
+
+[node name="Label" type="Label" parent="." unique_id=1578924894]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Pause"
+label_settings = SubResource("LabelSettings_g4v7s")
+horizontal_alignment = 1
+
+[node name="Continue" type="Button" parent="." unique_id=540397994]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -71.0
+offset_top = -92.0
+offset_right = 69.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_xld5c")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_k23cl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qgos8")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5834a")
+theme_override_styles/focus = SubResource("StyleBoxFlat_5834a")
+text = "CONTINUE
+"
+
+[node name="Restart" type="Button" parent="." unique_id=1517898865]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -62.0
+offset_right = 68.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_xld5c")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_k23cl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qgos8")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5834a")
+theme_override_styles/focus = SubResource("StyleBoxFlat_5834a")
+text = "RESTART"
+
+[node name="Menu" type="Button" parent="." unique_id=191903777]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -71.0
+offset_top = -34.0
+offset_right = 69.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_xld5c")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_k23cl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qgos8")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5834a")
+theme_override_styles/focus = SubResource("StyleBoxFlat_5834a")
+text = "MENU
+
+"
