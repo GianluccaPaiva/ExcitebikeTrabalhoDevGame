@@ -15,9 +15,16 @@ var bots_concluidos: Array[Node2D] = []
 var player_desacelerou: bool = false
 var transicao_em_andamento: bool = false
 
+## Cronômetro para medição e registro de tempo do percurso
+var cronometro_ativo: bool = false
+var tempo_decorrido: float = 0.0
+var _tempo_ultimo_log: float = 0.0
+var _chegada_registrada_player: bool = false
+
 @onready var player: CharacterBody2D = get_node_or_null("Entities/Player")
 @onready var sensor_chegada: Area2D = get_node_or_null("PistaVisual/Chegada/SensorChegada")
 @onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
+@onready var countdown_ui: CanvasLayer = get_node_or_null("CountdownUI")
 
 
 func _ready() -> void:
@@ -26,9 +33,45 @@ func _ready() -> void:
 	bots_concluidos.clear()
 	player_desacelerou = false
 	transicao_em_andamento = false
+	cronometro_ativo = false
+	tempo_decorrido = 0.0
+	_tempo_ultimo_log = 0.0
+	_chegada_registrada_player = false
 	_conectar_sensores()
 	_conectar_player()
 	_conectar_bots()
+	_conectar_countdown()
+
+
+func _conectar_countdown() -> void:
+	if countdown_ui and countdown_ui.has_signal("corrida_iniciada"):
+		if not countdown_ui.corrida_iniciada.is_connected(_on_corrida_iniciada):
+			countdown_ui.corrida_iniciada.connect(_on_corrida_iniciada)
+
+
+func _on_corrida_iniciada() -> void:
+	if not cronometro_ativo and not _chegada_registrada_player:
+		cronometro_ativo = true
+		tempo_decorrido = 0.0
+		_tempo_ultimo_log = 0.0
+		print("==================================================")
+		print("🟢 [Cronômetro] CORRIDA INICIADA! Cronômetro iniciado.")
+		print("==================================================")
+
+
+func _process(delta: float) -> void:
+	if not cronometro_ativo and not _chegada_registrada_player:
+		if player and player.velocity.x > 10.0 and not player_desacelerou and not transicao_em_andamento:
+			_on_corrida_iniciada()
+		return
+
+	if cronometro_ativo:
+		tempo_decorrido += delta
+		if tempo_decorrido - _tempo_ultimo_log >= 1.0:
+			_tempo_ultimo_log = tempo_decorrido
+			var px: float = player.global_position.x if player else 0.0
+			var pct: float = clampf((px / 17850.0) * 100.0, 0.0, 100.0)
+			print("[Cronômetro] ⏱️ %05.1fs | X: %5.0f / 17850 px (%4.1f%%)" % [tempo_decorrido, px, pct])
 
 
 ## Conecta sinais emitidos pelo Player
@@ -151,12 +194,21 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 					if pos_filmers_x == 0.0 or child.global_position.x < pos_filmers_x:
 						pos_filmers_x = child.global_position.x
 		if pos_filmers_x == 0.0:
-			pos_filmers_x = 1986.0
+			pos_filmers_x = 17820.0
 
 		if body.has_method("iniciar_desaceleracao_automatica"):
 			body.iniciar_desaceleracao_automatica(pos_filmers_x)
 		elif body.has_method("travar_controles"):
 			body.travar_controles()
+
+		if not _chegada_registrada_player:
+			_chegada_registrada_player = true
+			cronometro_ativo = false
+			print("==================================================")
+			print("🛑 [Cronômetro] BARRAMENTO ATINGIDO PELO PLAYER!")
+			print("⏱️ TEMPO TOTAL: %.3f s" % tempo_decorrido)
+			print("📍 Posição X Final: %.1f px" % body.global_position.x)
+			print("==================================================")
 
 		barramento_atingido.emit(body)
 
@@ -174,6 +226,14 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	var colocacao: int = colocacoes.size()
 
 	print("[MainGame] 🏁 %dº LUGAR: %s cruzou a linha de chegada!" % [colocacao, corredor.name])
+	if corredor is CharacterBody2D or corredor.name == "Player":
+		_chegada_registrada_player = true
+		cronometro_ativo = false
+		print("==================================================")
+		print("🏁 [Cronômetro] CHEGADA! O Player cruzou a linha de chegada!")
+		print("⏱️ TEMPO TOTAL DO PERCURSO: %.3f s (%.2f segundos)" % [tempo_decorrido, tempo_decorrido])
+		print("📍 Posição X Final: %.1f px" % corredor.global_position.x)
+		print("==================================================")
 	corredor_chegou.emit(corredor, colocacao)
 
 
