@@ -8,9 +8,9 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_yv8jb"]
 font = ExtResource("4_font")
-font_size = 11
+font_size = 9
 font_color = Color(0.988235, 0.74902, 0.0588235, 1)
-outline_size = 3
+outline_size = 2
 outline_color = Color(0, 0, 0, 1)
 shadow_size = 2
 shadow_color = Color(0, 0, 0, 0.85)
@@ -53,7 +53,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="Control" unique_id=745362859]
+[node name="Resultado" type="Label" parent="Control" unique_id=745362859]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -95,11 +95,11 @@ texture = ExtResource("3_hjwqk")
 hframes = 6
 vframes = 6
 
-[node name="Button" type="Button" parent="Control" unique_id=694277677]
+[node name="Restart" type="Button" parent="Control" unique_id=694277677]
 layout_mode = 0
-offset_left = 101.0
+offset_left = 84.0
 offset_top = 162.0
-offset_right = 155.0
+offset_right = 174.0
 offset_bottom = 180.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
@@ -111,6 +111,25 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
-text = "JOGAR"
+text = " REINICIAR "
 
-[connection signal="pressed" from="Control/Button" to="." method="_on_button_pressed"]
+[node name="Menu" type="Button" parent="Control" unique_id=1522268969]
+layout_mode = 0
+offset_left = 101.0
+offset_top = 192.0
+offset_right = 155.0
+offset_bottom = 210.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+text = "MENU"
+
+[connection signal="pressed" from="Control/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="Control/Menu" to="." method="_on_menu_pressed"]

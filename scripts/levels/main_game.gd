@@ -1,9 +1,5 @@
 extends Node2D
 
-## Controlador Principal da Pista / Nível
-## Trabalho 1 - DCC148 (UFJF) | Gabriel Lineker & Gianlucca Paiva
-## Responsável pelo gerenciamento da corrida, detecção de chegada e classificação.
-
 ## Sinal disparado quando qualquer competidor cruza a linha de chegada
 signal corredor_chegou(corredor: Node2D, colocacao: int)
 
@@ -98,6 +94,7 @@ func _verificar_condicao_transicao() -> void:
 		return
 
 	transicao_em_andamento = true
+	_enviar_dados_para_colocacao()
 	await get_tree().create_timer(1.2).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/colocacao.tscn")
 
@@ -210,3 +207,71 @@ func _resolver_corredor(origem: Node) -> Node2D:
 ## Retorna a lista atual de colocações
 func obter_colocacoes() -> Array[Node2D]:
 	return colocacoes
+
+
+## Prepara os dados de classificação e textura dos competidores e envia para a tela de colocação
+func _enviar_dados_para_colocacao() -> void:
+	# Coleta todos os competidores existentes na corrida (Player + Bots)
+	var todos_competidores: Array[Node2D] = []
+	if player and is_instance_valid(player):
+		todos_competidores.append(player)
+	for bot in bots:
+		if bot and is_instance_valid(bot) and not todos_competidores.has(bot):
+			todos_competidores.append(bot)
+
+	# Assegura que competidores que porventura não cruzaram o sensor fiquem no fim da fila
+	for comp in todos_competidores:
+		if not colocacoes.has(comp):
+			colocacoes.append(comp)
+
+	var dados: Array[Dictionary] = []
+	var pos_player: int = 1
+
+	for i in range(colocacoes.size()):
+		var c: Node2D = colocacoes[i]
+		var eh_player: bool = _is_player_corredor(c)
+		if eh_player:
+			pos_player = i + 1
+
+		var tex: Texture2D = _extrair_textura_corredor(c)
+		var nome: String = c.name if c else ("Corredor %d" % (i + 1))
+		dados.append({
+			"is_player": eh_player,
+			"texture": tex,
+			"name": nome,
+			"colocacao": i + 1
+		})
+
+	const ColocacaoScript = preload("res://scripts/ui/colocacao.gd")
+	ColocacaoScript.definir_resultado(dados, pos_player)
+
+
+## Verifica se o nó representa o jogador
+func _is_player_corredor(corredor: Node2D) -> bool:
+	if corredor == null:
+		return false
+	return corredor == player or corredor is CharacterBody2D or corredor.name == "Player"
+
+
+## Extrai a textura representativa do competidor para exibição no pódio
+func _extrair_textura_corredor(corredor: Node2D) -> Texture2D:
+	if corredor == null:
+		return preload("res://assets/sprites/Racer_1.png")
+
+	# Se for o Player
+	if _is_player_corredor(corredor):
+		var sp_player: Sprite2D = corredor.get_node_or_null("Sprite2D")
+		if sp_player and sp_player.texture:
+			return sp_player.texture
+		return preload("res://assets/sprites/Player.png")
+
+	# Se for um Seguidor/Bot com enemy_texture exportada
+	if "enemy_texture" in corredor and corredor.enemy_texture != null:
+		return corredor.enemy_texture
+
+	# Busca Sprite2D interno no bot
+	var sp_bot: Sprite2D = corredor.find_child("Sprite2D", true, false) as Sprite2D
+	if sp_bot and sp_bot.texture:
+		return sp_bot.texture
+
+	return preload("res://assets/sprites/Racer_1.png")
