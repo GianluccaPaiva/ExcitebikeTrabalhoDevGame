@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://br0508s7i6haq"]
+
+[ext_resource type="Texture2D" uid="uid://8sfsrafab2sq" path="res://assets/sprites/HubLimpo.png" id="1_x8s31"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_57qmd"]
+font_size = 9
+
+[sub_resource type="LabelSettings" id="LabelSettings_yf5fn"]
+font_size = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
+font_size = 9
+
+[node name="Hub" type="CanvasLayer" unique_id=1621250794]
+
+[node name="Control" type="Control" parent="." unique_id=195883502]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 255.0
+offset_bottom = 242.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Control" unique_id=425435906]
+position = Vector2(128.06253, 200)
+scale = Vector2(0.11699307, 0.110344835)
+texture = ExtResource("1_x8s31")
+
+[node name="TempAtual" type="Label" parent="Control" unique_id=126802219]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 188.0
+offset_right = 90.0
+offset_bottom = 217.0
+text = "00:00:00
+"
+label_settings = SubResource("LabelSettings_57qmd")
+
+[node name="KmH" type="Label" parent="Control" unique_id=1402375620]
+layout_mode = 0
+offset_left = 114.0
+offset_top = 189.0
+offset_right = 155.0
+offset_bottom = 220.0
+text = "0.0 km/h
+"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="TempLimite" type="Label" parent="Control" unique_id=1755617868]
+layout_mode = 0
+offset_left = 198.0
+offset_top = 189.0
+offset_right = 264.0
+offset_bottom = 212.0
+text = "00:00:00"
+label_settings = SubResource("LabelSettings_g4v7s")
