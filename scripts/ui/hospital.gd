@@ -24,9 +24,6 @@ func _ready() -> void:
 	if ambulance:
 		_ambulance_base_y = ambulance.position.y
 
-	if btn_restart:
-		btn_restart.grab_focus()
-
 	_sortear_frase()
 
 

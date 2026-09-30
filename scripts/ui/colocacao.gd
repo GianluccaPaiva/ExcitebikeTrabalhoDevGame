@@ -33,9 +33,6 @@ static func definir_resultado(dados: Array[Dictionary], pos_player: int) -> void
 
 
 func _ready() -> void:
-	if btn_restart:
-		btn_restart.grab_focus()
-
 	# Se a cena for executada diretamente no editor (F6), usa dados de teste
 	if dados_corrida.is_empty():
 		_carregar_dados_padrao_teste()

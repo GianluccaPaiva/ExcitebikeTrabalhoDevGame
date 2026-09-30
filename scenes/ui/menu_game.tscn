@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b8gse8cxrv4ef" path="res://assets/levels/Level_1.png" id="4_level1"]
 [ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="5_player"]
 [ext_resource type="AudioStream" uid="uid://bl7atmy6lqvpj" path="res://assets/sounds/Pinned_at_Redline.mp3" id="5_ynuon"]
+[ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="6_sounds"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pista"]
 atlas = ExtResource("4_level1")
@@ -123,7 +124,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.08, 0.08, 0.12, 1)
+color = Color(0.14117648, 0.2784314, 0.6, 1)
 
 [node name="ParallaxStadium" type="Parallax2D" parent="." unique_id=481466377]
 repeat_size = Vector2(512, 0)
@@ -202,22 +203,20 @@ vertical_alignment = 1
 
 [node name="BotoesContainer" type="VBoxContainer" parent="UI" unique_id=787972822]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -60.0
-offset_right = 60.0
-offset_bottom = -12.0
+anchors_preset = -1
+anchor_left = 0.2734375
+anchor_top = 0.69166666
+anchor_right = 0.7421875
+anchor_bottom = 0.89166665
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 4
+metadata/_edit_use_anchors_ = true
 
 [node name="Jogar" type="Button" parent="UI/BotoesContainer" unique_id=1814312722]
 custom_minimum_size = Vector2(120, 20)
 layout_mode = 2
+size_flags_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
@@ -233,6 +232,7 @@ text = "JOGAR"
 [node name="Sair" type="Button" parent="UI/BotoesContainer" unique_id=827626581]
 custom_minimum_size = Vector2(120, 20)
 layout_mode = 2
+size_flags_vertical = 10
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
@@ -264,6 +264,8 @@ stream = ExtResource("5_ynuon")
 volume_db = 1.944
 autoplay = true
 parameters/looping = true
+
+[node name="Sounds" parent="." unique_id=1331885962 instance=ExtResource("6_sounds")]
 
 [connection signal="pressed" from="UI/BotoesContainer/Jogar" to="." method="_on_jogar_pressed"]
 [connection signal="pressed" from="UI/BotoesContainer/Sair" to="." method="_on_sair_pressed"]

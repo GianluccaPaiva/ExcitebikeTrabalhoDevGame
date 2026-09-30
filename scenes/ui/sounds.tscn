@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://udyyhxxn6tkp"]
 
+[ext_resource type="Script" path="res://scripts/ui/sounds.gd" id="1_script"]
 [ext_resource type="AudioStream" uid="uid://bdrwdrjk3rl8q" path="res://assets/sounds/driken5482-retro-select-236670.mp3" id="1_km2h4"]
 
 [node name="Sounds" type="Node2D" unique_id=1546176675]
+script = ExtResource("1_script")
 
 [node name="Select" type="AudioStreamPlayer2D" parent="." unique_id=468966984]
 stream = ExtResource("1_km2h4")
