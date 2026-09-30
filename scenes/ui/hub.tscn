@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://br0508s7i6haq"]
 
+[ext_resource type="Script" uid="uid://0owxop41oj" path="res://scripts/ui/hub.gd" id="1_was6o"]
 [ext_resource type="Texture2D" uid="uid://8sfsrafab2sq" path="res://assets/sprites/HubLimpo.png" id="1_x8s31"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
 
@@ -21,6 +22,7 @@ font_color = Color(0.988235, 0.74902, 0.0588235, 1)
 shadow_color = Color(0, 0, 0, 0.8)
 
 [node name="Hub" type="CanvasLayer" unique_id=1621250794]
+script = ExtResource("1_was6o")
 
 [node name="Control" type="Control" parent="." unique_id=195883502]
 layout_mode = 3
