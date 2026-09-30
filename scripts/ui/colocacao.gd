@@ -6,6 +6,7 @@ static var dados_corrida: Array[Dictionary] = []
 static var posicao_player: int = 1
 
 @onready var label_resultado: Label = $Control/Resultado
+@onready var medalha_player: Sprite2D = $Control/MedalhaPlayer
 @onready var sprite_primeiro: Sprite2D = $Control/PrimeiroColocado
 @onready var sprite_segundo: Sprite2D = $Control/SegundoColocado
 @onready var sprite_terceiro: Sprite2D = $Control/TerceiroColocado
@@ -30,6 +31,7 @@ func _ready() -> void:
 
 	_atualizar_sprites_podio()
 	_atualizar_texto_resultado()
+	_atualizar_medalha_player()
 
 
 ## Atualiza dinamicamente as texturas e frames de cada degrau do pódio
@@ -74,6 +76,30 @@ func _atualizar_texto_resultado() -> void:
 			label_resultado.modulate = Color(0.95, 0.7, 0.4) # Bronze / 3º Lugar
 		_:
 			label_resultado.modulate = Color(0.9, 0.4, 0.4) # 4º Lugar
+
+
+## Atualiza a medalha exibida dinamicamente perante a colocação do jogador
+func _atualizar_medalha_player() -> void:
+	if not medalha_player:
+		return
+
+	# Se o jogador ficou no pódio (1º, 2º ou 3º), exibe a medalha correspondente
+	if posicao_player >= 1 and posicao_player <= 3:
+		medalha_player.visible = true
+		medalha_player.hframes = 3
+		medalha_player.vframes = 1
+		# Frame 0: Ouro (1º lugar) | Frame 1: Prata (2º lugar) | Frame 2: Bronze (3º lugar)
+		medalha_player.frame = posicao_player - 1
+
+		# Efeito suave de pop-in arcade com bounce
+		medalha_player.scale = Vector2.ZERO
+		var tween: Tween = create_tween()
+		tween.tween_property(medalha_player, "scale", Vector2(0.12, 0.12), 0.35)\
+			.set_trans(Tween.TRANS_BACK)\
+			.set_ease(Tween.EASE_OUT)
+	else:
+		# 4º lugar não recebe medalha (permanece invisível)
+		medalha_player.visible = false
 
 
 ## Gera dados padrão de simulação quando a cena é aberta de forma independente

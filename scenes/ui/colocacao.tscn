@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://4fxxx8ayamaw" path="res://assets/sprites/Racer_1.png" id="2_yv8jb"]
 [ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="3_hjwqk"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="4_font"]
+[ext_resource type="Texture2D" uid="uid://5p0wsoh8g3a1" path="res://assets/ui/medals.png" id="5_medals"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yv8jb"]
 font = ExtResource("4_font")
@@ -53,17 +54,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="Background" type="ColorRect" parent="Control" unique_id=1122334466]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.14, 0.28, 0.6, 1)
+
 [node name="Resultado" type="Label" parent="Control" unique_id=745362859]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 18.0
-offset_bottom = 54.0
+offset_top = 12.0
+offset_bottom = 36.0
 grow_horizontal = 2
-text = "VITÓRIA OU GAME OVER"
+text = "VOCÊ FICOU EM 1º LUGAR!"
 label_settings = SubResource("LabelSettings_yv8jb")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="MedalhaPlayer" type="Sprite2D" parent="Control" unique_id=987654321]
+position = Vector2(124, 58)
+scale = Vector2(0.12, 0.12)
+texture = ExtResource("5_medals")
+hframes = 3
 
 [node name="Podium" type="Sprite2D" parent="Control" unique_id=1256037257]
 position = Vector2(124.00001, 119.00001)
