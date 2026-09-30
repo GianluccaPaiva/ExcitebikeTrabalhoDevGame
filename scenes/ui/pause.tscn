@@ -129,3 +129,5 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_5834a")
 text = "MENU
 
 "
+
+[connection signal="pressed" from="Menu" to="." method="_on_menu_pressed"]
