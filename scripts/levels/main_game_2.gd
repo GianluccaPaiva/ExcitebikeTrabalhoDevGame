@@ -70,8 +70,8 @@ func _process(delta: float) -> void:
 		if tempo_decorrido - _tempo_ultimo_log >= 1.0:
 			_tempo_ultimo_log = tempo_decorrido
 			var px: float = player.global_position.x if player else 0.0
-			var pct: float = clampf((px / 24372.0) * 100.0, 0.0, 100.0)
-			print("[Cronômetro] ⏱️ %05.1fs | X: %5.0f / 24372 px (%4.1f%%)" % [tempo_decorrido, px, pct])
+			var pct: float = clampf((px / 17850.0) * 100.0, 0.0, 100.0)
+			print("[Cronômetro] ⏱️ %05.1fs | X: %5.0f / 17850 px (%4.1f%%)" % [tempo_decorrido, px, pct])
 
 
 ## Conecta sinais emitidos pelo Player
@@ -194,7 +194,7 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 					if pos_filmers_x == 0.0 or child.global_position.x < pos_filmers_x:
 						pos_filmers_x = child.global_position.x
 		if pos_filmers_x == 0.0:
-			pos_filmers_x = 24350.0
+			pos_filmers_x = 17820.0
 
 		if body.has_method("iniciar_desaceleracao_automatica"):
 			body.iniciar_desaceleracao_automatica(pos_filmers_x)
