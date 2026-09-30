@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bcywccnyhsyl8" path="res://assets/sprites/guysCut/guys2.png" id="9_rlb4v"]
 [ext_resource type="Texture2D" uid="uid://cfx3el7jabxdh" path="res://assets/sprites/guysCut/guys3.png" id="10_bvlx0"]
 [ext_resource type="Texture2D" uid="uid://cy8a2rwuoxkth" path="res://assets/sprites/guysCut/guys4.png" id="11_gpckr"]
+[ext_resource type="Material" uid="uid://c8y3m8l5p2q1" path="res://assets/shaders/racer_yellow.tres" id="12_racer_yellow"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g4v7s"]
 atlas = ExtResource("2_valbi")
@@ -232,6 +233,7 @@ script = ExtResource("4_follower")
 speed = 152.0
 initial_progress = 25.0
 enemy_texture = ExtResource("6_racer2")
+enemy_material = ExtResource("12_racer_yellow")
 
 [node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigo3/Inimigo3" unique_id=101010103 instance=ExtResource("5_enemy")]
 position = Vector2(24.028366, -34)

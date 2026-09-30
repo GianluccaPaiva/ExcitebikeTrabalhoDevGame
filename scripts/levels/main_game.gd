@@ -234,10 +234,14 @@ func _enviar_dados_para_colocacao() -> void:
 			pos_player = i + 1
 
 		var tex: Texture2D = _extrair_textura_corredor(c)
+		var mat: Material = _extrair_material_corredor(c)
+		var mod_cor: Color = _extrair_modulate_corredor(c)
 		var nome: String = c.name if c else ("Corredor %d" % (i + 1))
 		dados.append({
 			"is_player": eh_player,
 			"texture": tex,
+			"material": mat,
+			"modulate": mod_cor,
 			"name": nome,
 			"colocacao": i + 1
 		})
@@ -275,3 +279,27 @@ func _extrair_textura_corredor(corredor: Node2D) -> Texture2D:
 		return sp_bot.texture
 
 	return preload("res://assets/sprites/Racer_1.png")
+
+
+## Extrai o material visual do competidor (caso utilize shader de palette swap)
+func _extrair_material_corredor(corredor: Node2D) -> Material:
+	if corredor == null:
+		return null
+	if "enemy_material" in corredor and corredor.enemy_material != null:
+		return corredor.enemy_material
+	var sp: Sprite2D = corredor.find_child("Sprite2D", true, false) as Sprite2D
+	if sp and sp.material:
+		return sp.material
+	return null
+
+
+## Extrai a cor de modulação do competidor
+func _extrair_modulate_corredor(corredor: Node2D) -> Color:
+	if corredor == null:
+		return Color.WHITE
+	if "enemy_modulate" in corredor and corredor.enemy_modulate != Color.WHITE:
+		return corredor.enemy_modulate
+	var sp: Sprite2D = corredor.find_child("Sprite2D", true, false) as Sprite2D
+	if sp:
+		return sp.self_modulate
+	return Color.WHITE

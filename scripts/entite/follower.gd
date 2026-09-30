@@ -14,6 +14,16 @@ signal percurso_concluido(bot: Node2D)
 		enemy_texture = val
 		_aplicar_textura()
 
+@export var enemy_material: Material = null:
+	set(val):
+		enemy_material = val
+		_aplicar_material()
+
+@export var enemy_modulate: Color = Color.WHITE:
+	set(val):
+		enemy_modulate = val
+		_aplicar_modulate()
+
 @export var corrida_iniciada: bool = false
 
 var _last_position: Vector2 = Vector2.ZERO
@@ -25,6 +35,8 @@ func _ready() -> void:
 	loop = false
 	rotation = 0.0
 	_aplicar_textura()
+	_aplicar_material()
+	_aplicar_modulate()
 	
 	if Engine.is_editor_hint():
 		return
@@ -44,6 +56,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		_aplicar_textura()
+		_aplicar_material()
+		_aplicar_modulate()
 		rotates = false
 		rotation = 0.0
 		return
@@ -95,6 +109,18 @@ func _aplicar_textura() -> void:
 			tex_alvo = preload("res://assets/sprites/Racer_1.png")
 		if sprite.texture != tex_alvo:
 			sprite.texture = tex_alvo
+
+
+func _aplicar_material() -> void:
+	var sprite: Sprite2D = _obter_sprite()
+	if sprite:
+		sprite.material = enemy_material
+
+
+func _aplicar_modulate() -> void:
+	var sprite: Sprite2D = _obter_sprite()
+	if sprite:
+		sprite.self_modulate = enemy_modulate
 
 
 func _obter_sprite() -> Sprite2D:

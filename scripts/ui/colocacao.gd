@@ -63,6 +63,8 @@ func _atualizar_sprites_podio() -> void:
 			var tex: Texture2D = info.get("texture", null)
 			if tex:
 				sp.texture = tex
+			sp.material = info.get("material", null)
+			sp.self_modulate = info.get("modulate", Color.WHITE)
 
 		sp.hframes = 6
 		sp.vframes = 6
@@ -145,6 +147,7 @@ func _carregar_dados_padrao_teste() -> void:
 		{
 			"is_player": false,
 			"texture": preload("res://assets/sprites/Racer_2.png"),
+			"material": preload("res://assets/shaders/racer_yellow.tres"),
 			"name": "Inimigo3",
 			"colocacao": 4
 		}

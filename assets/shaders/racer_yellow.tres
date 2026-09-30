@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c8y3m8l5p2q1"]
+
+[ext_resource type="Shader" uid="uid://d1g4r5s8x2w3" path="res://assets/shaders/racer_palette_swap.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/target_color_1 = Color(0, 0.513726, 0.545098, 1)
+shader_parameter/target_color_2 = Color(0.670588, 0.905882, 1, 1)
+shader_parameter/new_color_1 = Color(0.92, 0.65, 0.05, 1)
+shader_parameter/new_color_2 = Color(1, 0.9, 0.2, 1)
+shader_parameter/tolerance = 0.15
