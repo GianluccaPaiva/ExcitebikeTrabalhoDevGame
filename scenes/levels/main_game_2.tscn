@@ -103,6 +103,20 @@ centered = false
 region_enabled = true
 region_rect = Rect2(300.76154, 0, 80.79489, 112)
 
+[node name="RampaIngrime" type="Sprite2D" parent="PistaVisual" unique_id=1049269967]
+position = Vector2(1589, 64)
+texture = ExtResource("2_valbi")
+centered = false
+region_enabled = true
+region_rect = Rect2(509.94513, 0, 50.08423, 112)
+
+[node name="Trapezio" type="Sprite2D" parent="PistaVisual" unique_id=1554148790]
+position = Vector2(1997, 64)
+texture = ExtResource("2_valbi")
+centered = false
+region_enabled = true
+region_rect = Rect2(1258.3381, 0, 67.755005, 112)
+
 [node name="Aclive" type="Sprite2D" parent="PistaVisual" unique_id=1748314823]
 position = Vector2(1168, 64)
 texture = ExtResource("2_valbi")
@@ -183,7 +197,7 @@ position = Vector2(0, -7.2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FisicaPista" unique_id=518070433]
 position = Vector2(0, 3.1999998)
-polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 160, 558, 143, 565, 143, 581, 160, 810, 160, 843, 127, 850, 127, 882, 160, 1170, 160, 1203, 144, 1210, 144, 1243, 160, 17502, 160, 17527, 136, 17574, 136, 17600, 161, 17850, 160, 17850, 240)
+polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 160, 558, 143, 565, 143, 581, 160, 810, 160, 843, 127, 850, 127, 882, 160, 1170, 160, 1203, 144, 1210, 144, 1243, 160, 1591, 160, 1614, 136, 1621, 136, 1635, 160, 2002, 160, 2018, 144, 2065, 144, 2065, 160, 17502, 160, 17527, 136, 17574, 136, 17600, 161, 17850, 160, 17850, 240)
 
 [node name="Entities" type="Node2D" parent="." unique_id=1937540672]
 
