@@ -106,7 +106,7 @@ func _process_chao(delta: float) -> void:
 	# Aceleração, freio e atrito na magnitude da velocidade
 	if em_desaceleracao_automatica:
 		current_speed = move_toward(current_speed, 0.0, taxa_freio_automatico * delta)
-		if limite_x_parada > 0.0 and global_position.x >= (limite_x_parada - 18.0):
+		if limite_x_parada > 0.0 and global_position.x >= (limite_x_parada - 25.0):
 			current_speed = move_toward(current_speed, 0.0, brake_force * delta)
 		if current_speed <= 1.0:
 			current_speed = 0.0
@@ -277,10 +277,10 @@ func _processar_aterrissagem() -> void:
 		
 		# Se aterrissou já em desaceleração automática, recalcula a taxa para parar suavemente no alvo restante
 		if em_desaceleracao_automatica:
-			var dist_restante: float = maxf((limite_x_parada - 24.0) - global_position.x, 16.0)
+			var dist_restante: float = maxf((limite_x_parada - 65.0) - global_position.x, 20.0)
 			if current_speed > 10.0:
 				taxa_freio_automatico = (current_speed * current_speed) / (2.0 * dist_restante)
-				taxa_freio_automatico = clampf(taxa_freio_automatico, 100.0, 500.0)
+				taxa_freio_automatico = clampf(taxa_freio_automatico, 100.0, 450.0)
 		
 		if animation_player:
 			if controles_bloqueados and not em_desaceleracao_automatica:
@@ -338,21 +338,21 @@ func liberar_controles() -> void:
 
 
 ## Inicia a desaceleração automática e gradual após cruzar o barramento
-func iniciar_desaceleracao_automatica(x_alvo: float = 1986.0) -> void:
+func iniciar_desaceleracao_automatica(x_alvo: float = 17855.0) -> void:
 	if em_desaceleracao_automatica:
 		return
 	em_desaceleracao_automatica = true
 	controles_bloqueados = true
 	limite_x_parada = x_alvo
 
-	# Distância disponível até os filmers (com margem de 24px da frente da moto para folga estética)
-	var margem_seguranca: float = 24.0
-	var dist_disponivel: float = maxf((limite_x_parada - margem_seguranca) - global_position.x, 16.0)
+	# Distância disponível até os filmers (com margem de 65px da frente da moto para folga estética)
+	var margem_seguranca: float = 65.0
+	var dist_disponivel: float = maxf((limite_x_parada - margem_seguranca) - global_position.x, 20.0)
 
 	# Torricelli: calcula a desaceleração exata para parar suavemente antes dos filmers
 	if current_speed > 10.0:
 		taxa_freio_automatico = (current_speed * current_speed) / (2.0 * dist_disponivel)
-		taxa_freio_automatico = clampf(taxa_freio_automatico, 100.0, 500.0)
+		taxa_freio_automatico = clampf(taxa_freio_automatico, 100.0, 450.0)
 	else:
 		taxa_freio_automatico = friction
 

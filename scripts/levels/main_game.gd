@@ -190,11 +190,11 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 		var filmers_node: Node2D = get_node_or_null("Entities/Filmers")
 		if filmers_node:
 			for child in filmers_node.get_children():
-				if child is Sprite2D and child.global_position.x > 1700.0:
+				if child is Sprite2D and child.global_position.x > 17700.0:
 					if pos_filmers_x == 0.0 or child.global_position.x < pos_filmers_x:
 						pos_filmers_x = child.global_position.x
 		if pos_filmers_x == 0.0:
-			pos_filmers_x = 17820.0
+			pos_filmers_x = 17855.0
 
 		if body.has_method("iniciar_desaceleracao_automatica"):
 			body.iniciar_desaceleracao_automatica(pos_filmers_x)

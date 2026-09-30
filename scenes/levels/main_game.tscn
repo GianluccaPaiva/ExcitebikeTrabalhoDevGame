@@ -74,7 +74,7 @@ region_rect = Rect2(0, 0, 65.00426, 112)
 [node name="PistaLonga" type="TextureRect" parent="PistaVisual" unique_id=1454793469]
 offset_left = 65.0
 offset_top = 64.0
-offset_right = 17965.0
+offset_right = 18000.0
 offset_bottom = 209.0
 texture = SubResource("AtlasTexture_g4v7s")
 stretch_mode = 1
@@ -399,7 +399,7 @@ shape = SubResource("RectangleShape2D_d0u6y")
 [node name="SensorBarramento" type="Area2D" parent="PistaVisual/Barramento" unique_id=651520128]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Barramento/SensorBarramento" unique_id=1619961697]
-position = Vector2(17672, 147)
+position = Vector2(17640, 148)
 shape = SubResource("RectangleShape2D_barramento")
 
 [node name="FisicaPista" type="StaticBody2D" parent="." unique_id=1566662175]
@@ -407,7 +407,7 @@ position = Vector2(0, -7.2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FisicaPista" unique_id=518070433]
 position = Vector2(0, 3.1999998)
-polygon = PackedVector2Array(0, 240, 0, 160, 502, 160, 514, 150, 526, 160, 1404, 160, 1421, 143, 1428, 143, 1444, 160, 2205, 160, 2221, 144, 2268, 144, 2268, 160, 3003, 160, 3036, 127, 3043, 127, 3075, 160, 6402, 160, 6414, 150, 6426, 160, 7002, 160, 7025, 136, 7032, 136, 7046, 160, 7704, 160, 7721, 143, 7728, 143, 7744, 160, 8502, 160, 8535, 144, 8542, 144, 8575, 160, 9603, 160, 9636, 127, 9643, 127, 9675, 160, 11205, 160, 11221, 144, 11268, 144, 11268, 160, 13002, 160, 13014, 150, 13026, 160, 13702, 160, 13725, 136, 13732, 136, 13746, 160, 14502, 160, 14535, 144, 14542, 144, 14575, 160, 15703, 160, 15736, 127, 15743, 127, 15775, 160, 17502, 160, 17527, 136, 17574, 136, 17600, 161, 17850, 160, 17850, 240)
+polygon = PackedVector2Array(0, 240, 0, 160, 502, 160, 514, 150, 526, 160, 1404, 160, 1421, 143, 1428, 143, 1444, 160, 2205, 160, 2221, 144, 2268, 144, 2268, 160, 3003, 160, 3036, 127, 3043, 127, 3075, 160, 6402, 160, 6414, 150, 6426, 160, 7002, 160, 7025, 136, 7032, 136, 7046, 160, 7704, 160, 7721, 143, 7728, 143, 7744, 160, 8502, 160, 8535, 144, 8542, 144, 8575, 160, 9603, 160, 9636, 127, 9643, 127, 9675, 160, 11205, 160, 11221, 144, 11268, 144, 11268, 160, 13002, 160, 13014, 150, 13026, 160, 13702, 160, 13725, 136, 13732, 136, 13746, 160, 14502, 160, 14535, 144, 14542, 144, 14575, 160, 15703, 160, 15736, 127, 15743, 127, 15775, 160, 17502, 160, 17527, 136, 17574, 136, 17600, 161, 18000, 160, 18000, 240)
 
 [node name="Entities" type="Node2D" parent="." unique_id=1937540672]
 
@@ -426,7 +426,7 @@ progress = 37.0
 rotates = false
 loop = false
 script = ExtResource("4_follower")
-speed = 215.0
+speed = 226.0
 initial_progress = 37.0
 
 [node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigo1/Inimigo1" unique_id=101010101 instance=ExtResource("5_enemy")]
@@ -441,7 +441,7 @@ progress = 53.0
 rotates = false
 loop = false
 script = ExtResource("4_follower")
-speed = 246.0
+speed = 247.0
 initial_progress = 53.0
 enemy_texture = ExtResource("6_racer2")
 
@@ -457,7 +457,7 @@ progress = 25.0
 rotates = false
 loop = false
 script = ExtResource("4_follower")
-speed = 230.0
+speed = 238.0
 initial_progress = 25.0
 enemy_texture = ExtResource("6_racer2")
 enemy_material = ExtResource("12_racer_yellow")

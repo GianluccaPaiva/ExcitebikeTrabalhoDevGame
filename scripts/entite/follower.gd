@@ -25,6 +25,9 @@ signal percurso_concluido(bot: Node2D)
 
 var _last_position: Vector2 = Vector2.ZERO
 var percurso_finalizado: bool = false
+var current_speed: float = -1.0
+var em_desaceleracao: bool = false
+@export var taxa_desaceleracao: float = 215.0
 
 
 func _ready() -> void:
@@ -64,6 +67,27 @@ func _process(delta: float) -> void:
 		rotation = 0.0
 		return
 
+	if current_speed < 0.0:
+		current_speed = speed
+
+	# Zona de desaceleração pós-chegada (para parar suavemente antes dos fotógrafos/guys)
+	if global_position.x >= 17640.0:
+		em_desaceleracao = true
+
+	if em_desaceleracao:
+		current_speed = move_toward(current_speed, 0.0, taxa_desaceleracao * delta)
+		if current_speed <= 1.0:
+			current_speed = 0.0
+			var anim: AnimationPlayer = _obter_animation_player()
+			if anim and anim.is_playing() and anim.current_animation != "RESET":
+				anim.pause()
+			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
+			_last_position = global_position
+			if not percurso_finalizado:
+				percurso_finalizado = true
+				percurso_concluido.emit(self)
+			return
+
 	# Checa se atingiu o fim da trilha após a rampa final
 	if get_parent() is Path2D and get_parent().curve:
 		var total_length: float = get_parent().curve.get_baked_length()
@@ -79,7 +103,7 @@ func _process(delta: float) -> void:
 				percurso_concluido.emit(self)
 			return
 
-	progress += speed * delta
+	progress += current_speed * delta
 	
 	# Fluxo de direções controlado: impede inversão de sentido e limita inclinação
 	var move_delta: Vector2 = global_position - _last_position
@@ -146,3 +170,9 @@ func iniciar_corrida() -> void:
 ## Retorna se o bot concluiu todo o percurso da trilha
 func is_percurso_finalizado() -> bool:
 	return percurso_finalizado
+
+
+## Inicia a desaceleração do bot ao atingir a reta pós-chegada
+func iniciar_desaceleracao_automatica(_x_alvo: float = 0.0) -> void:
+	em_desaceleracao = true
+
