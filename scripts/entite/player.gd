@@ -31,6 +31,7 @@ signal desaceleracao_concluida
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var moto_caida_sprite: Sprite2D = $MotoCaidaSprite
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var hub_ui: Node = get_node_or_null("Hub")
 
 # --- VARIÁVEIS DE ESTADO E VELOCIDADE ESCALAR ---
 @export var controles_bloqueados: bool = true
@@ -46,6 +47,12 @@ var last_ramp_vector: Vector2 = Vector2.RIGHT
 var last_ramp_speed: float = 0.0
 var ramp_launch_timer: float = 0.0
 
+func update_hub_ui() -> void:
+	if hub_ui and hub_ui.has_method("set_km_h"):
+		hub_ui.set_km_h(velocity_to_km_h(current_speed))
+
+func velocity_to_km_h(vel: float) -> float:
+	return vel * 0.36 # Converte px/s para km/h (1 px/s = 0.36 km/h)
 
 func _ready() -> void:
 	# Permite que rampas de até 60 graus sejam tratadas perfeitamente como piso
@@ -65,6 +72,7 @@ func _physics_process(delta: float) -> void:
 		current_speed = 0.0
 		if animation_player and animation_player.current_animation != "parado":
 			animation_player.play("parado")
+		update_hub_ui()
 		return
 
 	match state:
@@ -78,6 +86,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	_check_floor_transitions()
+	update_hub_ui()
 
 
 # --- ESTADO: NO CHÃO (DESLOCAMENTO VETORIAL ALINHADO AO RELEVO) ---

@@ -19,9 +19,12 @@ func set_temp_atual(temp: float) -> void:
 	if temp_atual:
 		temp_atual.text = str(temp)
 
-func set_km_h(km: float) -> void:
+func set_km_h(km: Variant) -> void:
 	if km_h:
-		km_h.text = str(km)
+		if km is float or km is int:
+			km_h.text = "%.1f" % km
+		else:
+			km_h.text = str(km)
 
 func set_temp_limite(temp: float) -> void:
 	if temp_limite:
