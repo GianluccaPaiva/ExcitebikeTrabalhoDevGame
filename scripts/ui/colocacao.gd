@@ -1,10 +1,7 @@
 class_name Colocacao
 extends CanvasLayer
 
-## Controlador da Tela de Pódio e Colocação
-## Trabalho 1 - DCC148 (UFJF) | Gabriel Lineker & Gianlucca Paiva
 
-## Armazena os dados dos competidores e o resultado da última corrida
 ## Cada item é um Dictionary: { "is_player": bool, "texture": Texture2D, "name": String, "colocacao": int }
 static var dados_corrida: Array[Dictionary] = []
 static var posicao_player: int = 1
