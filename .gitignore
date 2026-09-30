@@ -2,4 +2,6 @@
 .godot/
 .docs/
 /android/
-.agent
+.agent/
+relatorios/
+AGENTS.md
