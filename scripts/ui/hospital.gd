@@ -8,7 +8,8 @@ const FRASES_GAME_OVER: Array[String] = [
 	"TÁ EM COMA!",
 	"MORREU!",
 	"FOI DE VASCO!",
-	"RIP"
+	"RIP",
+	"ACABOU PRO BETA!"
 ]
 
 @onready var label_status: Label = $Label
