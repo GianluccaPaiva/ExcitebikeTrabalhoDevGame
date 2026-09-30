@@ -63,23 +63,33 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14, 0.28, 0.6, 1)
 
-[node name="Resultado" type="Label" parent="Control" unique_id=745362859]
+[node name="HeaderResultado" type="HBoxContainer" parent="Control" unique_id=745362859]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 12.0
-offset_bottom = 36.0
+offset_top = 22.0
+offset_bottom = 46.0
 grow_horizontal = 2
-text = "VOCÊ FICOU EM 1º LUGAR!"
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="LabelPrefixo" type="Label" parent="Control/HeaderResultado" unique_id=111222333]
+layout_mode = 2
+text = "VOCÊ FICOU EM"
 label_settings = SubResource("LabelSettings_yv8jb")
-horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MedalhaPlayer" type="Sprite2D" parent="Control" unique_id=987654321]
-position = Vector2(124, 58)
-scale = Vector2(0.12, 0.12)
-texture = ExtResource("5_medals")
-hframes = 3
+[node name="IconeMedalha" type="TextureRect" parent="Control/HeaderResultado" unique_id=987654321]
+custom_minimum_size = Vector2(16, 20)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LabelSufixo" type="Label" parent="Control/HeaderResultado" unique_id=444555666]
+layout_mode = 2
+text = "LUGAR!"
+label_settings = SubResource("LabelSettings_yv8jb")
+vertical_alignment = 1
 
 [node name="Podium" type="Sprite2D" parent="Control" unique_id=1256037257]
 position = Vector2(124.00001, 119.00001)

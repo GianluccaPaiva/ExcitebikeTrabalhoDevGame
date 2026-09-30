@@ -1,12 +1,26 @@
 class_name Colocacao
 extends CanvasLayer
 
+## Controlador da Tela de Pódio e Colocação
+## Trabalho 1 - DCC148 (UFJF) | Gabriel Lineker & Gianlucca Paiva
+
+## Armazena os dados dos competidores e o resultado da última corrida
 ## Cada item é um Dictionary: { "is_player": bool, "texture": Texture2D, "name": String, "colocacao": int }
 static var dados_corrida: Array[Dictionary] = []
 static var posicao_player: int = 1
 
-@onready var label_resultado: Label = $Control/Resultado
-@onready var medalha_player: Sprite2D = $Control/MedalhaPlayer
+## Configurações das medalhas no pódio: recorte exato no medals.png (152x216) e cor temática
+const CONFIG_MEDALHAS: Dictionary = {
+	1: { "regiao": Rect2(128, 36, 152, 216), "cor": Color(1.0, 0.9, 0.2) },   # Ouro / 1º Lugar
+	2: { "regiao": Rect2(352, 36, 152, 216), "cor": Color(0.85, 0.9, 1.0) },  # Prata / 2º Lugar
+	3: { "regiao": Rect2(580, 36, 152, 216), "cor": Color(0.95, 0.7, 0.4) }   # Bronze / 3º Lugar
+}
+
+@onready var header_resultado: HBoxContainer = $Control/HeaderResultado
+@onready var label_prefixo: Label = $Control/HeaderResultado/LabelPrefixo
+@onready var icone_medalha: TextureRect = $Control/HeaderResultado/IconeMedalha
+@onready var label_sufixo: Label = $Control/HeaderResultado/LabelSufixo
+
 @onready var sprite_primeiro: Sprite2D = $Control/PrimeiroColocado
 @onready var sprite_segundo: Sprite2D = $Control/SegundoColocado
 @onready var sprite_terceiro: Sprite2D = $Control/TerceiroColocado
@@ -30,8 +44,7 @@ func _ready() -> void:
 		_carregar_dados_padrao_teste()
 
 	_atualizar_sprites_podio()
-	_atualizar_texto_resultado()
-	_atualizar_medalha_player()
+	_atualizar_resultado_e_medalha()
 
 
 ## Atualiza dinamicamente as texturas e frames de cada degrau do pódio
@@ -59,47 +72,56 @@ func _atualizar_sprites_podio() -> void:
 		sp.frame = 0
 
 
-## Atualiza a mensagem de colocação do jogador
-func _atualizar_texto_resultado() -> void:
-	if not label_resultado:
+## Atualiza a mensagem e a medalha integrada ao texto (Opção A)
+func _atualizar_resultado_e_medalha() -> void:
+	if not header_resultado:
 		return
 
-	label_resultado.text = "VOCÊ FICOU EM %dº LUGAR!" % posicao_player
-
-	# Realce visual sutil baseado na posição
-	match posicao_player:
-		1:
-			label_resultado.modulate = Color(1.0, 0.9, 0.2) # Ouro / 1º Lugar
-		2:
-			label_resultado.modulate = Color(0.85, 0.9, 1.0) # Prata / 2º Lugar
-		3:
-			label_resultado.modulate = Color(0.95, 0.7, 0.4) # Bronze / 3º Lugar
-		_:
-			label_resultado.modulate = Color(0.9, 0.4, 0.4) # 4º Lugar
-
-
-## Atualiza a medalha exibida dinamicamente perante a colocação do jogador
-func _atualizar_medalha_player() -> void:
-	if not medalha_player:
-		return
-
-	# Se o jogador ficou no pódio (1º, 2º ou 3º), exibe a medalha correspondente
-	if posicao_player >= 1 and posicao_player <= 3:
-		medalha_player.visible = true
-		medalha_player.hframes = 3
-		medalha_player.vframes = 1
-		# Frame 0: Ouro (1º lugar) | Frame 1: Prata (2º lugar) | Frame 2: Bronze (3º lugar)
-		medalha_player.frame = posicao_player - 1
-
-		# Efeito suave de pop-in arcade com bounce
-		medalha_player.scale = Vector2.ZERO
-		var tween: Tween = create_tween()
-		tween.tween_property(medalha_player, "scale", Vector2(0.12, 0.12), 0.35)\
-			.set_trans(Tween.TRANS_BACK)\
-			.set_ease(Tween.EASE_OUT)
+	if CONFIG_MEDALHAS.has(posicao_player):
+		_configurar_estado_podio(CONFIG_MEDALHAS[posicao_player])
 	else:
-		# 4º lugar não recebe medalha (permanece invisível)
-		medalha_player.visible = false
+		_configurar_estado_fora_podio()
+
+
+## Define o estado visual padronizado para as posições no pódio (1º, 2º e 3º com medalha)
+func _configurar_estado_podio(config: Dictionary) -> void:
+	label_prefixo.text = "VOCÊ FICOU EM"
+	label_prefixo.visible = true
+	label_sufixo.text = "LUGAR!"
+	label_sufixo.visible = true
+	icone_medalha.visible = true
+	icone_medalha.texture = _obter_atlas_medalha(config.regiao)
+	header_resultado.modulate = config.cor
+	_animar_medalha()
+
+
+## Define o estado para quem ficou fora do pódio (4º colocado, frase completa sem medalha)
+func _configurar_estado_fora_podio() -> void:
+	label_prefixo.text = "VOCÊ FICOU EM %dº LUGAR!" % posicao_player
+	label_prefixo.visible = true
+	label_sufixo.visible = false
+	icone_medalha.visible = false
+	header_resultado.modulate = Color(0.9, 0.4, 0.4)
+
+
+## Cria um AtlasTexture fatiando precisamente a medalha solicitada
+func _obter_atlas_medalha(regiao: Rect2) -> AtlasTexture:
+	var atlas: AtlasTexture = AtlasTexture.new()
+	atlas.atlas = preload("res://assets/ui/medals.png")
+	atlas.region = regiao
+	return atlas
+
+
+## Animação pop-in da medalha ao carregar a tela
+func _animar_medalha() -> void:
+	if not icone_medalha:
+		return
+	icone_medalha.pivot_offset = Vector2(8.0, 10.0)
+	icone_medalha.scale = Vector2.ZERO
+	var tween: Tween = create_tween()
+	tween.tween_property(icone_medalha, "scale", Vector2.ONE, 0.35)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
 
 
 ## Gera dados padrão de simulação quando a cena é aberta de forma independente
