@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://nb8shkg8lmkv" path="res://scripts/ui/menu_game.gd" id="1_menugame"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://d18md8rcnvnar" path="res://assets/levels/Stadium.png" id="3_stadium"]
 [ext_resource type="Texture2D" uid="uid://b8gse8cxrv4ef" path="res://assets/levels/Level_1.png" id="4_level1"]
 [ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="5_player"]
+[ext_resource type="AudioStream" uid="uid://bl7atmy6lqvpj" path="res://assets/sounds/Pinned_at_Redline.mp3" id="5_ynuon"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pista"]
 atlas = ExtResource("4_level1")
@@ -128,6 +130,11 @@ repeat_size = Vector2(512, 0)
 autoscroll = Vector2(-35, 0)
 repeat_times = 2
 
+[node name="Stadium" type="Sprite2D" parent="ParallaxStadium" unique_id=657087368]
+position = Vector2(151, -71)
+scale = Vector2(1, 2.59375)
+texture = ExtResource("3_stadium")
+
 [node name="ParallaxPista" type="Parallax2D" parent="." unique_id=1752435947]
 repeat_size = Vector2(256, 0)
 autoscroll = Vector2(-150, 0)
@@ -162,6 +169,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 1.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -247,6 +258,12 @@ text = "© 2026 UFJF"
 label_settings = SubResource("LabelSettings_rodape")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Trilha" type="AudioStreamPlayer2D" parent="." unique_id=1059242469]
+stream = ExtResource("5_ynuon")
+volume_db = 1.944
+autoplay = true
+parameters/looping = true
 
 [connection signal="pressed" from="UI/BotoesContainer/Jogar" to="." method="_on_jogar_pressed"]
 [connection signal="pressed" from="UI/BotoesContainer/Sair" to="." method="_on_sair_pressed"]
