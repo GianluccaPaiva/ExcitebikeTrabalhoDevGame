@@ -6,6 +6,7 @@ extends Control
 @onready var btn_jogar: Button = $UI/BotoesContainer/Jogar
 @onready var btn_sair: Button = $UI/BotoesContainer/Sair
 @onready var animation_player: AnimationPlayer = $ShowcasePlayer/AnimationPlayer
+@onready var sounds: Sounds = $Sounds
 
 
 func _ready() -> void:
@@ -20,9 +21,17 @@ func _ready() -> void:
 
 ## Inicia a corrida carregando a cena principal
 func _on_jogar_pressed() -> void:
+	btn_jogar.disabled = true
+	btn_sair.disabled = true
+	if sounds:
+		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
 
 
 ## Fecha o jogo
 func _on_sair_pressed() -> void:
+	btn_jogar.disabled = true
+	btn_sair.disabled = true
+	if sounds:
+		await sounds.choice_select(0.25)
 	get_tree().quit()

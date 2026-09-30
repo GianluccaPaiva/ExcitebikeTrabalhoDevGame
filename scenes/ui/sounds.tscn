@@ -1,10 +1,15 @@
 [gd_scene format=3 uid="uid://udyyhxxn6tkp"]
 
-[ext_resource type="Script" path="res://scripts/ui/sounds.gd" id="1_script"]
 [ext_resource type="AudioStream" uid="uid://bdrwdrjk3rl8q" path="res://assets/sounds/driken5482-retro-select-236670.mp3" id="1_km2h4"]
+[ext_resource type="Script" uid="uid://btguaqtdfkcbv" path="res://scripts/ui/sounds.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://c0pv600v8wrmt" path="res://assets/sounds/floraphonic-90s-game-ui-6-185099.mp3" id="3_kfkvo"]
 
 [node name="Sounds" type="Node2D" unique_id=1546176675]
 script = ExtResource("1_script")
 
 [node name="Select" type="AudioStreamPlayer2D" parent="." unique_id=468966984]
 stream = ExtResource("1_km2h4")
+
+[node name="Choice" type="AudioStreamPlayer2D" parent="." unique_id=1740507972]
+stream = ExtResource("3_kfkvo")
+pitch_scale = 1.41
