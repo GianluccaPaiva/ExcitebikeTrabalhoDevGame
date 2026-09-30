@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://cy8a2rwuoxkth" path="res://assets/sprites/guysCut/guys4.png" id="11_gpckr"]
 [ext_resource type="Material" uid="uid://c8y3m8l5p2q1" path="res://assets/shaders/racer_yellow.tres" id="12_racer_yellow"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="14_bvlx0"]
+[ext_resource type="PackedScene" uid="uid://df4n765p4dknj" path="res://scenes/ui/pause.tscn" id="15_gpckr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g4v7s"]
 atlas = ExtResource("2_valbi")
@@ -309,6 +310,8 @@ texture = ExtResource("10_bvlx0")
 [node name="CountdownUI" parent="." unique_id=999888777 instance=ExtResource("7_countdown")]
 
 [node name="Sounds" parent="." unique_id=1546176675 instance=ExtResource("14_bvlx0")]
+
+[node name="Pause" parent="." unique_id=11370104 instance=ExtResource("15_gpckr")]
 
 [connection signal="area_entered" from="PistaVisual/Chegada/SensorChegada" to="." method="_on_sensor_chegada_area_entered"]
 [connection signal="body_entered" from="PistaVisual/Chegada/SensorChegada" to="." method="_on_sensor_chegada_body_entered"]
