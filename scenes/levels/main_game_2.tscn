@@ -111,7 +111,7 @@ region_enabled = true
 region_rect = Rect2(381.55643, 0, 79.50214, 112)
 
 [node name="Chegada" type="Sprite2D" parent="PistaVisual" unique_id=206929280]
-position = Vector2(1460, 64)
+position = Vector2(24000, 64)
 texture = ExtResource("2_valbi")
 centered = false
 region_enabled = true
@@ -175,7 +175,7 @@ shape = SubResource("RectangleShape2D_57qmd")
 [node name="SensorBarramento" type="Area2D" parent="PistaVisual/Barramento" unique_id=651520128]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Barramento/SensorBarramento" unique_id=1619961697]
-position = Vector2(1802, 148)
+position = Vector2(24300, 148)
 shape = SubResource("RectangleShape2D_barramento")
 
 [node name="FisicaPista" type="StaticBody2D" parent="." unique_id=1566662175]
@@ -183,7 +183,7 @@ position = Vector2(0, -7.2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FisicaPista" unique_id=518070433]
 position = Vector2(0, 3.1999998)
-polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 160, 558, 143, 565, 143, 581, 160, 810, 160, 843, 127, 850, 127, 882, 160, 1170, 160, 1203, 144, 1210, 144, 1243, 160, 1462, 160, 1487, 136, 1534, 136, 1560, 161, 2151, 159.2, 2151, 232.2)
+polygon = PackedVector2Array(0, 240, 0, 160, 333, 160, 345, 150, 357, 160, 541, 160, 558, 143, 565, 143, 581, 160, 810, 160, 843, 127, 850, 127, 882, 160, 1170, 160, 1203, 144, 1210, 144, 1243, 160, 1462, 160, 1487, 136, 1534, 136, 1560, 161, 2151, 160, 24372, 160, 24372, 240)
 
 [node name="Entities" type="Node2D" parent="." unique_id=1937540672]
 
@@ -243,27 +243,27 @@ position = Vector2(24.028366, -34)
 [node name="Filmers" type="Node2D" parent="Entities" unique_id=1348857219]
 
 [node name="Sprite2D" type="Sprite2D" parent="Entities/Filmers" unique_id=1989603555]
-position = Vector2(2006.3002, 117.1)
+position = Vector2(24350, 117.1)
 scale = Vector2(0.29545444, 0.2570422)
 texture = ExtResource("8_k5j8j")
 
 [node name="Sprite2D2" type="Sprite2D" parent="Entities/Filmers" unique_id=468988870]
-position = Vector2(2004.3002, 123.09999)
+position = Vector2(24348, 123.09999)
 scale = Vector2(0.3416646, 0.28603604)
 texture = ExtResource("9_rlb4v")
 
 [node name="Sprite2D3" type="Sprite2D" parent="Entities/Filmers" unique_id=779143375]
-position = Vector2(2005.2998, 138.225)
+position = Vector2(24349, 138.225)
 scale = Vector2(0.33730108, 0.30523258)
 texture = ExtResource("10_bvlx0")
 
 [node name="Sprite2D4" type="Sprite2D" parent="Entities/Filmers" unique_id=1681626832]
-position = Vector2(1443, 98)
+position = Vector2(23983, 98)
 scale = Vector2(0.3243243, 0.25531915)
 texture = ExtResource("11_gpckr")
 
 [node name="Sprite2D5" type="Sprite2D" parent="Entities/Filmers" unique_id=1813690351]
-position = Vector2(2004.3002, 154.10002)
+position = Vector2(24348, 154.10002)
 scale = Vector2(0.28030166, 0.2429577)
 texture = ExtResource("8_k5j8j")
 
