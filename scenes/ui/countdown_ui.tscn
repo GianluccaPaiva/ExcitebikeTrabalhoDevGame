@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dmqm7u5q1x3n4"]
 
-[ext_resource type="Script" uid="uid://b7v8k9w0y1z2a" path="res://scripts/ui/countdown_ui.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://b1wq0nkl72vnd" path="res://scripts/ui/countdown_ui.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://bxbiebwo6khvb" path="res://assets/sounds/freesound_community-robotic-countdown-43935.mp3" id="2_y3fck"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_countdown"]
 font_size = 28
@@ -9,12 +10,11 @@ outline_size = 6
 outline_color = Color(0, 0, 0, 1)
 shadow_size = 4
 shadow_color = Color(0, 0, 0, 0.8)
-shadow_offset = Vector2(1, 1)
 
-[node name="CountdownUI" type="CanvasLayer"]
+[node name="CountdownUI" type="CanvasLayer" unique_id=708847719]
 script = ExtResource("1_script")
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="." unique_id=1509881910]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +22,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LabelContagem" type="Label" parent="Control"]
+[node name="LabelContagem" type="Label" parent="Control" unique_id=1830393723]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -40,3 +40,7 @@ text = "3"
 label_settings = SubResource("LabelSettings_countdown")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Control" unique_id=1425183143]
+stream = ExtResource("2_y3fck")
+autoplay = true
