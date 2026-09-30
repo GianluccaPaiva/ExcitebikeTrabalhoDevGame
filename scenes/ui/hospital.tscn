@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://mthdsofdodlj" path="res://assets/ui/way.png" id="3_0s3va"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="4_font"]
 [ext_resource type="AudioStream" uid="uid://7a6qrnr0pisy" path="res://assets/sounds/Ambulance.mp3" id="5_o6res"]
+[ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="6_qp5j8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hospital"]
 font = ExtResource("4_font")
@@ -142,6 +143,8 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
 text = "MENU"
+
+[node name="Sounds" parent="." unique_id=1546176675 instance=ExtResource("6_qp5j8")]
 
 [connection signal="pressed" from="Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="Menu" to="." method="_on_menu_pressed"]

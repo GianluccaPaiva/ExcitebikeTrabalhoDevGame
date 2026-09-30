@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://4fxxx8ayamaw" path="res://assets/sprites/Racer_1.png" id="2_yv8jb"]
 [ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="3_hjwqk"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="4_font"]
-[ext_resource type="Texture2D" uid="uid://5p0wsoh8g3a1" path="res://assets/ui/medals.png" id="5_medals"]
+[ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="6_3jcyx"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yv8jb"]
 font = ExtResource("4_font")
@@ -156,6 +156,8 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
 text = "MENU"
+
+[node name="Sounds" parent="Control" unique_id=1546176675 instance=ExtResource("6_3jcyx")]
 
 [connection signal="pressed" from="Control/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="Control/Menu" to="." method="_on_menu_pressed"]
