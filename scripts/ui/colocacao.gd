@@ -24,6 +24,7 @@ const CONFIG_MEDALHAS: Dictionary = {
 @onready var sprite_quarto: Sprite2D = $Control/QuartoColocado
 @onready var btn_restart: Button = $Control/Restart
 @onready var btn_menu: Button = $Control/Menu
+@onready var sounds: Sounds = $Control/Sounds
 
 
 ## Registra os dados da corrida antes de trocar para esta cena
@@ -154,11 +155,19 @@ func _carregar_dados_padrao_teste() -> void:
 
 ## Reinicia a corrida recarregando o circuito
 func _on_restart_pressed() -> void:
+	btn_restart.disabled = true
+	btn_menu.disabled = true
+	if sounds:
+		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
 
 
 ## Botão de menu: transiciona para a cena de Menu Principal
 func _on_menu_pressed() -> void:
+	btn_restart.disabled = true
+	btn_menu.disabled = true
+	if sounds:
+		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
 
 

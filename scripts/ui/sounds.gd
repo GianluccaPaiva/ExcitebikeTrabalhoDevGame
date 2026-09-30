@@ -5,6 +5,7 @@ extends Node2D
 ## Conecta automaticamente os botões da cena para focar e tocar o som Select ao passar o mouse ou focar
 
 @onready var select: AudioStreamPlayer2D = $Select
+@onready var choice: AudioStreamPlayer2D = $Choice
 
 var _pode_tocar_som: bool = false
 
@@ -13,6 +14,9 @@ func _ready() -> void:
 	if select:
 		select.panning_strength = 0.0
 		select.max_distance = 100000.0
+	if choice:
+		choice.panning_strength = 0.0
+		choice.max_distance = 100000.0
 
 	call_deferred("_inicializar")
 
@@ -95,3 +99,14 @@ func play_select() -> void:
 		return
 	if select:
 		select.play()
+
+## Toca o áudio de confirmação / escolha com corte de duração configurável (padrão 0.25s)
+func choice_select(duracao: float = 0.25) -> void:
+	if choice:
+		choice.play()
+		if duracao > 0.0:
+			await get_tree().create_timer(duracao).timeout
+			if choice and choice.playing:
+				choice.stop()
+
+
