@@ -1,0 +1,252 @@
+[gd_scene format=3 uid="uid://c2anrggdu1erd"]
+
+[ext_resource type="Script" uid="uid://nb8shkg8lmkv" path="res://scripts/ui/menu_game.gd" id="1_menugame"]
+[ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://b8gse8cxrv4ef" path="res://assets/levels/Level_1.png" id="4_level1"]
+[ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="5_player"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pista"]
+atlas = ExtResource("4_level1")
+region = Rect2(192.614, 0, 18.607, 112)
+
+[sub_resource type="Animation" id="Animation_showcase"]
+resource_name = "showcase_manobras"
+length = 6.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5, 1.65, 1.8, 1.95, 2.1, 2.25, 2.4, 2.55, 2.7, 4.15, 4.3, 4.45, 4.6, 4.75, 4.9, 5.05, 5.2, 5.35, 5.5, 5.65, 5.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.1, 1.4, 1.8, 2.1, 2.5, 2.8, 3.1, 3.4, 3.7, 4, 4.15, 4.35, 5, 5.6, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-50, 0), Vector2(-20, 0), Vector2(0, 0), Vector2(15, -2), Vector2(35, -2), Vector2(40, 0), Vector2(15, -12), Vector2(5, -12), Vector2(25, -30), Vector2(45, -46), Vector2(65, -25), Vector2(75, 0), Vector2(73, 2), Vector2(65, 0), Vector2(0, 0), Vector2(-35, 0), Vector2(-50, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:rotation_degrees")
+tracks/2/interp = 2
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.1, 1.35, 1.85, 2.1, 2.4, 2.7, 2.8, 3.1, 3.4, 3.7, 4, 4.15, 4.35, 5, 5.6, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, -25.0, -25.0, 0.0, -5.0, 0.0, 0.0, -90.0, -180.0, -270.0, -360.0, -362.0, -360.0, -360.0, -360.0, -360.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_menu"]
+_data = {
+&"showcase_manobras": SubResource("Animation_showcase")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_titulo"]
+font = ExtResource("2_font")
+font_size = 18
+font_color = Color(0.988235, 0.235294, 0.2, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 3
+shadow_color = Color(0.988235, 0.74902, 0.0588235, 0.8)
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_subtitulo"]
+font = ExtResource("2_font")
+font_size = 7
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.08, 0.08, 0.12, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.988235, 0.74902, 0.0588235, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+bg_color = Color(0.8, 0.58, 0.05, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 0.5, 0.5, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.988235, 0.74902, 0.0588235, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+anti_aliasing = false
+
+[sub_resource type="LabelSettings" id="LabelSettings_rodape"]
+font = ExtResource("2_font")
+font_size = 6
+font_color = Color(0.75, 0.75, 0.75, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[node name="MenuGame" type="Control" unique_id=119060167]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menugame")
+
+[node name="BackgroundBottom" type="ColorRect" parent="." unique_id=482678670]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.12, 1)
+
+[node name="ParallaxStadium" type="Parallax2D" parent="." unique_id=481466377]
+repeat_size = Vector2(512, 0)
+autoscroll = Vector2(-35, 0)
+repeat_times = 2
+
+[node name="ParallaxPista" type="Parallax2D" parent="." unique_id=1752435947]
+repeat_size = Vector2(256, 0)
+autoscroll = Vector2(-150, 0)
+repeat_times = 3
+
+[node name="PistaTextureRect" type="TextureRect" parent="ParallaxPista" unique_id=1807807145]
+custom_minimum_size = Vector2(256, 112)
+offset_left = -1.0
+offset_top = 11.0
+offset_right = 255.0
+offset_bottom = 154.0
+texture = SubResource("AtlasTexture_pista")
+stretch_mode = 1
+
+[node name="ShowcasePlayer" type="Node2D" parent="." unique_id=1797324399]
+position = Vector2(126, 76)
+
+[node name="Sprite2D" type="Sprite2D" parent="ShowcasePlayer" unique_id=556495027]
+position = Vector2(2, 3)
+texture = ExtResource("5_player")
+offset = Vector2(0, -12)
+hframes = 6
+vframes = 6
+frame = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ShowcasePlayer" unique_id=322872385]
+libraries/ = SubResource("AnimationLibrary_menu")
+autoplay = &"showcase_manobras"
+
+[node name="UI" type="Control" parent="." unique_id=2114354885]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Titulo" type="Label" parent="UI" unique_id=1112427586]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 8.0
+offset_bottom = 30.0
+grow_horizontal = 2
+text = "EXCITEBIKE"
+label_settings = SubResource("LabelSettings_titulo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Subtitulo" type="Label" parent="UI" unique_id=661436764]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 32.0
+offset_bottom = 43.0
+grow_horizontal = 2
+text = "DCC148 - DEV GAMES UFJF"
+label_settings = SubResource("LabelSettings_subtitulo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BotoesContainer" type="VBoxContainer" parent="UI" unique_id=787972822]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 4
+
+[node name="Jogar" type="Button" parent="UI/BotoesContainer" unique_id=1814312722]
+custom_minimum_size = Vector2(120, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+text = "JOGAR"
+
+[node name="Sair" type="Button" parent="UI/BotoesContainer" unique_id=827626581]
+custom_minimum_size = Vector2(120, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+text = "SAIR"
+
+[node name="Rodape" type="Label" parent="UI" unique_id=124238638]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "© 2026 UFJF"
+label_settings = SubResource("LabelSettings_rodape")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="UI/BotoesContainer/Jogar" to="." method="_on_jogar_pressed"]
+[connection signal="pressed" from="UI/BotoesContainer/Sair" to="." method="_on_sair_pressed"]

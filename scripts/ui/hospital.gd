@@ -48,10 +48,9 @@ func _on_restart_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
 
 
-## Botão de menu: a ser integrado quando a cena de Menu for desenvolvida
+## Botão de menu: transiciona para a cena de Menu Principal
 func _on_menu_pressed() -> void:
-	# TODO: Implementar a transição para a cena de Menu Principal quando ela for criada no projeto.
-	pass
+	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
 
 
 ## Mantido por segurança para conexões herdadas
