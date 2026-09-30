@@ -1,54 +1,72 @@
 [gd_scene format=3 uid="uid://br0508s7i6haq"]
 
 [ext_resource type="Texture2D" uid="uid://8sfsrafab2sq" path="res://assets/sprites/HubLimpo.png" id="1_x8s31"]
+[ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_57qmd"]
-font_size = 9
-
-[sub_resource type="LabelSettings" id="LabelSettings_yf5fn"]
+[sub_resource type="LabelSettings" id="LabelSettings_tempo"]
+font = ExtResource("2_font")
 font_size = 8
+shadow_color = Color(0, 0, 0, 0.8)
 
-[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
-font_size = 9
+[sub_resource type="LabelSettings" id="LabelSettings_kmh"]
+font = ExtResource("2_font")
+font_size = 8
+font_color = Color(0.247059, 0.952941, 0.45098, 1)
+shadow_color = Color(0, 0, 0, 0.8)
+
+[sub_resource type="LabelSettings" id="LabelSettings_limite"]
+font = ExtResource("2_font")
+font_size = 8
+font_color = Color(0.988235, 0.74902, 0.0588235, 1)
+shadow_color = Color(0, 0, 0, 0.8)
 
 [node name="Hub" type="CanvasLayer" unique_id=1621250794]
 
 [node name="Control" type="Control" parent="." unique_id=195883502]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 255.0
-offset_bottom = 242.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="Control" unique_id=425435906]
-position = Vector2(128.06253, 200)
-scale = Vector2(0.11699307, 0.110344835)
+position = Vector2(124.499985, 206)
+scale = Vector2(0.12304145, 0.093793094)
 texture = ExtResource("1_x8s31")
 
 [node name="TempAtual" type="Label" parent="Control" unique_id=126802219]
 layout_mode = 0
-offset_left = 31.0
-offset_top = 188.0
-offset_right = 90.0
-offset_bottom = 217.0
-text = "00:00:00
-"
-label_settings = SubResource("LabelSettings_57qmd")
+offset_left = 7.0
+offset_top = 195.0
+offset_right = 73.0
+offset_bottom = 209.0
+text = "00:00:00"
+label_settings = SubResource("LabelSettings_tempo")
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
 
 [node name="KmH" type="Label" parent="Control" unique_id=1402375620]
 layout_mode = 0
-offset_left = 114.0
-offset_top = 189.0
-offset_right = 155.0
-offset_bottom = 220.0
-text = "0.0 km/h
-"
-label_settings = SubResource("LabelSettings_yf5fn")
+offset_left = 106.0
+offset_top = 196.0
+offset_right = 153.0
+offset_bottom = 210.0
+text = "0.0"
+label_settings = SubResource("LabelSettings_kmh")
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
 
 [node name="TempLimite" type="Label" parent="Control" unique_id=1755617868]
 layout_mode = 0
-offset_left = 198.0
-offset_top = 189.0
-offset_right = 264.0
-offset_bottom = 212.0
+offset_left = 185.0
+offset_top = 195.0
+offset_right = 253.0
+offset_bottom = 209.0
 text = "00:00:00"
-label_settings = SubResource("LabelSettings_g4v7s")
+label_settings = SubResource("LabelSettings_limite")
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
