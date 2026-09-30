@@ -58,8 +58,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1.0
-offset_right = 1.0
+offset_left = -9.0
+offset_right = 21.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14, 0.28, 0.6, 1)
@@ -95,8 +95,8 @@ repeat_size = Vector2(256, 0)
 autoscroll = Vector2(-50, 0)
 
 [node name="City" type="Sprite2D" parent="ParallaxCity" unique_id=1122031149]
-position = Vector2(129.71875, 55)
-scale = Vector2(0.39900848, 0.29999998)
+position = Vector2(129.71875, 52.499996)
+scale = Vector2(0.39900848, 0.31388888)
 texture = ExtResource("4_ps12v")
 
 [node name="Ambulance" type="Sprite2D" parent="." unique_id=1550957547]
