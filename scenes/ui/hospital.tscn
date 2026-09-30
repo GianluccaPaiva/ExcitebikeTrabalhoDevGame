@@ -73,42 +73,12 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ParallaxWay" type="Parallax2D" parent="." unique_id=160700492]
-repeat_size = Vector2(287, 0)
+repeat_size = Vector2(41, 0)
 autoscroll = Vector2(-150, 0)
-repeat_times = 3
+repeat_times = 15
 
 [node name="Way" type="Sprite2D" parent="ParallaxWay" unique_id=1224029222]
 position = Vector2(20, 105)
-scale = Vector2(0.15820311, 0.08558557)
-texture = ExtResource("3_0s3va")
-
-[node name="Way2" type="Sprite2D" parent="ParallaxWay" unique_id=1943494552]
-position = Vector2(61, 105)
-scale = Vector2(0.15820311, 0.08558557)
-texture = ExtResource("3_0s3va")
-
-[node name="Way3" type="Sprite2D" parent="ParallaxWay" unique_id=1695070476]
-position = Vector2(102, 105)
-scale = Vector2(0.15820311, 0.08558557)
-texture = ExtResource("3_0s3va")
-
-[node name="Way4" type="Sprite2D" parent="ParallaxWay" unique_id=892738322]
-position = Vector2(143, 105)
-scale = Vector2(0.15820311, 0.08558557)
-texture = ExtResource("3_0s3va")
-
-[node name="Way5" type="Sprite2D" parent="ParallaxWay" unique_id=1823263411]
-position = Vector2(184, 105)
-scale = Vector2(0.15820311, 0.08558557)
-texture = ExtResource("3_0s3va")
-
-[node name="Way6" type="Sprite2D" parent="ParallaxWay" unique_id=280917684]
-position = Vector2(225, 105)
-scale = Vector2(0.15820311, 0.08558557)
-texture = ExtResource("3_0s3va")
-
-[node name="Way7" type="Sprite2D" parent="ParallaxWay" unique_id=1607876121]
-position = Vector2(266, 105)
 scale = Vector2(0.15820311, 0.08558557)
 texture = ExtResource("3_0s3va")
 
