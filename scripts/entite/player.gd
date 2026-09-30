@@ -18,9 +18,8 @@ signal desaceleracao_concluida
 @export_group("Física Aérea, Flips e Manobras Vetoriais")
 @export var gravity: float = 580.0
 @export var max_fall_speed: float = 480.0
-@export var air_rotation_speed: float = 6.28 # ~360 graus/s: permite flips completos em saltos
-@export var air_maneuver_influence: float = 1.8 # Intensidade com que a atitude da moto redireciona o vetor no ar
-@export var air_thrust: float = 100.0 # Impulso vetorial ao acelerar na direção em que a moto aponta
+@export var air_rotation_speed: float = 12.5 # ~716 graus/s: manobras e flips rápidos e responsivos
+@export var ramp_inertia_multiplier: float = 1.18 # Multiplicador de inércia moderado ao decolar da rampa
 
 @export_group("Pouso e Acidente")
 @export var max_safe_angle_degrees: float = 32.0 # Tolerância máxima de desalinhamento (pouso perfeito pós-flip)
@@ -43,6 +42,9 @@ var em_desaceleracao_automatica: bool = false
 var limite_x_parada: float = 0.0
 var taxa_freio_automatico: float = 350.0
 var qtd_acidentes: int = 0
+var last_ramp_vector: Vector2 = Vector2.RIGHT
+var last_ramp_speed: float = 0.0
+var ramp_launch_timer: float = 0.0
 
 
 func _ready() -> void:
@@ -121,6 +123,14 @@ func _process_chao(delta: float) -> void:
 	# de modo que ao atingir a crista seja lançada em um arco balístico real!
 	velocity = ground_dir * current_speed
 
+	# Registra a inércia da subida da rampa para catapultar a moto na saída da crista
+	if ground_dir.y < -0.08:
+		last_ramp_vector = ground_dir
+		last_ramp_speed = current_speed
+		ramp_launch_timer = 0.2
+	elif ramp_launch_timer > 0.0:
+		ramp_launch_timer -= delta
+
 	# Leve componente de atração ao solo para manter contato em irregularidades sutis
 	if not is_on_floor():
 		velocity.y += gravity * delta
@@ -139,10 +149,22 @@ func _process_chao(delta: float) -> void:
 
 # --- ESTADO: NO AR (MANOBRAS, FLIPS E ROTAÇÃO) ---
 func _process_ar(delta: float) -> void:
-	# 1. Aplicação contínua da gravidade no eixo Y
-	velocity.y += gravity * delta
+	# 1. Aplicação contínua da gravidade com sustentação aerodinâmica equilibrada
+	# Nariz levemente empinado (-7° a -35°): efeito de planeio suave
+	# Nariz apontado para baixo (> +10°): mergulho rápido para pouso antecipado
+	var eff_gravity: float = gravity
+	if rotation < -0.12 and rotation > -0.62:
+		eff_gravity = gravity * 0.85 # Sustentação suave sem flutuação excessiva
+	elif rotation > 0.18:
+		eff_gravity = gravity * 1.15 # Mergulho para encaixar em descidas
+
+	velocity.y += eff_gravity * delta
 	if velocity.y > max_fall_speed:
 		velocity.y = max_fall_speed
+
+	# Amortecimento aerodinâmico suave fora da rampa se a inércia ultrapassar a velocidade máxima
+	if not em_desaceleracao_automatica and velocity.x > max_speed:
+		velocity.x = move_toward(velocity.x, max_speed, 50.0 * delta)
 
 	# 2. INPUT DE VELOCIDADE: ESTRITAMENTE DESABILITADO NO AR
 	# No ar, a moto segue o momento/inércia balística adquirida na rampa.
@@ -191,11 +213,30 @@ func _check_floor_transitions() -> void:
 	# Transição AR -> CHÃO (Frame exato do impacto/aterrissagem)
 	if not was_on_floor and on_floor_now and state == State.NO_AR:
 		_processar_aterrissagem()
-	# Transição CHÃO -> AR (Saiu da rampa ou quebra-mola)
+	# Transição CHÃO -> AR (Saiu da rampa ou quebra-mola com inércia)
 	elif was_on_floor and not on_floor_now and state == State.NO_CHAO:
-		state = State.NO_AR
+		_decolar_da_rampa()
 
 	was_on_floor = on_floor_now
+
+
+## Executado no instante exato da perda de contato com a rampa/chão
+func _decolar_da_rampa() -> void:
+	state = State.NO_AR
+	floor_snap_length = 0.0 # Libera o snap para não prender a moto ao topo da rampa
+
+	# Se a moto estava subindo uma rampa ou saindo da crista com velocidade:
+	if ramp_launch_timer > 0.0 and last_ramp_vector.y < -0.08:
+		var launch_speed: float = maxf(current_speed, last_ramp_speed)
+		velocity.x = absf(last_ramp_vector.x) * launch_speed * ramp_inertia_multiplier
+		# O vetor Y negativo ejeta a moto para cima no salto balístico
+		velocity.y = last_ramp_vector.y * launch_speed * ramp_inertia_multiplier
+	else:
+		# Fora de rampa ascendente (perda de contato em solo plano ou pequeno relevo):
+		# Mantém apenas a inércia natural da velocidade sem impulso multiplicador extra
+		velocity.x = current_speed
+		if velocity.y > 0.0:
+			velocity.y = 0.0
 
 
 # --- LÓGICA MATEMÁTICA DE POUSO (COMPATÍVEL COM FLIPS DE 360°) ---
@@ -216,6 +257,8 @@ func _processar_aterrissagem() -> void:
 		# POUSO SEGURO / FLIP BEM SUCEDIDO:
 		state = State.NO_CHAO
 		rotation = ground_angle
+		floor_snap_length = 8.0 # Restaura a aderência de snap ao solo após o pouso
+		ramp_launch_timer = 0.0
 		# Preserva a projeção da velocidade aérea ao longo da pista (conservação vetorial de momento)
 		var projected_speed: float = velocity.dot(ground_dir)
 		if controles_bloqueados and not em_desaceleracao_automatica:
@@ -255,6 +298,8 @@ func _disparar_acidente() -> void:
 	velocity = Vector2.ZERO
 	rotation = 0.0
 	crash_timer = crash_duration
+	floor_snap_length = 8.0
+	ramp_launch_timer = 0.0
 
 	if animation_player:
 		animation_player.play("acidente")
@@ -266,6 +311,8 @@ func _recuperar_de_acidente() -> void:
 	rotation = 0.0
 	current_speed = 0.0
 	velocity = Vector2.ZERO
+	floor_snap_length = 8.0
+	ramp_launch_timer = 0.0
 
 	if moto_caida_sprite:
 		moto_caida_sprite.visible = false

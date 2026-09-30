@@ -38,6 +38,7 @@ func _ready() -> void:
 	if dados_corrida.is_empty():
 		_carregar_dados_padrao_teste()
 
+	get_tree().paused = false
 	_atualizar_sprites_podio()
 	_atualizar_resultado_e_medalha()
 

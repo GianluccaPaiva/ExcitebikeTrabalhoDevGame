@@ -25,6 +25,7 @@ var _ambulance_base_y: float = 98.0
 func _ready() -> void:
 	if ambulance:
 		_ambulance_base_y = ambulance.position.y
+	get_tree().paused = false
 
 	_sortear_frase()
 
