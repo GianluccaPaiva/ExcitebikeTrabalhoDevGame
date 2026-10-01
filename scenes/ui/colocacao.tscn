@@ -9,12 +9,13 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_yv8jb"]
 font = ExtResource("4_font")
-font_size = 9
+font_size = 8
 font_color = Color(0.988235, 0.74902, 0.0588235, 1)
-outline_size = 2
+outline_size = 1
 outline_color = Color(0, 0, 0, 1)
-shadow_size = 2
+shadow_size = 1
 shadow_color = Color(0, 0, 0, 0.85)
+shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
 bg_color = Color(0.08, 0.08, 0.12, 1)

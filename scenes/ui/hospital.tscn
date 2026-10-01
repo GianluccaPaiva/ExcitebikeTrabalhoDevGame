@@ -10,12 +10,13 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_hospital"]
 font = ExtResource("4_font")
-font_size = 10
+font_size = 8
 font_color = Color(0.96, 0.26, 0.21, 1)
-outline_size = 3
+outline_size = 1
 outline_color = Color(0, 0, 0, 1)
-shadow_size = 2
+shadow_size = 1
 shadow_color = Color(0, 0, 0, 0.85)
+shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
 bg_color = Color(0.08, 0.08, 0.12, 1)
@@ -69,10 +70,8 @@ top_level = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 2.0
-offset_top = 1.0
-offset_right = 2.0
-offset_bottom = 27.0
+offset_top = 8.0
+offset_bottom = 26.0
 grow_horizontal = 2
 text = "FIM DE JOGO!"
 label_settings = SubResource("LabelSettings_hospital")

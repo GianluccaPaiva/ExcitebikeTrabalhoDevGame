@@ -60,18 +60,18 @@ _data = {
 
 [sub_resource type="LabelSettings" id="LabelSettings_titulo"]
 font = ExtResource("2_font")
-font_size = 18
+font_size = 16
 font_color = Color(0.988235, 0.235294, 0.2, 1)
-outline_size = 4
+outline_size = 2
 outline_color = Color(0, 0, 0, 1)
-shadow_size = 3
-shadow_color = Color(0.988235, 0.74902, 0.0588235, 0.8)
-shadow_offset = Vector2(2, 2)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.65)
+shadow_offset = Vector2(1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_subtitulo"]
 font = ExtResource("2_font")
-font_size = 7
-outline_size = 2
+font_size = 8
+outline_size = 1
 outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
@@ -105,7 +105,7 @@ anti_aliasing = false
 font = ExtResource("2_font")
 font_size = 8
 font_color = Color(0.75, 0.75, 0.75, 1)
-outline_size = 2
+outline_size = 1
 outline_color = Color(0, 0, 0, 1)
 
 [node name="MenuGame" type="Control" unique_id=119060167]
