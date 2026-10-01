@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://0owxop41oj" path="res://scripts/ui/hub.gd" id="1_was6o"]
 [ext_resource type="Texture2D" uid="uid://8sfsrafab2sq" path="res://assets/sprites/HubLimpo.png" id="1_x8s31"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://f8j7im135s1o" path="res://assets/sprites/Moldura Neon Azul em Pixel Art.png" id="4_03a6o"]
+[ext_resource type="Texture2D" uid="uid://8nwb7br3x5br" path="res://assets/sprites/facesPlayer/face1.jpg" id="5_03a6o"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_tempo"]
 font = ExtResource("2_font")
@@ -72,3 +74,14 @@ label_settings = SubResource("LabelSettings_limite")
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
+
+[node name="MolduraPerfil" type="Sprite2D" parent="Control" unique_id=1012411217]
+top_level = true
+position = Vector2(34.149113, 42.39212)
+scale = Vector2(0.052393764, 0.053256966)
+texture = ExtResource("4_03a6o")
+
+[node name="Face" type="Sprite2D" parent="Control/MolduraPerfil" unique_id=1478222443]
+position = Vector2(-2.845966, 11.414089)
+scale = Vector2(5.4905624, 7.8120236)
+texture = ExtResource("5_03a6o")

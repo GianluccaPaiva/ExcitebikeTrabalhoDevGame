@@ -48,8 +48,11 @@ var last_ramp_speed: float = 0.0
 var ramp_launch_timer: float = 0.0
 
 func update_hub_ui() -> void:
-	if hub_ui and hub_ui.has_method("set_km_h"):
-		hub_ui.set_km_h(velocity_to_km_h(current_speed))
+	if hub_ui:
+		if hub_ui.has_method("set_km_h"):
+			hub_ui.set_km_h(velocity_to_km_h(current_speed))
+		if hub_ui.has_method("set_quedas"):
+			hub_ui.set_quedas(qtd_acidentes)
 
 func velocity_to_km_h(vel: float) -> float:
 	return vel * 0.36 # Converte px/s para km/h (1 px/s = 0.36 km/h)
@@ -63,6 +66,8 @@ func _ready() -> void:
 		moto_caida_sprite.visible = false
 	if animation_player:
 		animation_player.play("parado")
+
+	update_hub_ui()
 
 
 func _physics_process(delta: float) -> void:
@@ -295,6 +300,7 @@ func _processar_aterrissagem() -> void:
 	else:
 		# ACIDENTE: Aterrissou de cabeça para baixo ou desalinhado
 		qtd_acidentes += 1
+		update_hub_ui()
 		_disparar_acidente()
 		if qtd_acidentes >= limite_acidentes_hospital:
 			hospital.emit()
