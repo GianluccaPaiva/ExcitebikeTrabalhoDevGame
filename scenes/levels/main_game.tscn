@@ -55,10 +55,11 @@ script = ExtResource("8_maingame")
 [node name="FundoArquibancada" type="Parallax2D" parent="." unique_id=344981667]
 scroll_scale = Vector2(0.5, 0.5)
 repeat_size = Vector2(256, 0)
+repeat_times = 200
 
 [node name="Sprite2D" type="Sprite2D" parent="FundoArquibancada" unique_id=181275346]
 position = Vector2(-6, -10.999999)
-scale = Vector2(3.3437498, 1.171875)
+scale = Vector2(1.0585938, 1.171875)
 texture = ExtResource("1_mcewg")
 centered = false
 
