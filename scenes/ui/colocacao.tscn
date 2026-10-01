@@ -141,9 +141,9 @@ text = " REINICIAR "
 
 [node name="Menu" type="Button" parent="Control" unique_id=1522268969]
 layout_mode = 0
-offset_left = 101.0
+offset_left = 84.0
 offset_top = 192.0
-offset_right = 155.0
+offset_right = 174.0
 offset_bottom = 210.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
