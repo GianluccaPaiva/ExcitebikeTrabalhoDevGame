@@ -3,6 +3,7 @@ extends Node2D
 
 ## Gerenciador de som da cena Sounds
 ## Conecta automaticamente os botões da cena para focar e tocar o som Select ao passar o mouse ou focar
+## Configurado com PROCESS_MODE_ALWAYS para que continue funcionando perfeitamente mesmo com o jogo pausado (freeze)
 
 @onready var select: AudioStreamPlayer2D = $Select
 @onready var choice: AudioStreamPlayer2D = $Choice
@@ -11,10 +12,13 @@ var _pode_tocar_som: bool = false
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	if select:
+		select.process_mode = Node.PROCESS_MODE_ALWAYS
 		select.panning_strength = 0.0
 		select.max_distance = 100000.0
 	if choice:
+		choice.process_mode = Node.PROCESS_MODE_ALWAYS
 		choice.panning_strength = 0.0
 		choice.max_distance = 100000.0
 
@@ -33,6 +37,10 @@ func _inicializar() -> void:
 
 ## Localiza a raiz da cena ativa e vincula todos os botões filhos
 func _configurar_botoes_da_cena() -> void:
+	# Conecta diretamente os botões do nó pai imediato (ex: Pause)
+	if get_parent():
+		_conectar_botoes_recursivo(get_parent())
+
 	var raiz: Node = owner
 	if raiz == null:
 		raiz = get_tree().current_scene
@@ -41,7 +49,7 @@ func _configurar_botoes_da_cena() -> void:
 		while raiz.get_parent() != null and not (raiz.get_parent() is Window):
 			raiz = raiz.get_parent()
 
-	if raiz:
+	if raiz and raiz != get_parent():
 		_conectar_botoes_recursivo(raiz)
 
 
@@ -100,13 +108,13 @@ func play_select() -> void:
 	if select:
 		select.play()
 
+
 ## Toca o áudio de confirmação / escolha com corte de duração configurável (padrão 0.25s)
+## process_always = true no timer garante que o corte e retorno funcionem mesmo durante o pause/freeze
 func choice_select(duracao: float = 0.25) -> void:
 	if choice:
 		choice.play()
 		if duracao > 0.0:
-			await get_tree().create_timer(duracao).timeout
+			await get_tree().create_timer(duracao, true, false, true).timeout
 			if choice and choice.playing:
 				choice.stop()
-
-
