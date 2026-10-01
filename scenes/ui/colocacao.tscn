@@ -92,31 +92,31 @@ label_settings = SubResource("LabelSettings_yv8jb")
 vertical_alignment = 1
 
 [node name="Podium" type="Sprite2D" parent="Control" unique_id=1256037257]
-position = Vector2(124.00001, 119.00001)
+position = Vector2(124, 111)
 scale = Vector2(0.061836407, 0.05562239)
 texture = ExtResource("1_lhpdl")
 
 [node name="PrimeiroColocado" type="Sprite2D" parent="Control" unique_id=283911379]
-position = Vector2(122, 98)
+position = Vector2(122, 90)
 texture = ExtResource("2_yv8jb")
 hframes = 6
 vframes = 6
 
 [node name="SegundoColocado" type="Sprite2D" parent="Control" unique_id=1064245631]
-position = Vector2(97, 110)
+position = Vector2(97, 102)
 scale = Vector2(1, 1.0625)
 texture = ExtResource("2_yv8jb")
 hframes = 6
 vframes = 6
 
 [node name="TerceiroColocado" type="Sprite2D" parent="Control" unique_id=1794424661]
-position = Vector2(147, 111)
+position = Vector2(147, 103)
 texture = ExtResource("3_hjwqk")
 hframes = 6
 vframes = 6
 
 [node name="QuartoColocado" type="Sprite2D" parent="Control" unique_id=82426405]
-position = Vector2(176, 125)
+position = Vector2(176, 117)
 texture = ExtResource("3_hjwqk")
 hframes = 6
 vframes = 6
