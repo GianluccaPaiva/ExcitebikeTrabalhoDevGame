@@ -122,10 +122,11 @@ hframes = 6
 vframes = 6
 
 [node name="Restart" type="Button" parent="Control" unique_id=694277677]
+custom_minimum_size = Vector2(120, 20)
 layout_mode = 0
-offset_left = 84.0
-offset_top = 162.0
-offset_right = 174.0
+offset_left = 68.0
+offset_top = 160.0
+offset_right = 188.0
 offset_bottom = 180.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
@@ -140,10 +141,11 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
 text = " REINICIAR "
 
 [node name="Menu" type="Button" parent="Control" unique_id=1522268969]
+custom_minimum_size = Vector2(120, 20)
 layout_mode = 0
-offset_left = 84.0
-offset_top = 192.0
-offset_right = 174.0
+offset_left = 68.0
+offset_top = 190.0
+offset_right = 188.0
 offset_bottom = 210.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
