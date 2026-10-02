@@ -4,7 +4,7 @@
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://d18md8rcnvnar" path="res://assets/levels/Stadium.png" id="3_stadium"]
 [ext_resource type="Texture2D" uid="uid://b8gse8cxrv4ef" path="res://assets/levels/Level_1.png" id="4_level1"]
-[ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="5_player"]
+[ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/entites/Player.png" id="5_player"]
 [ext_resource type="AudioStream" uid="uid://bl7atmy6lqvpj" path="res://assets/sounds/Pinned_at_Redline.mp3" id="5_ynuon"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="6_sounds"]
 
@@ -60,13 +60,11 @@ _data = {
 
 [sub_resource type="LabelSettings" id="LabelSettings_titulo"]
 font = ExtResource("2_font")
-font_size = 16
 font_color = Color(0.988235, 0.235294, 0.2, 1)
 outline_size = 2
 outline_color = Color(0, 0, 0, 1)
 shadow_size = 2
 shadow_color = Color(0, 0, 0, 0.65)
-shadow_offset = Vector2(1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_subtitulo"]
 font = ExtResource("2_font")

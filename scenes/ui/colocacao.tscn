@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://dtfque4ef88tp"]
 
-[ext_resource type="Texture2D" uid="uid://c4ghktq1385il" path="res://assets/sprites/podium.png" id="1_lhpdl"]
+[ext_resource type="Texture2D" uid="uid://c4ghktq1385il" path="res://assets/ui/podium.png" id="1_lhpdl"]
 [ext_resource type="Script" uid="uid://ldraq63cv4gj" path="res://scripts/ui/colocacao.gd" id="1_owws0"]
-[ext_resource type="Texture2D" uid="uid://4fxxx8ayamaw" path="res://assets/sprites/Racer_1.png" id="2_yv8jb"]
-[ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="3_hjwqk"]
+[ext_resource type="Texture2D" uid="uid://4fxxx8ayamaw" path="res://assets/sprites/entites/Racer_1.png" id="2_yv8jb"]
+[ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/entites/Racer_2.png" id="3_hjwqk"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="4_font"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="6_3jcyx"]
 
@@ -13,9 +13,7 @@ font_size = 8
 font_color = Color(0.988235, 0.74902, 0.0588235, 1)
 outline_size = 1
 outline_color = Color(0, 0, 0, 1)
-shadow_size = 1
 shadow_color = Color(0, 0, 0, 0.85)
-shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
 bg_color = Color(0.08, 0.08, 0.12, 1)

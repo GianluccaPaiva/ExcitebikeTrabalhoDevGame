@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bvyg7k4g1xhnx"]
 
-[ext_resource type="Texture2D" uid="uid://4fxxx8ayamaw" path="res://assets/sprites/Racer_1.png" id="1_racer1"]
+[ext_resource type="Texture2D" uid="uid://4fxxx8ayamaw" path="res://assets/sprites/entites/Racer_1.png" id="1_racer1"]
 
 [sub_resource type="Animation" id="Animation_reset"]
 length = 0.001

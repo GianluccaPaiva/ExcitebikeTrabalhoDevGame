@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://br0508s7i6haq"]
 
 [ext_resource type="Script" uid="uid://0owxop41oj" path="res://scripts/ui/hub.gd" id="1_was6o"]
-[ext_resource type="Texture2D" uid="uid://8sfsrafab2sq" path="res://assets/sprites/HubLimpo.png" id="1_x8s31"]
+[ext_resource type="Texture2D" uid="uid://8sfsrafab2sq" path="res://assets/sprites/hub/HubLimpo.png" id="1_x8s31"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
-[ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="4_player"]
+[ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/entites/Player.png" id="4_player"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_tempo"]
 font = ExtResource("2_font")
@@ -24,15 +24,15 @@ shadow_color = Color(0, 0, 0, 0.8)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vidas"]
 bg_color = Color(0, 0, 0, 0.1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(1, 1, 1, 0.06)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 anti_aliasing = false
 
 [node name="Hub" type="CanvasLayer" unique_id=1621250794]
@@ -88,6 +88,7 @@ vertical_alignment = 1
 clip_text = true
 
 [node name="PainelVidas" type="Panel" parent="Control" unique_id=2081947163]
+layout_mode = 0
 offset_left = 4.0
 offset_top = 2.0
 offset_right = 74.0

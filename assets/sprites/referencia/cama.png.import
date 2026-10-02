@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c05moetqxqe66"
-path="res://.godot/imported/Racer_2.png-057dffdf2515afa5a0b865c43c9a6b08.ctex"
+uid="uid://b1irxupcgi18v"
+path="res://.godot/imported/cama.png-7c3e53c3d787b7d1d1ad0186a7347772.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/Racer_2.png"
-dest_files=["res://.godot/imported/Racer_2.png-057dffdf2515afa5a0b865c43c9a6b08.ctex"]
+source_file="res://assets/sprites/referencia/cama.png"
+dest_files=["res://.godot/imported/cama.png-7c3e53c3d787b7d1d1ad0186a7347772.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8sfsrafab2sq"
-path="res://.godot/imported/HubLimpo.png-d2b0b165f4681cff9c82893c5f17159d.ctex"
+path="res://.godot/imported/HubLimpo.png-81370ebf6f92ef4d0692a67332c9d710.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/HubLimpo.png"
-dest_files=["res://.godot/imported/HubLimpo.png-d2b0b165f4681cff9c82893c5f17159d.ctex"]
+source_file="res://assets/sprites/hub/HubLimpo.png"
+dest_files=["res://.godot/imported/HubLimpo.png-81370ebf6f92ef4d0692a67332c9d710.ctex"]
 
 [params]
 

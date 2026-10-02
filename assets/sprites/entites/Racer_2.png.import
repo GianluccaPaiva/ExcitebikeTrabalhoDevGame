@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4ghktq1385il"
-path="res://.godot/imported/podium.png-f24cc0e7272e3c3622bb750506a4ffa4.ctex"
+uid="uid://c05moetqxqe66"
+path="res://.godot/imported/Racer_2.png-b1d2973255b9a8cf4712fe718121b7c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/podium.png"
-dest_files=["res://.godot/imported/podium.png-f24cc0e7272e3c3622bb750506a4ffa4.ctex"]
+source_file="res://assets/sprites/entites/Racer_2.png"
+dest_files=["res://.godot/imported/Racer_2.png-b1d2973255b9a8cf4712fe718121b7c1.ctex"]
 
 [params]
 

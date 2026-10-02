@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c28ch660pqk5w" path="res://scenes/entities/player.tscn" id="3_viahy"]
 [ext_resource type="Script" uid="uid://cnu3a0ljteopf" path="res://scripts/entite/follower.gd" id="4_follower"]
 [ext_resource type="PackedScene" uid="uid://bvyg7k4g1xhnx" path="res://scenes/entities/enemy.tscn" id="5_enemy"]
-[ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="6_racer2"]
+[ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/entites/Racer_2.png" id="6_racer2"]
 [ext_resource type="PackedScene" uid="uid://dmqm7u5q1x3n4" path="res://scenes/ui/countdown_ui.tscn" id="7_countdown"]
 [ext_resource type="Texture2D" uid="uid://bnxv5dcm4cfb6" path="res://assets/sprites/guysCut/guys.png" id="8_k5j8j"]
 [ext_resource type="Script" uid="uid://cmhxnmry2lt4y" path="res://scripts/levels/main_game.gd" id="8_maingame"]
