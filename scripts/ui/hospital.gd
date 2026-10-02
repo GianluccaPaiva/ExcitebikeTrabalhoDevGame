@@ -17,13 +17,14 @@ const FRASES_GAME_OVER: Array[String] = [
 @onready var btn_restart: Button = $Restart
 @onready var btn_menu: Button = $Menu
 @onready var sounds: Sounds = $Sounds
-@onready var audio_game_over: AudioStreamPlayer = get_node_or_null("AudioGameOver")
 
 var _vibration_timer: float = 0.0
 var _ambulance_base_y: float = 98.0
 
 
 func _ready() -> void:
+	AudioManager.tocar_game_over()
+	AudioManager.tocar_ambulancia()
 	if ambulance:
 		_ambulance_base_y = ambulance.position.y
 	get_tree().paused = false
@@ -48,8 +49,8 @@ func _sortear_frase() -> void:
 func _on_restart_pressed() -> void:
 	btn_restart.disabled = true
 	btn_menu.disabled = true
-	if audio_game_over and audio_game_over.playing:
-		audio_game_over.stop()
+	AudioManager.parar_game_over()
+	AudioManager.parar_ambulancia()
 	if sounds:
 		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
@@ -59,8 +60,8 @@ func _on_restart_pressed() -> void:
 func _on_menu_pressed() -> void:
 	btn_restart.disabled = true
 	btn_menu.disabled = true
-	if audio_game_over and audio_game_over.playing:
-		audio_game_over.stop()
+	AudioManager.parar_game_over()
+	AudioManager.parar_ambulancia()
 	if sounds:
 		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")

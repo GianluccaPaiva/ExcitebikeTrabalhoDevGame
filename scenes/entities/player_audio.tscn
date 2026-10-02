@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://cx82mvlq4k78d"]
+
+[ext_resource type="Script" path="res://scripts/entite/player_audio.gd" id="1_audio"]
+[ext_resource type="AudioStream" uid="uid://b888oik1j87ja" path="res://assets/sounds/somMoto.mp3" id="2_moto"]
+[ext_resource type="AudioStream" uid="uid://c5mtuac3vmaya" path="res://assets/sounds/somMotoParando.mp3" id="3_parando"]
+[ext_resource type="AudioStream" uid="uid://chewjottmfl8l" path="res://assets/sounds/somQueda.mp3" id="4_queda"]
+[ext_resource type="AudioStream" uid="uid://vxxfjudbs7gf" path="res://assets/sounds/somMorte.mp3" id="5_morte"]
+
+[node name="PlayerAudio" type="Node2D"]
+script = ExtResource("1_audio")
+
+[node name="AudioMoto" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_moto")
+volume_db = -6.0
+
+[node name="AudioMotoParando" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_parando")
+volume_db = -4.0
+
+[node name="AudioQueda" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_queda")
+
+[node name="AudioMorte" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_morte")
+volume_db = 2.0

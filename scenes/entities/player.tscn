@@ -3,10 +3,7 @@
 [ext_resource type="Script" uid="uid://c46sm1q8s4pm8" path="res://scripts/entite/player.gd" id="1_08t41"]
 [ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="1_ucweq"]
 [ext_resource type="PackedScene" uid="uid://br0508s7i6haq" path="res://scenes/ui/hub.tscn" id="3_1ie0h"]
-[ext_resource type="AudioStream" uid="uid://b888oik1j87ja" path="res://assets/sounds/somMoto.mp3" id="4_moto"]
-[ext_resource type="AudioStream" uid="uid://c5mtuac3vmaya" path="res://assets/sounds/somMotoParando.mp3" id="5_parando"]
-[ext_resource type="AudioStream" uid="uid://chewjottmfl8l" path="res://assets/sounds/somQueda.mp3" id="6_queda"]
-[ext_resource type="AudioStream" uid="uid://vxxfjudbs7gf" path="res://assets/sounds/somMorte.mp3" id="7_morte"]
+[ext_resource type="PackedScene" path="res://scenes/entities/player_audio.tscn" id="4_audio"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ucweq"]
 
@@ -164,19 +161,5 @@ speed_scale = 0.2
 
 [node name="Hub" parent="." unique_id=1621250794 instance=ExtResource("3_1ie0h")]
 
-[node name="AudioMoto" type="AudioStreamPlayer" parent="." unique_id=1911223351]
-stream = ExtResource("4_moto")
-volume_db = -6.0
+[node name="PlayerAudio" parent="." instance=ExtResource("4_audio")]
 
-
-[node name="AudioMotoParando" type="AudioStreamPlayer" parent="." unique_id=1911223352]
-stream = ExtResource("5_parando")
-volume_db = -4.0
-
-[node name="AudioQueda" type="AudioStreamPlayer" parent="." unique_id=1911223353]
-stream = ExtResource("6_queda")
-volume_db = 0.0
-
-[node name="AudioMorte" type="AudioStreamPlayer" parent="." unique_id=1911223354]
-stream = ExtResource("7_morte")
-volume_db = 2.0

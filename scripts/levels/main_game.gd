@@ -25,13 +25,8 @@ var _chegada_registrada_player: bool = false
 @onready var sensor_chegada: Area2D = get_node_or_null("PistaVisual/Chegada/SensorChegada")
 @onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
 @onready var countdown_ui: CanvasLayer = get_node_or_null("CountdownUI")
-@onready var audio_estadio: AudioStreamPlayer = get_node_or_null("AudioEstadio")
-@onready var audio_linha_chegada: AudioStreamPlayer = get_node_or_null("AudioLinhaChegada")
-
-var _tempo_ultimo_som_chegada: float = -10.0
-
-
 func _ready() -> void:
+	AudioManager.tocar_estadio()
 	colocacoes.clear()
 	bots.clear()
 	bots_concluidos.clear()
@@ -46,18 +41,6 @@ func _ready() -> void:
 	_conectar_bots()
 	_conectar_countdown()
 
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PAUSED:
-		if audio_estadio and audio_estadio.playing:
-			audio_estadio.stream_paused = true
-		if audio_linha_chegada and audio_linha_chegada.playing:
-			audio_linha_chegada.stream_paused = true
-	elif what == NOTIFICATION_UNPAUSED:
-		if audio_estadio and audio_estadio.stream_paused:
-			audio_estadio.stream_paused = false
-		if audio_linha_chegada and audio_linha_chegada.stream_paused:
-			audio_linha_chegada.stream_paused = false
 
 
 func _conectar_countdown() -> void:
@@ -155,10 +138,7 @@ func _verificar_condicao_transicao() -> void:
 
 	transicao_em_andamento = true
 	_enviar_dados_para_colocacao()
-	if audio_estadio and audio_estadio.playing:
-		audio_estadio.stop()
-	if audio_linha_chegada and audio_linha_chegada.playing:
-		audio_linha_chegada.stop()
+	AudioManager.parar_estadio()
 	await get_tree().create_timer(1.2).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/colocacao.tscn")
 
@@ -166,10 +146,7 @@ func _verificar_condicao_transicao() -> void:
 ## Callback executado quando o jogador atinge o limite de acidentes
 func _on_hospital() -> void:
 	transicao_em_andamento = true
-	if audio_estadio and audio_estadio.playing:
-		audio_estadio.stop()
-	if audio_linha_chegada and audio_linha_chegada.playing:
-		audio_linha_chegada.stop()
+	AudioManager.parar_estadio()
 	await get_tree().create_timer(1.4).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/hospital.tscn")
 
@@ -250,12 +227,8 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	colocacoes.append(corredor)
 	var colocacao: int = colocacoes.size()
 
-	# Dispara a comemoração da torcida na chegada (cooldown anti-eco de 1.5s)
-	var tempo_agora: float = Time.get_ticks_msec() / 1000.0
-	if tempo_agora - _tempo_ultimo_som_chegada >= 1.5:
-		_tempo_ultimo_som_chegada = tempo_agora
-		if audio_linha_chegada:
-			audio_linha_chegada.play()
+	# Dispara a comemoração da torcida na chegada através do AudioManager (cooldown embutido)
+	AudioManager.tocar_linha_chegada()
 
 	print("[MainGame] 🏁 %dº LUGAR: %s cruzou a linha de chegada!" % [colocacao, corredor.name])
 	if corredor is CharacterBody2D or corredor.name == "Player":

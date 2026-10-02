@@ -25,8 +25,6 @@ const CONFIG_MEDALHAS: Dictionary = {
 @onready var btn_restart: Button = $Control/Restart
 @onready var btn_menu: Button = $Control/Menu
 @onready var sounds: Sounds = $Control/Sounds
-@onready var audio_podio: AudioStreamPlayer = get_node_or_null("AudioPodio")
-@onready var audio_4_lugar: AudioStreamPlayer = get_node_or_null("Audio4Lugar")
 
 
 ## Registra os dados da corrida antes de trocar para esta cena
@@ -180,19 +178,14 @@ func _on_menu_pressed() -> void:
 ## Dispara o áudio correspondente à classificação do jogador
 func _tocar_som_resultado() -> void:
 	if posicao_player <= 3:
-		if audio_podio and not audio_podio.playing:
-			audio_podio.play()
+		AudioManager.tocar_podio()
 	else:
-		if audio_4_lugar and not audio_4_lugar.playing:
-			audio_4_lugar.play()
+		AudioManager.tocar_quarto_lugar()
 
 
 ## Interrompe os áudios da cena antes da troca de contexto
 func _parar_sons() -> void:
-	if audio_podio and audio_podio.playing:
-		audio_podio.stop()
-	if audio_4_lugar and audio_4_lugar.playing:
-		audio_4_lugar.stop()
+	AudioManager.parar_audios_colocacao()
 
 
 ## Mantido por segurança para conexões herdadas

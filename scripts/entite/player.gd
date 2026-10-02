@@ -33,13 +33,7 @@ signal desaceleracao_concluida
 @onready var moto_caida_sprite: Sprite2D = $MotoCaidaSprite
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 @onready var hub_ui: Node = get_node_or_null("Hub")
-@onready var audio_moto: AudioStreamPlayer = get_node_or_null("AudioMoto")
-@onready var audio_moto_parando: AudioStreamPlayer = get_node_or_null("AudioMotoParando")
-@onready var audio_queda: AudioStreamPlayer = get_node_or_null("AudioQueda")
-@onready var audio_morte: AudioStreamPlayer = get_node_or_null("AudioMorte")
-
-# --- CONTROLE DE ÁUDIO DO MOTOR ---
-const VOLUME_MOTO_DB: float = -6.0
+@onready var player_audio: Node2D = get_node_or_null("PlayerAudio")
 
 # --- VARIÁVEIS DE ESTADO E VELOCIDADE ESCALAR ---
 @export var controles_bloqueados: bool = true
@@ -75,31 +69,7 @@ func _ready() -> void:
 	if animation_player:
 		animation_player.play("parado")
 
-	if audio_moto:
-		audio_moto.volume_db = VOLUME_MOTO_DB
-
 	update_hub_ui()
-
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PAUSED:
-		if audio_moto and audio_moto.playing:
-			audio_moto.stream_paused = true
-		if audio_moto_parando and audio_moto_parando.playing:
-			audio_moto_parando.stream_paused = true
-		if audio_queda and audio_queda.playing:
-			audio_queda.stream_paused = true
-		if audio_morte and audio_morte.playing:
-			audio_morte.stream_paused = true
-	elif what == NOTIFICATION_UNPAUSED:
-		if audio_moto and audio_moto.stream_paused:
-			audio_moto.stream_paused = false
-		if audio_moto_parando and audio_moto_parando.stream_paused:
-			audio_moto_parando.stream_paused = false
-		if audio_queda and audio_queda.stream_paused:
-			audio_queda.stream_paused = false
-		if audio_morte and audio_morte.stream_paused:
-			audio_morte.stream_paused = false
 
 
 func _physics_process(delta: float) -> void:
@@ -107,7 +77,8 @@ func _physics_process(delta: float) -> void:
 	if controles_bloqueados and not em_desaceleracao_automatica:
 		velocity = Vector2.ZERO
 		current_speed = 0.0
-		_parar_som_moto()
+		if player_audio:
+			player_audio.parar_motor()
 		if animation_player and animation_player.current_animation != "parado":
 			animation_player.play("parado")
 		update_hub_ui()
@@ -125,7 +96,9 @@ func _physics_process(delta: float) -> void:
 
 	_check_floor_transitions()
 	update_hub_ui()
-	_atualizar_audio_moto()
+	if player_audio:
+		var impedido: bool = (state == State.ACIDENTE or em_desaceleracao_automatica or controles_bloqueados)
+		player_audio.atualizar_motor(Input.is_action_pressed("acelerar"), current_speed, max_speed, impedido)
 
 
 # --- ESTADO: NO CHÃO (DESLOCAMENTO VETORIAL ALINHADO AO RELEVO) ---
@@ -152,8 +125,8 @@ func _process_chao(delta: float) -> void:
 			velocity = Vector2.ZERO
 			em_desaceleracao_automatica = false
 			controles_bloqueados = true
-			if audio_moto_parando and audio_moto_parando.playing:
-				audio_moto_parando.stop()
+			if player_audio:
+				player_audio.parar_parando()
 			if animation_player:
 				animation_player.play("parado")
 				animation_player.speed_scale = 1.0
@@ -355,13 +328,12 @@ func _disparar_acidente() -> void:
 	floor_snap_length = 8.0
 	ramp_launch_timer = 0.0
 
-	_parar_som_moto()
-	if qtd_acidentes >= limite_acidentes_hospital:
-		if audio_morte:
-			audio_morte.play()
-	else:
-		if audio_queda:
-			audio_queda.play()
+	if player_audio:
+		player_audio.parar_motor()
+		if qtd_acidentes >= limite_acidentes_hospital:
+			player_audio.tocar_morte()
+		else:
+			player_audio.tocar_queda()
 
 	if animation_player:
 		animation_player.play("acidente")
@@ -398,9 +370,9 @@ func iniciar_desaceleracao_automatica(x_alvo: float = 17855.0) -> void:
 	controles_bloqueados = true
 	limite_x_parada = x_alvo
 
-	_parar_som_moto()
-	if audio_moto_parando and not audio_moto_parando.playing:
-		audio_moto_parando.play()
+	if player_audio:
+		player_audio.parar_motor()
+		player_audio.tocar_parando()
 
 	# Distância disponível até os filmers (com margem de 65px da frente da moto para folga estética)
 	var margem_seguranca: float = 65.0
@@ -417,36 +389,4 @@ func iniciar_desaceleracao_automatica(x_alvo: float = 17855.0) -> void:
 ## Chamado ao atingir o fim da pista / barramento (aciona a desaceleração gradual)
 func travar_controles() -> void:
 	iniciar_desaceleracao_automatica()
-
-
-## Atualiza a reprodução contínua e a modulação de pitch do motor do player
-func _atualizar_audio_moto() -> void:
-	if not audio_moto:
-		return
-
-	if state == State.ACIDENTE or em_desaceleracao_automatica or controles_bloqueados:
-		_parar_som_moto()
-		return
-
-	var acelerando: bool = Input.is_action_pressed("acelerar")
-	var em_movimento: bool = current_speed > 10.0
-
-	if not (acelerando or em_movimento):
-		_parar_som_moto()
-		return
-
-	# Modula o pitch do motor com base na velocidade atual do player
-	var fator_vel: float = clampf(current_speed / max_speed, 0.0, 1.0)
-	audio_moto.pitch_scale = lerpf(0.85, 1.35, fator_vel)
-
-	# Inicia a reprodução contínua em loop se ainda não estiver tocando
-	if not audio_moto.playing:
-		audio_moto.volume_db = VOLUME_MOTO_DB
-		audio_moto.play()
-
-
-## Interrompe o som contínuo do motor da moto
-func _parar_som_moto() -> void:
-	if audio_moto and audio_moto.playing:
-		audio_moto.stop()
 

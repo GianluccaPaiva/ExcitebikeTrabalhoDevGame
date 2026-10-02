@@ -15,8 +15,6 @@
 [ext_resource type="Material" uid="uid://c8y3m8l5p2q1" path="res://assets/shaders/racer_yellow.tres" id="12_racer_yellow"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="14_bvlx0"]
 [ext_resource type="PackedScene" uid="uid://df4n765p4dknj" path="res://scenes/ui/pause.tscn" id="15_gpckr"]
-[ext_resource type="AudioStream" uid="uid://c22l0yoajkdnt" path="res://assets/sounds/somEstadio.mp3" id="16_estadio"]
-[ext_resource type="AudioStream" uid="uid://do7h63uqtv7ng" path="res://assets/sounds/somLinhaChegada.mp3" id="17_chegada"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g4v7s"]
 atlas = ExtResource("2_valbi")
@@ -500,14 +498,7 @@ texture = ExtResource("8_k5j8j")
 [node name="Sounds" parent="." unique_id=1546176675 instance=ExtResource("14_bvlx0")]
 
 [node name="Pause" parent="." unique_id=11370104 instance=ExtResource("15_gpckr")]
-[node name="AudioEstadio" type="AudioStreamPlayer" parent="." unique_id=1911223344]
-stream = ExtResource("16_estadio")
-volume_db = -8.0
-autoplay = true
 
-[node name="AudioLinhaChegada" type="AudioStreamPlayer" parent="." unique_id=1911223345]
-stream = ExtResource("17_chegada")
-volume_db = -2.0
 
 [connection signal="area_entered" from="PistaVisual/Chegada/SensorChegada" to="." method="_on_sensor_chegada_area_entered"]
 [connection signal="body_entered" from="PistaVisual/Chegada/SensorChegada" to="." method="_on_sensor_chegada_body_entered"]
