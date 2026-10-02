@@ -51,7 +51,8 @@ point_count = 63
 
 [node name="MainGame" type="Node2D" unique_id=869416145]
 script = ExtResource("8_maingame")
-chance_referencia_beta = 10.0
+tempo_limite = 100.0
+chance_referencia_beta = 40.0
 saltos_de_frame_bots = 13
 
 [node name="FundoArquibancada" type="Parallax2D" parent="." unique_id=344981667]
