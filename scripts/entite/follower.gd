@@ -64,7 +64,7 @@ func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0
 	_frame_skip_ativo = saltos_de_frame
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		_aplicar_textura()
 		_aplicar_material()
