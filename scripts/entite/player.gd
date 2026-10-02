@@ -335,6 +335,9 @@ func _disparar_acidente() -> void:
 		else:
 			player_audio.tocar_queda()
 
+	# A torcida no estádio reage à queda do competidor
+	AudioManager.tocar_torcida_queda()
+
 	if animation_player:
 		animation_player.play("acidente")
 		animation_player.speed_scale = 1.0

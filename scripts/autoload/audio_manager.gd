@@ -10,6 +10,7 @@ const STREAM_PODIO: AudioStream = preload("res://assets/sounds/podio.mp3")
 const STREAM_4_LUGAR: AudioStream = preload("res://assets/sounds/som4lugar.mp3")
 const STREAM_GAME_OVER: AudioStream = preload("res://assets/sounds/somGameOver.mp3")
 const STREAM_AMBULANCIA: AudioStream = preload("res://assets/sounds/Ambulance.mp3")
+const STREAM_TORCIDA_QUEDA: AudioStream = preload("res://assets/sounds/somTorcidaQueda.wav")
 
 # Nós de reprodução dedicados
 var _player_estadio: AudioStreamPlayer
@@ -18,6 +19,9 @@ var _player_podio: AudioStreamPlayer
 var _player_4_lugar: AudioStreamPlayer
 var _player_game_over: AudioStreamPlayer
 var _player_ambulancia: AudioStreamPlayer
+var _player_torcida_queda: AudioStreamPlayer
+
+var _tween_ducking: Tween = null
 
 # Lista de todos os reprodutores para operações em lote (ex: pausa)
 var _todos_players: Array[AudioStreamPlayer] = []
@@ -37,6 +41,7 @@ func _ready() -> void:
 	_player_4_lugar = _criar_player("Audio4Lugar", STREAM_4_LUGAR, -4.0)
 	_player_game_over = _criar_player("AudioGameOver", STREAM_GAME_OVER, -2.0)
 	_player_ambulancia = _criar_player("AudioAmbulancia", STREAM_AMBULANCIA, -4.0)
+	_player_torcida_queda = _criar_player("AudioTorcidaQueda", STREAM_TORCIDA_QUEDA, -1.5)
 
 
 func _criar_player(nome: String, stream: AudioStream, vol_db: float) -> AudioStreamPlayer:
@@ -63,13 +68,39 @@ func _notification(what: int) -> void:
 # --- MÉTODOS DE CONTROLE DE ÁUDIO DO ESTÁDIO / CORRIDA ---
 
 func tocar_estadio() -> void:
-	if is_instance_valid(_player_estadio) and not _player_estadio.playing:
-		_player_estadio.play()
+	if is_instance_valid(_player_estadio):
+		_player_estadio.volume_db = -8.0
+		if not _player_estadio.playing:
+			_player_estadio.play()
 
 
 func parar_estadio() -> void:
+	if _tween_ducking and _tween_ducking.is_valid():
+		_tween_ducking.kill()
+	if is_instance_valid(_player_estadio):
+		_player_estadio.volume_db = -8.0
+		if _player_estadio.playing:
+			_player_estadio.stop()
+	parar_torcida_queda()
+
+
+func tocar_torcida_queda() -> void:
+	if is_instance_valid(_player_torcida_queda):
+		_player_torcida_queda.stop()
+		_player_torcida_queda.play()
+
+	# Ducking dinâmico: atenua momentaneamente o fundo do estádio para dar destaque à reação
 	if is_instance_valid(_player_estadio) and _player_estadio.playing:
-		_player_estadio.stop()
+		if _tween_ducking and _tween_ducking.is_valid():
+			_tween_ducking.kill()
+		_tween_ducking = create_tween()
+		_tween_ducking.tween_property(_player_estadio, "volume_db", -14.0, 0.12)
+		_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 1.4).set_delay(0.35)
+
+
+func parar_torcida_queda() -> void:
+	if is_instance_valid(_player_torcida_queda) and _player_torcida_queda.playing:
+		_player_torcida_queda.stop()
 
 
 func tocar_linha_chegada() -> void:
