@@ -21,6 +21,9 @@ signal percurso_concluido(bot: Node2D)
 		enemy_modulate = val
 		_aplicar_modulate()
 
+@onready var _sprite: Sprite2D = $Enemy/Sprite2D
+@onready var _anim: AnimationPlayer = $Enemy/AnimationPlayer
+
 @export var corrida_iniciada: bool = false
 
 var _last_position: Vector2 = Vector2.ZERO
@@ -49,7 +52,7 @@ func _ready() -> void:
 	
 	# Se a corrida ainda não começou, pausa a animação das rodas no grid
 	if not corrida_iniciada:
-		var anim: AnimationPlayer = _obter_animation_player()
+		var anim: AnimationPlayer = _anim
 		if anim:
 			anim.pause()
 
@@ -93,7 +96,7 @@ func _physics_process(delta: float) -> void:
 		current_speed = move_toward(current_speed, 0.0, taxa_desaceleracao * delta)
 		if current_speed <= 1.0:
 			current_speed = 0.0
-			var anim: AnimationPlayer = _obter_animation_player()
+			var anim: AnimationPlayer = _anim
 			if anim and anim.is_playing() and anim.current_animation != "RESET":
 				anim.pause()
 			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
@@ -126,7 +129,7 @@ func _physics_process(delta: float) -> void:
 	if get_parent() is Path2D and get_parent().curve:
 		var total_length: float = get_parent().curve.get_baked_length()
 		if progress >= total_length - 2.0:
-			var anim: AnimationPlayer = _obter_animation_player()
+			var anim: AnimationPlayer = _anim
 			if anim and anim.is_playing() and anim.current_animation != "RESET":
 				anim.pause()
 			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
@@ -153,7 +156,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _aplicar_textura() -> void:
-	var sprite: Sprite2D = _obter_sprite()
+	var sprite: Sprite2D = _sprite
 	if sprite:
 		var tex_alvo: Texture2D = enemy_texture
 		if tex_alvo == null:
@@ -163,36 +166,22 @@ func _aplicar_textura() -> void:
 
 
 func _aplicar_material() -> void:
-	var sprite: Sprite2D = _obter_sprite()
+	var sprite: Sprite2D = _sprite
 	if sprite:
 		sprite.material = enemy_material
 
 
 func _aplicar_modulate() -> void:
-	var sprite: Sprite2D = _obter_sprite()
+	var sprite: Sprite2D = _sprite
 	if sprite:
 		sprite.self_modulate = enemy_modulate
-
-
-func _obter_sprite() -> Sprite2D:
-	var sprite: Sprite2D = get_node_or_null("Enemy/Sprite2D")
-	if not sprite:
-		sprite = find_child("Sprite2D", true, false) as Sprite2D
-	return sprite
-
-
-func _obter_animation_player() -> AnimationPlayer:
-	var anim: AnimationPlayer = get_node_or_null("Enemy/AnimationPlayer")
-	if not anim:
-		anim = find_child("AnimationPlayer", true, false) as AnimationPlayer
-	return anim
 
 
 ## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
 func iniciar_corrida() -> void:
 	corrida_iniciada = true
 	_last_position = global_position
-	var anim: AnimationPlayer = _obter_animation_player()
+	var anim: AnimationPlayer = _anim
 	if anim:
 		anim.play("andar")
 
