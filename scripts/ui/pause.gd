@@ -30,12 +30,14 @@ func _unhandled_input(event: InputEvent) -> void:
 func pausar() -> void:
 	visible = true
 	get_tree().paused = true
+	AudioManager.pausar_audio_jogo(true)
 	_ativar_botoes(true)
 
 
 func despausar() -> void:
 	get_tree().paused = false
 	visible = false
+	AudioManager.pausar_audio_jogo(false)
 	_ativar_botoes(true)
 
 
@@ -59,6 +61,8 @@ func _on_restart_pressed() -> void:
 	_ativar_botoes(false)
 	if sounds:
 		await sounds.choice_select(0.25)
+	AudioManager.pausar_audio_jogo(false)
+	AudioManager.parar_todos()
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
 
@@ -67,5 +71,8 @@ func _on_menu_pressed() -> void:
 	_ativar_botoes(false)
 	if sounds:
 		await sounds.choice_select(0.25)
+	AudioManager.pausar_audio_jogo(false)
+	AudioManager.parar_todos()
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
+
