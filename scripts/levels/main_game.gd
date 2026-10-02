@@ -84,9 +84,9 @@ func _on_corrida_iniciada() -> void:
 		cronometro_ativo = true
 		tempo_decorrido = 0.0
 		_tempo_ultimo_log = 0.0
-		print("==================================================")
-		print("🟢 [Cronômetro] CORRIDA INICIADA! Cronômetro iniciado.")
-		print("==================================================")
+		if OS.is_debug_build(): print("==================================================")
+		if OS.is_debug_build(): print("🟢 [Cronômetro] CORRIDA INICIADA! Cronômetro iniciado.")
+		if OS.is_debug_build(): print("==================================================")
 
 
 func _process(delta: float) -> void:
@@ -114,7 +114,7 @@ func _process(delta: float) -> void:
 			_tempo_ultimo_log = tempo_decorrido
 			var px: float = player.global_position.x if player else 0.0
 			var pct: float = clampf((px / 17850.0) * 100.0, 0.0, 100.0)
-			print("[Cronômetro] ⏱️ %05.1fs | Restante: %05.1fs | X: %5.0f / 17850 px (%4.1f%%)" % [tempo_decorrido, tempo_limite_restante, px, pct])
+			if OS.is_debug_build(): print("[Cronômetro] ⏱️ %05.1fs | Restante: %05.1fs | X: %5.0f / 17850 px (%4.1f%%)" % [tempo_decorrido, tempo_limite_restante, px, pct])
 
 
 ## Callback executado quando o tempo limite do hub zera (1:50)
@@ -126,17 +126,17 @@ func _on_tempo_esgotado() -> void:
 	AudioManager.parar_audios_corrida()
 	TempoEsgotado.definir_tempo_limite(tempo_limite)
 	var tempo_str: String = TempoEsgotado.formatar_tempo(tempo_limite)
-	print("==================================================")
-	print("⌛ [MainGame] TEMPO ESGOTADO! O tempo limite zerou (%s)." % tempo_str)
-	print("==================================================")
+	if OS.is_debug_build(): print("==================================================")
+	if OS.is_debug_build(): print("⌛ [MainGame] TEMPO ESGOTADO! O tempo limite zerou (%s)." % tempo_str)
+	if OS.is_debug_build(): print("==================================================")
 	await get_tree().create_timer(1.2).timeout
 
 	var sorteio: float = randf_range(0.0, 100.0)
 	if sorteio < chance_referencia_beta:
-		print("🎭 [MainGame] Referência Beta ativada (sorteio: %.1f%% / chance: %.1f%%)" % [sorteio, chance_referencia_beta])
+		if OS.is_debug_build(): print("🎭 [MainGame] Referência Beta ativada (sorteio: %.1f%% / chance: %.1f%%)" % [sorteio, chance_referencia_beta])
 		get_tree().change_scene_to_file("res://scenes/referencia/beta.tscn")
 	else:
-		print("🛑 [MainGame] Indo direto para Tempo Esgotado (sorteio: %.1f%% / chance: %.1f%%)" % [sorteio, chance_referencia_beta])
+		if OS.is_debug_build(): print("🛑 [MainGame] Indo direto para Tempo Esgotado (sorteio: %.1f%% / chance: %.1f%%)" % [sorteio, chance_referencia_beta])
 		get_tree().change_scene_to_file("res://scenes/ui/tempo_esgotado.tscn")
 
 
@@ -153,7 +153,7 @@ func _conectar_player() -> void:
 func _on_player_manobra_sucesso(giros: int) -> void:
 	var tempo_reduzido = bonus_tempo_manobra * giros
 	tempo_decorrido = maxf(0.0, tempo_decorrido - tempo_reduzido)
-	print("🤸 Manobra concluída! Bônus aplicado: -%.1f s no cronômetro!" % tempo_reduzido)
+	if OS.is_debug_build(): print("🤸 Manobra concluída! Bônus aplicado: -%.1f s no cronômetro!" % tempo_reduzido)
 
 
 ## Mapeia e conecta os adversários autônomos na pista
@@ -307,11 +307,11 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 		if not _chegada_registrada_player:
 			_chegada_registrada_player = true
 			cronometro_ativo = false
-			print("==================================================")
-			print("🛑 [Cronômetro] BARRAMENTO ATINGIDO PELO PLAYER!")
-			print("⏱️ TEMPO TOTAL: %.3f s" % tempo_decorrido)
-			print("📍 Posição X Final: %.1f px" % body.global_position.x)
-			print("==================================================")
+			if OS.is_debug_build(): print("==================================================")
+			if OS.is_debug_build(): print("🛑 [Cronômetro] BARRAMENTO ATINGIDO PELO PLAYER!")
+			if OS.is_debug_build(): print("⏱️ TEMPO TOTAL: %.3f s" % tempo_decorrido)
+			if OS.is_debug_build(): print("📍 Posição X Final: %.1f px" % body.global_position.x)
+			if OS.is_debug_build(): print("==================================================")
 
 		barramento_atingido.emit(body)
 
@@ -332,15 +332,15 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	if not transicao_em_andamento:
 		AudioManager.tocar_linha_chegada()
 
-	print("[MainGame] 🏁 %dº LUGAR: %s cruzou a linha de chegada!" % [colocacao, corredor.name])
+	if OS.is_debug_build(): print("[MainGame] 🏁 %dº LUGAR: %s cruzou a linha de chegada!" % [colocacao, corredor.name])
 	if corredor is CharacterBody2D or corredor.name == "Player":
 		_chegada_registrada_player = true
 		cronometro_ativo = false
-		print("==================================================")
-		print("🏁 [Cronômetro] CHEGADA! O Player cruzou a linha de chegada!")
-		print("⏱️ TEMPO TOTAL DO PERCURSO: %.3f s (%.2f segundos)" % [tempo_decorrido, tempo_decorrido])
-		print("📍 Posição X Final: %.1f px" % corredor.global_position.x)
-		print("==================================================")
+		if OS.is_debug_build(): print("==================================================")
+		if OS.is_debug_build(): print("🏁 [Cronômetro] CHEGADA! O Player cruzou a linha de chegada!")
+		if OS.is_debug_build(): print("⏱️ TEMPO TOTAL DO PERCURSO: %.3f s (%.2f segundos)" % [tempo_decorrido, tempo_decorrido])
+		if OS.is_debug_build(): print("📍 Posição X Final: %.1f px" % corredor.global_position.x)
+		if OS.is_debug_build(): print("==================================================")
 	corredor_chegou.emit(corredor, colocacao)
 
 
