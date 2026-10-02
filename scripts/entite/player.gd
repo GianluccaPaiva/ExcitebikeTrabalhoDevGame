@@ -62,7 +62,7 @@ func update_hub_ui() -> void:
 			hub_ui.set_quedas(qtd_acidentes)
 
 func velocity_to_km_h(vel: float) -> float:
-	return vel * 0.36 # Converte px/s para km/h (1 px/s = 0.36 km/h)
+	return vel * PX_TO_KMH # Converte px/s para km/h (1 px/s = 0.36 km/h)
 
 func _ready() -> void:
 	# Configurações de floor_max_angle e floor_stop_on_slope movidas para o inspetor
@@ -191,10 +191,10 @@ func _process_ar(delta: float) -> void:
 	# Nariz levemente empinado (-7° a -35°): efeito de planeio suave
 	# Nariz apontado para baixo (> +10°): mergulho rápido para pouso antecipado
 	var eff_gravity: float = gravity
-	if rotation < -0.12 and rotation > -0.62:
-		eff_gravity = gravity * 0.85 # Sustentação suave sem flutuação excessiva
-	elif rotation > 0.18:
-		eff_gravity = gravity * 1.15 # Mergulho para encaixar em descidas
+	if rotation < ANGULO_PLANEIO_MAX and rotation > ANGULO_PLANEIO_MIN:
+		eff_gravity = gravity * FATOR_PLANEIO # Sustentação suave sem flutuação excessiva
+	elif rotation > ANGULO_MERGULHO_MIN:
+		eff_gravity = gravity * FATOR_MERGULHO # Mergulho para encaixar em descidas
 
 	velocity.y = minf(velocity.y + (eff_gravity * delta), max_fall_speed)
 
@@ -294,7 +294,7 @@ func _processar_aterrissagem() -> void:
 		# POUSO SEGURO / FLIP BEM SUCEDIDO:
 		# A pedido do usuário, estamos atrelando a manobra diretamente à lógica nativa do pouso seguro.
 		# Se o jogador aterrissar com segurança (não capotar) após um salto real (mais de 0.4s no ar), ganha o bônus.
-		if tempo_no_ar >= 0.4:
+		if tempo_no_ar >= TEMPO_MINIMO_MANOBRA:
 			manobra_sucesso.emit(1)
 		
 		state = State.NO_CHAO
