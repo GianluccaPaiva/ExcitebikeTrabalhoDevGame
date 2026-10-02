@@ -24,8 +24,7 @@ var _player_base_rot: float = 0.0
 
 func _aleatoriza_falcao() -> void:
 	if falcao and lista_png_falcao.size() > 0:
-		var index: int = randi() % lista_png_falcao.size()
-		falcao.texture = lista_png_falcao[index]
+		falcao.texture = lista_png_falcao.pick_random()
 
 func _ready() -> void:
 	if doc_girl:
