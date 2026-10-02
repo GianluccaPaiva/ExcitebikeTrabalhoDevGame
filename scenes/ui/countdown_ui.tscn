@@ -43,4 +43,5 @@ vertical_alignment = 1
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Control" unique_id=1425183143]
 stream = ExtResource("2_y3fck")
+bus = &"UI"
 volume_db = 2.0

@@ -11,10 +11,12 @@ script = ExtResource("1_script")
 [node name="Select" type="AudioStreamPlayer" parent="." unique_id=468966984]
 process_mode = 3
 stream = ExtResource("1_km2h4")
+bus = &"UI"
 volume_db = -10.0
 
 [node name="Choice" type="AudioStreamPlayer" parent="." unique_id=1740507972]
 process_mode = 3
 stream = ExtResource("3_kfkvo")
+bus = &"UI"
 volume_db = -10.0
 pitch_scale = 1.41

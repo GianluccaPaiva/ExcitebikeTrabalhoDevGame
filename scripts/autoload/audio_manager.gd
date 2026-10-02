@@ -42,20 +42,21 @@ func _ready() -> void:
 	_arvore_estava_pausada = get_tree().paused
 	_audio_pausado = _arvore_estava_pausada
 
-	_player_estadio = _criar_player("AudioEstadio", STREAM_ESTADIO, -8.0)
-	_player_linha_chegada = _criar_player("AudioLinhaChegada", STREAM_LINHA_CHEGADA, -4.0)
-	_player_podio = _criar_player("AudioPodio", STREAM_PODIO, -4.0)
-	_player_4_lugar = _criar_player("Audio4Lugar", STREAM_4_LUGAR, -4.0)
-	_player_game_over = _criar_player("AudioGameOver", STREAM_GAME_OVER, -2.0)
-	_player_ambulancia = _criar_player("AudioAmbulancia", STREAM_AMBULANCIA, -4.0)
-	_player_torcida_queda = _criar_player("AudioTorcidaQueda", STREAM_TORCIDA_QUEDA, -3.5)
+	_player_estadio = _criar_player("AudioEstadio", STREAM_ESTADIO, -8.0, "Ambiente")
+	_player_linha_chegada = _criar_player("AudioLinhaChegada", STREAM_LINHA_CHEGADA, -4.0, "SFX")
+	_player_podio = _criar_player("AudioPodio", STREAM_PODIO, -4.0, "Music")
+	_player_4_lugar = _criar_player("Audio4Lugar", STREAM_4_LUGAR, -4.0, "Music")
+	_player_game_over = _criar_player("AudioGameOver", STREAM_GAME_OVER, -2.0, "Music")
+	_player_ambulancia = _criar_player("AudioAmbulancia", STREAM_AMBULANCIA, -4.0, "Ambiente")
+	_player_torcida_queda = _criar_player("AudioTorcidaQueda", STREAM_TORCIDA_QUEDA, -3.5, "Ambiente")
 
 
-func _criar_player(nome: String, stream: AudioStream, vol_db: float) -> AudioStreamPlayer:
+func _criar_player(nome: String, stream: AudioStream, vol_db: float, bus_name: String = "Master") -> AudioStreamPlayer:
 	var p: AudioStreamPlayer = AudioStreamPlayer.new()
 	p.name = nome
 	p.stream = stream
 	p.volume_db = vol_db
+	p.bus = bus_name
 	add_child(p)
 	_todos_players.append(p)
 	return p
