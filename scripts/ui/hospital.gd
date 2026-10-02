@@ -9,7 +9,12 @@ const FRASES_GAME_OVER: Array[String] = [
 	"MORREU!",
 	"FOI DE VASCO!",
 	"RIP",
-	"ACABOU PRO BETA!"
+	"ACABOU PRO BETA!",
+	"CAIXÃO E VELA PRETA!",
+	"FOI DE SUS!",
+	"DETONADO",
+	"MORREU MAS PASSA BEM",
+	"SON"
 ]
 
 @onready var label_status: Label = $Label
