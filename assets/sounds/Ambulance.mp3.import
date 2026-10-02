@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/Ambulance.mp3-0beea2825e56dd93001ecc8f84012ef
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0
