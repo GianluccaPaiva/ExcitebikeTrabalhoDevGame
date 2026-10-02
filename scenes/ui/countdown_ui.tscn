@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dmqm7u5q1x3n4"]
 
 [ext_resource type="Script" uid="uid://b1wq0nkl72vnd" path="res://scripts/ui/countdown_ui.gd" id="1_script"]
-[ext_resource type="AudioStream" uid="uid://bxbiebwo6khvb" path="res://assets/sounds/freesound_community-robotic-countdown-43935.mp3" id="2_y3fck"]
+[ext_resource type="AudioStream" uid="uid://bxbiebwo6khvb" path="res://assets/sounds/somCountdown.mp3" id="2_y3fck"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_countdown"]
 font_size = 28
