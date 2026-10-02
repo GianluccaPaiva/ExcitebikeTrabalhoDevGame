@@ -39,6 +39,7 @@ func _ready() -> void:
 		_carregar_dados_padrao_teste()
 
 	get_tree().paused = false
+	AudioManager.parar_audios_corrida()
 	_atualizar_sprites_podio()
 	_atualizar_resultado_e_medalha()
 	_tocar_som_resultado()

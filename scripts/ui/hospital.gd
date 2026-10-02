@@ -23,6 +23,7 @@ var _ambulance_base_y: float = 98.0
 
 
 func _ready() -> void:
+	AudioManager.parar_audios_corrida()
 	AudioManager.tocar_game_over()
 	AudioManager.tocar_ambulancia()
 	if ambulance:

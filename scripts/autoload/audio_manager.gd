@@ -186,6 +186,14 @@ func parar_estadio() -> void:
 		if _player_estadio.playing:
 			_player_estadio.stop()
 	parar_torcida_queda()
+	parar_linha_chegada()
+
+
+## Interrompe todos os sons relacionados ao percurso e torcida da corrida
+func parar_audios_corrida() -> void:
+	parar_estadio()
+	parar_torcida_queda()
+	parar_linha_chegada()
 
 
 func tocar_torcida_queda() -> void:
@@ -227,15 +235,22 @@ func tocar_linha_chegada() -> void:
 			_player_linha_chegada.play()
 
 
+func parar_linha_chegada() -> void:
+	if is_instance_valid(_player_linha_chegada) and _player_linha_chegada.playing:
+		_player_linha_chegada.stop()
+
+
 # --- MÉTODOS DE CONTROLE DA TELA DE COLOCAÇÃO / PÓDIO ---
 
 func tocar_podio() -> void:
+	parar_audios_corrida()
 	parar_audios_colocacao()
 	if is_instance_valid(_player_podio):
 		_player_podio.play()
 
 
 func tocar_quarto_lugar() -> void:
+	parar_audios_corrida()
 	parar_audios_colocacao()
 	if is_instance_valid(_player_4_lugar):
 		_player_4_lugar.play()

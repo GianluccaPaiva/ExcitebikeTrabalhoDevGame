@@ -139,7 +139,7 @@ func _verificar_condicao_transicao() -> void:
 
 	transicao_em_andamento = true
 	_enviar_dados_para_colocacao()
-	AudioManager.parar_estadio()
+	AudioManager.parar_audios_corrida()
 	await get_tree().create_timer(1.2).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/colocacao.tscn")
 
@@ -147,7 +147,7 @@ func _verificar_condicao_transicao() -> void:
 ## Callback executado quando o jogador atinge o limite de acidentes
 func _on_hospital() -> void:
 	transicao_em_andamento = true
-	AudioManager.parar_estadio()
+	AudioManager.parar_audios_corrida()
 	await get_tree().create_timer(1.4).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/hospital.tscn")
 
@@ -229,7 +229,8 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	var colocacao: int = colocacoes.size()
 
 	# Dispara a comemoração da torcida na chegada através do AudioManager (cooldown embutido)
-	AudioManager.tocar_linha_chegada()
+	if not transicao_em_andamento:
+		AudioManager.tocar_linha_chegada()
 
 	print("[MainGame] 🏁 %dº LUGAR: %s cruzou a linha de chegada!" % [colocacao, corredor.name])
 	if corredor is CharacterBody2D or corredor.name == "Player":
