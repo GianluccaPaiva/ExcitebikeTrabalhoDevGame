@@ -105,11 +105,14 @@ func _process(delta: float) -> void:
 func _on_tempo_esgotado() -> void:
 	if transicao_em_andamento or _chegada_registrada_player:
 		return
+	transicao_em_andamento = true
 	cronometro_ativo = false
+	AudioManager.parar_audios_corrida()
 	print("==================================================")
 	print("⌛ [MainGame] TEMPO ESGOTADO! O tempo limite zerou (1:50).")
 	print("==================================================")
-	_on_hospital()
+	await get_tree().create_timer(1.2).timeout
+	get_tree().change_scene_to_file("res://scenes/ui/tempo_esgotado.tscn")
 
 
 ## Conecta sinais emitidos pelo Player

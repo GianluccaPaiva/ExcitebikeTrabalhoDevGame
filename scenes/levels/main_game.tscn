@@ -499,7 +499,6 @@ texture = ExtResource("8_k5j8j")
 
 [node name="Pause" parent="." unique_id=11370104 instance=ExtResource("15_gpckr")]
 
-
 [connection signal="area_entered" from="PistaVisual/Chegada/SensorChegada" to="." method="_on_sensor_chegada_area_entered"]
 [connection signal="body_entered" from="PistaVisual/Chegada/SensorChegada" to="." method="_on_sensor_chegada_body_entered"]
 [connection signal="body_entered" from="PistaVisual/Barramento/SensorBarramento" to="." method="_on_sensor_barramento_body_entered"]

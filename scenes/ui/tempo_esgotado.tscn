@@ -1,0 +1,232 @@
+[gd_scene format=3 uid="uid://c7w3q1wab2e8p"]
+
+[ext_resource type="Script" path="res://scripts/ui/tempo_esgotado.gd" id="1_tempo"]
+[ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://d18md8rcnvnar" path="res://assets/levels/Stadium.png" id="3_stadium"]
+[ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="4_player"]
+[ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="5_sounds"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_titulo"]
+font = ExtResource("2_font")
+font_size = 8
+font_color = Color(0.96, 0.2, 0.2, 1)
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 1
+shadow_color = Color(0, 0, 0, 0.9)
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_subtitulo"]
+font = ExtResource("2_font")
+font_size = 8
+font_color = Color(0.988235, 0.74902, 0.0588235, 1)
+shadow_size = 1
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_detalhe"]
+font = ExtResource("2_font")
+font_size = 8
+font_color = Color(0.85, 0.85, 0.9, 1)
+shadow_size = 1
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_alerta"]
+font = ExtResource("2_font")
+font_size = 8
+font_color = Color(1, 0.35, 0.35, 1)
+shadow_size = 1
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_painel"]
+bg_color = Color(0.08, 0.08, 0.12, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.96, 0.2, 0.2, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.08, 0.08, 0.12, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.988235, 0.74902, 0.0588235, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.988235, 0.74902, 0.0588235, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+anti_aliasing = false
+
+[node name="TempoEsgotado" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tempo")
+
+[node name="Cenario" type="Node2D" parent="."]
+
+[node name="CeuNoite" type="ColorRect" parent="Cenario"]
+offset_right = 256.0
+offset_bottom = 160.0
+color = Color(0.07, 0.05, 0.12, 1)
+
+[node name="Stadium" type="Sprite2D" parent="Cenario"]
+modulate = Color(0.3, 0.3, 0.42, 1)
+position = Vector2(128, 80)
+texture = ExtResource("3_stadium")
+region_enabled = true
+region_rect = Rect2(0, 0, 256, 160)
+
+[node name="PistaChao" type="ColorRect" parent="Cenario"]
+offset_top = 160.0
+offset_right = 256.0
+offset_bottom = 240.0
+color = Color(0.22, 0.13, 0.08, 1)
+
+[node name="LinhaPista" type="ColorRect" parent="Cenario"]
+offset_top = 160.0
+offset_right = 256.0
+offset_bottom = 162.0
+color = Color(0.4, 0.28, 0.18, 1)
+
+[node name="PlayerDesacelerado" type="Sprite2D" parent="Cenario"]
+position = Vector2(128, 160)
+texture = ExtResource("4_player")
+hframes = 6
+vframes = 6
+frame = 24
+
+[node name="FumacaMotor" type="ColorRect" parent="Cenario"]
+offset_left = 138.0
+offset_top = 150.0
+offset_right = 142.0
+offset_bottom = 154.0
+color = Color(0.65, 0.65, 0.7, 0.7)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 10.0
+offset_bottom = 44.0
+grow_horizontal = 2
+theme_override_constants/separation = 4
+
+[node name="LabelTitulo" type="Label" parent="UI/Header"]
+layout_mode = 2
+pivot_offset = Vector2(128, 7)
+text = "TEMPO ESGOTADO!"
+label_settings = SubResource("LabelSettings_titulo")
+horizontal_alignment = 1
+
+[node name="LabelSubtitulo" type="Label" parent="UI/Header"]
+layout_mode = 2
+text = "LIMITE DE 01:50:00 EXCEDIDO"
+label_settings = SubResource("LabelSettings_subtitulo")
+horizontal_alignment = 1
+
+[node name="PainelInfo" type="PanelContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -105.0
+offset_top = -68.0
+offset_right = 105.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_painel")
+
+[node name="VBox" type="VBoxContainer" parent="UI/PainelInfo"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="LabelTempo" type="Label" parent="UI/PainelInfo/VBox"]
+layout_mode = 2
+text = "TEMPO RESTANTE: 00:00:00"
+label_settings = SubResource("LabelSettings_detalhe")
+horizontal_alignment = 1
+
+[node name="LabelStatus" type="Label" parent="UI/PainelInfo/VBox"]
+layout_mode = 2
+text = "DESQUALIFICADO"
+label_settings = SubResource("LabelSettings_alerta")
+horizontal_alignment = 1
+
+[node name="Botoes" type="HBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -95.0
+offset_top = -34.0
+offset_right = 95.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Restart" type="Button" parent="UI/Botoes"]
+custom_minimum_size = Vector2(88, 20)
+layout_mode = 2
+focus_neighbor_right = NodePath("../Menu")
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.988235, 0.74902, 0.0588235, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+text = "REINICIAR"
+
+[node name="Menu" type="Button" parent="UI/Botoes"]
+custom_minimum_size = Vector2(88, 20)
+layout_mode = 2
+focus_neighbor_left = NodePath("../Restart")
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.988235, 0.74902, 0.0588235, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+text = "MENU"
+
+[node name="Sounds" parent="." instance=ExtResource("5_sounds")]
+
+[connection signal="pressed" from="UI/Botoes/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="UI/Botoes/Menu" to="." method="_on_menu_pressed"]
