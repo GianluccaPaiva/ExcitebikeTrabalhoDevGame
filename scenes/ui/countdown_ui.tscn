@@ -41,5 +41,6 @@ label_settings = SubResource("LabelSettings_countdown")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Control" unique_id=1425183143]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Control" unique_id=1425183143]
 stream = ExtResource("2_y3fck")
+volume_db = 2.0

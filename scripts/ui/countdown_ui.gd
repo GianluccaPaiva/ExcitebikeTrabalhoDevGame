@@ -3,7 +3,7 @@ extends CanvasLayer
 signal corrida_iniciada
 
 @onready var label_contagem: Label = $Control/LabelContagem
-@onready var audio_player: AudioStreamPlayer2D = $Control/AudioStreamPlayer2D
+@onready var audio_player: AudioStreamPlayer = $Control/AudioStreamPlayer
 
 @export var tempo_por_numero: float = 1.0
 @export var tempo_exibicao_vai: float = 0.8

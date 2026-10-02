@@ -26,7 +26,7 @@ var _chegada_registrada_player: bool = false
 @onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
 @onready var countdown_ui: CanvasLayer = get_node_or_null("CountdownUI")
 func _ready() -> void:
-	AudioManager.tocar_estadio()
+	AudioManager.iniciar_estadio_largada()
 	colocacoes.clear()
 	bots.clear()
 	bots_concluidos.clear()
@@ -50,6 +50,7 @@ func _conectar_countdown() -> void:
 
 
 func _on_corrida_iniciada() -> void:
+	AudioManager.elevar_estadio_corrida()
 	if not cronometro_ativo and not _chegada_registrada_player:
 		cronometro_ativo = true
 		tempo_decorrido = 0.0

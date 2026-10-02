@@ -74,6 +74,25 @@ func tocar_estadio() -> void:
 			_player_estadio.play()
 
 
+## Inicia a torcida no grid de largada em volume atenuado (-16 dB) para não abafar o countdown
+func iniciar_estadio_largada() -> void:
+	if is_instance_valid(_player_estadio):
+		_player_estadio.volume_db = -16.0
+		if not _player_estadio.playing:
+			_player_estadio.play()
+
+
+## Eleva o estádio para o volume habitual de corrida (-8 dB) ao sinal de largada (VAI!)
+func elevar_estadio_corrida() -> void:
+	if is_instance_valid(_player_estadio) and _player_estadio.playing:
+		if _tween_ducking and _tween_ducking.is_valid():
+			_tween_ducking.kill()
+		_tween_ducking = create_tween()
+		_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 0.6)\
+			.set_trans(Tween.TRANS_SINE)\
+			.set_ease(Tween.EASE_OUT)
+
+
 func parar_estadio() -> void:
 	if _tween_ducking and _tween_ducking.is_valid():
 		_tween_ducking.kill()
