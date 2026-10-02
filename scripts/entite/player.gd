@@ -22,7 +22,8 @@ signal desaceleracao_concluida
 @export var ramp_inertia_multiplier: float = 1.18 # Multiplicador de inércia moderado ao decolar da rampa
 
 @export_group("Pouso e Acidente")
-@export var max_safe_angle_degrees: float = 32.0 # Tolerância máxima de desalinhamento (pouso perfeito pós-flip)
+@export var max_safe_angle_back_degrees: float = 75.0 # Tolerância ao pousar na roda traseira (empinada)
+@export var max_safe_angle_front_degrees: float = 60.0 # Tolerância ao pousar na roda dianteira (de bico)
 @export var crash_duration: float = 1.6 # Tempo bloqueado após queda
 @export var limite_acidentes_hospital: int = 3 # Quantidade de acidentes para ir ao hospital
 
@@ -263,11 +264,14 @@ func _processar_aterrissagem() -> void:
 	var ground_dir: Vector2 = Vector2.RIGHT.rotated(ground_angle)
 
 	# angle_difference calcula a menor distância angular (módulo 2*PI)
-	# Se o jogador executou 1, 2 ou mais flips (360°, 720°) e alinhou a moto, o diff será mínimo!
-	var diff: float = absf(angle_difference(rotation, ground_angle))
-	var safe_limit: float = deg_to_rad(max_safe_angle_degrees)
+	# Se a moto está empinada para trás (nariz para cima), diff_relativo < 0 -> usa tolerância de roda traseira
+	# Se a moto está bicando para frente (nariz para baixo), diff_relativo > 0 -> usa tolerância de roda dianteira
+	var diff_relativo: float = angle_difference(ground_angle, rotation)
+	var diff_abs: float = absf(diff_relativo)
+	var safe_limit_deg: float = max_safe_angle_back_degrees if diff_relativo < 0.0 else max_safe_angle_front_degrees
+	var safe_limit: float = deg_to_rad(safe_limit_deg)
 
-	if diff <= safe_limit:
+	if diff_abs <= safe_limit:
 		# POUSO SEGURO / FLIP BEM SUCEDIDO:
 		state = State.NO_CHAO
 		rotation = ground_angle
