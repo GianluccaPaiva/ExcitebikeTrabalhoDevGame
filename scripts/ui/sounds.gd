@@ -5,8 +5,8 @@ extends Node2D
 ## Conecta automaticamente os botões da cena para focar e tocar o som Select ao passar o mouse ou focar
 ## Configurado com PROCESS_MODE_ALWAYS para que continue funcionando perfeitamente mesmo com o jogo pausado (freeze)
 
-@onready var select: AudioStreamPlayer2D = $Select
-@onready var choice: AudioStreamPlayer2D = $Choice
+@onready var select: AudioStreamPlayer = $Select
+@onready var choice: AudioStreamPlayer = $Choice
 
 var _pode_tocar_som: bool = false
 
@@ -15,12 +15,8 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if select:
 		select.process_mode = Node.PROCESS_MODE_ALWAYS
-		select.panning_strength = 0.0
-		select.max_distance = 100000.0
 	if choice:
 		choice.process_mode = Node.PROCESS_MODE_ALWAYS
-		choice.panning_strength = 0.0
-		choice.max_distance = 100000.0
 
 	call_deferred("_inicializar")
 
