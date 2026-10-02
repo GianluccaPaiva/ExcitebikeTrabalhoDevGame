@@ -16,7 +16,6 @@ extends Node2D
 
 
 func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
 	if audio_moto:
 		audio_moto.volume_db = volume_moto_db
 	if audio_moto_parando:
@@ -27,21 +26,6 @@ func _ready() -> void:
 		audio_morte.volume_db = volume_morte_db
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PAUSED:
-		_pausar_streams(true)
-	elif what == NOTIFICATION_UNPAUSED:
-		_pausar_streams(false)
-
-
-func _pausar_streams(pausar: bool) -> void:
-	var lista: Array[AudioStreamPlayer] = [audio_moto, audio_moto_parando, audio_queda, audio_morte]
-	for a in lista:
-		if is_instance_valid(a):
-			if pausar and a.playing:
-				a.stream_paused = true
-			elif not pausar and a.stream_paused:
-				a.stream_paused = false
 
 
 ## Atualiza o motor contínuo e a modulação de pitch de acordo com a velocidade do player

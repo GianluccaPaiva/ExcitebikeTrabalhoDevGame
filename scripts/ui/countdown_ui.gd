@@ -15,13 +15,6 @@ func _ready() -> void:
 	iniciar_contagem()
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PAUSED:
-		if audio_player and audio_player.playing:
-			audio_player.stream_paused = true
-	elif what == NOTIFICATION_UNPAUSED:
-		if audio_player and audio_player.stream_paused:
-			audio_player.stream_paused = false
 
 
 func iniciar_contagem() -> void:
