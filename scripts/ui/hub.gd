@@ -13,19 +13,35 @@ extends CanvasLayer
 var _vidas_sprites: Array[Sprite2D] = []
 var _posicoes_originais_y: Dictionary = {}
 var _vidas_ativas: int = 3
-## Atualiza o cronômetro do HUD formatando tempo total decorrido em MM:SS:CC (Minutos, Segundos e Centésimos)
-func set_timer_atual(tempo: float) -> void:
+## Identificador do alvo para formatação de cronômetro no HUD
+enum TipoTempo {
+	ATUAL,
+	LIMITE
+}
+
+## Internalizado: Formata e aplica o tempo em MM:SS:CC no display correspondente
+func _set_timer(tempo: float, tipo: TipoTempo) -> void:
 	var minutos: int = int(tempo / 60.0)
 	var segundos: int = int(fmod(tempo, 60.0))
 	var centesimos: int = int(fmod(tempo * 100.0, 100.0))
 	var tempo_formatado: String = "%02d:%02d:%02d" % [minutos, segundos, centesimos]
-	if temp_atual:
-		temp_atual.text = tempo_formatado
+	match tipo:
+		TipoTempo.ATUAL:
+			if temp_atual:
+				temp_atual.text = tempo_formatado
+		TipoTempo.LIMITE:
+			if temp_limite:
+				temp_limite.text = tempo_formatado
 
 
-## Compatibilidade com chamadas anteriores de set_temp_atual
+## Externalizado: Atualiza o tempo atual no HUD
 func set_temp_atual(tempo: float) -> void:
-	set_timer_atual(tempo)
+	_set_timer(tempo, TipoTempo.ATUAL)
+
+
+## Alias retrocompatível para set_temp_atual
+func set_timer_atual(tempo: float) -> void:
+	set_temp_atual(tempo)
 
 func _ready() -> void:
 	_vidas_sprites = [moto_vida_1, moto_vida_2, moto_vida_3]
@@ -55,9 +71,9 @@ func set_km_h(km: Variant) -> void:
 			km_h.text = str(km)
 
 
+## Externalizado: Atualiza o tempo limite no HUD
 func set_temp_limite(temp: float) -> void:
-	if temp_limite:
-		temp_limite.text = str(temp)
+	_set_timer(temp, TipoTempo.LIMITE)
 
 
 ## Atualiza as vidas restantes com base na quantidade de acidentes (0, 1, 2, 3)

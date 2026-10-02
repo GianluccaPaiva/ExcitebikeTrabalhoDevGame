@@ -16,6 +16,10 @@ var player_desacelerou: bool = false
 var transicao_em_andamento: bool = false
 
 ## Cronômetro para medição e registro de tempo do percurso
+@export_group("Cronômetro & Limites")
+## Tempo limite / tempo final da corrida em segundos (110.0s = 01:50:00). Vai reduzindo no _process até zerar.
+@export var tempo_limite: float = 110.0
+
 var cronometro_ativo: bool = false
 var tempo_decorrido: float = 0.0
 var _tempo_ultimo_log: float = 0.0
@@ -40,8 +44,11 @@ func _ready() -> void:
 	tempo_decorrido = 0.0
 	_tempo_ultimo_log = 0.0
 	_chegada_registrada_player = false
-	if hub_ui and hub_ui.has_method("set_timer_atual"):
-		hub_ui.set_timer_atual(0.0)
+	if hub_ui:
+		if hub_ui.has_method("set_temp_atual"):
+			hub_ui.set_temp_atual(0.0)
+		if hub_ui.has_method("set_temp_limite"):
+			hub_ui.set_temp_limite(tempo_limite)
 	_conectar_sensores()
 	_conectar_player()
 	_conectar_bots()
@@ -74,13 +81,35 @@ func _process(delta: float) -> void:
 
 	if cronometro_ativo:
 		tempo_decorrido += delta
-		if hub_ui and hub_ui.has_method("set_timer_atual"):
-			hub_ui.set_timer_atual(tempo_decorrido)
+		var tempo_limite_restante: float = maxf(tempo_limite - tempo_decorrido, 0.0)
+
+		if hub_ui:
+			if hub_ui.has_method("set_temp_atual"):
+				hub_ui.set_temp_atual(tempo_decorrido)
+			if hub_ui.has_method("set_temp_limite"):
+				hub_ui.set_temp_limite(tempo_limite_restante)
+
+		# Quando o tempo limite reduz até zerar
+		if tempo_limite > 0.0 and tempo_limite_restante <= 0.0 and not transicao_em_andamento and not _chegada_registrada_player:
+			_on_tempo_esgotado()
+			return
+
 		if tempo_decorrido - _tempo_ultimo_log >= 1.0:
 			_tempo_ultimo_log = tempo_decorrido
 			var px: float = player.global_position.x if player else 0.0
 			var pct: float = clampf((px / 17850.0) * 100.0, 0.0, 100.0)
-			print("[Cronômetro] ⏱️ %05.1fs | X: %5.0f / 17850 px (%4.1f%%)" % [tempo_decorrido, px, pct])
+			print("[Cronômetro] ⏱️ %05.1fs | Restante: %05.1fs | X: %5.0f / 17850 px (%4.1f%%)" % [tempo_decorrido, tempo_limite_restante, px, pct])
+
+
+## Callback executado quando o tempo limite do hub zera (1:50)
+func _on_tempo_esgotado() -> void:
+	if transicao_em_andamento or _chegada_registrada_player:
+		return
+	cronometro_ativo = false
+	print("==================================================")
+	print("⌛ [MainGame] TEMPO ESGOTADO! O tempo limite zerou (1:50).")
+	print("==================================================")
+	_on_hospital()
 
 
 ## Conecta sinais emitidos pelo Player
