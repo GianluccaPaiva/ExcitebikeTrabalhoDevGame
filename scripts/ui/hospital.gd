@@ -70,8 +70,3 @@ func _on_menu_pressed() -> void:
 	if sounds:
 		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
-
-
-## Mantido por segurança para conexões herdadas
-func _on_button_pressed() -> void:
-	_on_restart_pressed()

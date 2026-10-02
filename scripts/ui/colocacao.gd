@@ -187,8 +187,3 @@ func _tocar_som_resultado() -> void:
 ## Interrompe os áudios da cena antes da troca de contexto
 func _parar_sons() -> void:
 	AudioManager.parar_audios_colocacao()
-
-
-## Mantido por segurança para conexões herdadas
-func _on_button_pressed() -> void:
-	_on_restart_pressed()

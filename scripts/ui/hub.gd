@@ -39,10 +39,6 @@ func set_temp_atual(tempo: float) -> void:
 	_set_timer(tempo, TipoTempo.ATUAL)
 
 
-## Alias retrocompatível para set_temp_atual
-func set_timer_atual(tempo: float) -> void:
-	set_temp_atual(tempo)
-
 func _ready() -> void:
 	_vidas_sprites = [moto_vida_1, moto_vida_2, moto_vida_3]
 	for sp in _vidas_sprites:
@@ -109,8 +105,3 @@ func _animar_perda_vida(sp: Sprite2D) -> void:
 	var tween_sumir: Tween = create_tween().set_parallel(true)
 	tween_sumir.tween_property(sp, "modulate:a", 0.0, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween_sumir.tween_property(sp, "position:y", sp.position.y - 3.0, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-
-
-## Alias para compatibilidade
-func set_acidentes(qtd: int) -> void:
-	set_quedas(qtd)
