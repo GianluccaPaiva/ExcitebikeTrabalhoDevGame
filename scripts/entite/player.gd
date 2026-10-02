@@ -65,8 +65,7 @@ func velocity_to_km_h(vel: float) -> float:
 	return vel * 0.36 # Converte px/s para km/h (1 px/s = 0.36 km/h)
 
 func _ready() -> void:
-	# Permite que rampas de até 60 graus sejam tratadas perfeitamente como piso
-	floor_max_angle = deg_to_rad(60.0)
+	# Configurações de floor_max_angle e floor_stop_on_slope movidas para o inspetor
 	floor_snap_length = 8.0
 	max_speed_base = max_speed
 	
