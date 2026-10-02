@@ -168,6 +168,7 @@ speed_scale = 0.2
 stream = ExtResource("4_moto")
 volume_db = -6.0
 
+
 [node name="AudioMotoParando" type="AudioStreamPlayer" parent="." unique_id=1911223352]
 stream = ExtResource("5_parando")
 volume_db = -4.0

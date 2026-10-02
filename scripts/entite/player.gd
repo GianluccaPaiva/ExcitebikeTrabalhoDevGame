@@ -38,6 +38,9 @@ signal desaceleracao_concluida
 @onready var audio_queda: AudioStreamPlayer = get_node_or_null("AudioQueda")
 @onready var audio_morte: AudioStreamPlayer = get_node_or_null("AudioMorte")
 
+# --- CONTROLE DE ÁUDIO DO MOTOR ---
+const VOLUME_MOTO_DB: float = -6.0
+
 # --- VARIÁVEIS DE ESTADO E VELOCIDADE ESCALAR ---
 @export var controles_bloqueados: bool = true
 var state: State = State.NO_CHAO
@@ -71,6 +74,9 @@ func _ready() -> void:
 		moto_caida_sprite.visible = false
 	if animation_player:
 		animation_player.play("parado")
+
+	if audio_moto:
+		audio_moto.volume_db = VOLUME_MOTO_DB
 
 	update_hub_ui()
 
@@ -419,24 +425,28 @@ func _atualizar_audio_moto() -> void:
 		return
 
 	if state == State.ACIDENTE or em_desaceleracao_automatica or controles_bloqueados:
-		if audio_moto.playing:
-			audio_moto.stop()
+		_parar_som_moto()
 		return
 
 	var acelerando: bool = Input.is_action_pressed("acelerar")
 	var em_movimento: bool = current_speed > 10.0
 
-	if acelerando or em_movimento:
-		if not audio_moto.playing:
-			audio_moto.play()
-		var fator_vel: float = clampf(current_speed / max_speed, 0.0, 1.0)
-		audio_moto.pitch_scale = lerpf(0.85, 1.35, fator_vel)
-	else:
-		if audio_moto.playing:
-			audio_moto.stop()
+	if not (acelerando or em_movimento):
+		_parar_som_moto()
+		return
+
+	# Modula o pitch do motor com base na velocidade atual do player
+	var fator_vel: float = clampf(current_speed / max_speed, 0.0, 1.0)
+	audio_moto.pitch_scale = lerpf(0.85, 1.35, fator_vel)
+
+	# Inicia a reprodução contínua em loop se ainda não estiver tocando
+	if not audio_moto.playing:
+		audio_moto.volume_db = VOLUME_MOTO_DB
+		audio_moto.play()
 
 
 ## Interrompe o som contínuo do motor da moto
 func _parar_som_moto() -> void:
 	if audio_moto and audio_moto.playing:
 		audio_moto.stop()
+
