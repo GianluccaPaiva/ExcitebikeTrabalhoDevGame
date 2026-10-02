@@ -19,6 +19,8 @@ var transicao_em_andamento: bool = false
 @export_group("Cronômetro & Limites")
 ## Tempo limite / tempo final da corrida em segundos (110.0s = 01:50:00). Vai reduzindo no _process até zerar.
 @export var tempo_limite: float = 110.0
+## Quantidade de segundos abatidos do cronômetro por cada giro completo aterrissado
+@export var bonus_tempo_manobra: float = 2.0
 ## Porcentagem de chance (0 a 100%) de exibir a cena de referência do Beta quando o tempo esgotar.
 @export_range(0.0, 100.0, 1.0, "suffix:%") var chance_referencia_beta: float = 50.0
 
@@ -29,6 +31,8 @@ var transicao_em_andamento: bool = false
 @export var fator_boost: float = 1.4
 ## Fator multiplicador de velocidade no Slower (ex: 0.6 = -40%)
 @export var fator_slower: float = 0.6
+## Pulos de frame (stuttering visual) aplicado nos bots sob efeito de pista. 0 = liso.
+@export var saltos_de_frame_bots: int = 2
 
 var cronometro_ativo: bool = false
 var tempo_decorrido: float = 0.0
@@ -143,6 +147,13 @@ func _conectar_player() -> void:
 			player.hospital.connect(_on_hospital)
 		if player.has_signal("desaceleracao_concluida") and not player.desaceleracao_concluida.is_connected(_on_player_desaceleracao_concluida):
 			player.desaceleracao_concluida.connect(_on_player_desaceleracao_concluida)
+		if player.has_signal("manobra_sucesso") and not player.manobra_sucesso.is_connected(_on_player_manobra_sucesso):
+			player.manobra_sucesso.connect(_on_player_manobra_sucesso)
+
+func _on_player_manobra_sucesso(giros: int) -> void:
+	var tempo_reduzido = bonus_tempo_manobra * giros
+	tempo_decorrido = maxf(0.0, tempo_decorrido - tempo_reduzido)
+	print("🤸 Manobra concluída! Bônus aplicado: -%.1f s no cronômetro!" % tempo_reduzido)
 
 
 ## Mapeia e conecta os adversários autônomos na pista
@@ -237,7 +248,8 @@ func _conectar_sensores_efeitos() -> void:
 func _on_sensor_efeito_entered(corpo_ou_area: Node, fator: float) -> void:
 	var corredor = _resolver_corredor(corpo_ou_area)
 	if corredor and corredor.has_method("aplicar_efeito_pista"):
-		corredor.aplicar_efeito_pista(fator, duracao_efeitos_pista)
+		var saltos = saltos_de_frame_bots if corredor != player else 0
+		corredor.aplicar_efeito_pista(fator, duracao_efeitos_pista, saltos)
 
 
 ## Conecta os sinais de colisão dos sensores da pista

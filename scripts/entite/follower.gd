@@ -54,9 +54,14 @@ func _ready() -> void:
 			anim.pause()
 
 
-func aplicar_efeito_pista(fator: float, duracao: float) -> void:
+var _frame_skip_ativo: int = 0
+var _frame_count: int = 0
+var _delta_acumulado: float = 0.0
+
+func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
 	current_speed = speed * fator
 	tempo_efeito_restante = duracao
+	_frame_skip_ativo = saltos_de_frame
 
 
 func _process(delta: float) -> void:
@@ -76,12 +81,11 @@ func _process(delta: float) -> void:
 	if current_speed < 0.0:
 		current_speed = speed
 
+	# Decresce o timer de efeito uniformemente (mesma duração do player)
 	if tempo_efeito_restante > 0.0 and not em_desaceleracao:
 		tempo_efeito_restante -= delta
-		if tempo_efeito_restante <= 0.0:
-			current_speed = speed
 
-	# Zona de desaceleração pós-chegada (para parar suavemente antes dos fotógrafos/guys)
+	# Zona de desaceleração pós-chegada
 	if global_position.x >= 17640.0:
 		em_desaceleracao = true
 
@@ -98,37 +102,52 @@ func _process(delta: float) -> void:
 				percurso_finalizado = true
 				percurso_concluido.emit(self)
 			return
+	else:
+		# Se acabou o tempo do efeito, suaviza o retorno à velocidade original (igual inércia do Player!)
+		if tempo_efeito_restante <= 0.0:
+			current_speed = move_toward(current_speed, speed, 120.0 * delta)
+			_frame_skip_ativo = 0
+
+	# Lógica do Frame Skip (salto de frames/stuttering)
+	var passo_delta: float = delta
+	if _frame_skip_ativo > 0 and tempo_efeito_restante > 0.0:
+		_delta_acumulado += delta
+		_frame_count += 1
+		if _frame_count <= _frame_skip_ativo:
+			return # Pula o avanço neste frame para dar o efeito visual
+		passo_delta = _delta_acumulado
+		_delta_acumulado = 0.0
+		_frame_count = 0
+	else:
+		_delta_acumulado = 0.0
+		_frame_count = 0
 
 	# Checa se atingiu o fim da trilha após a rampa final
 	if get_parent() is Path2D and get_parent().curve:
 		var total_length: float = get_parent().curve.get_baked_length()
 		if progress >= total_length - 2.0:
-			# Finalizou a corrida na reta final
 			var anim: AnimationPlayer = _obter_animation_player()
 			if anim and anim.is_playing() and anim.current_animation != "RESET":
 				anim.pause()
-			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
+			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
 			_last_position = global_position
 			if not percurso_finalizado:
 				percurso_finalizado = true
 				percurso_concluido.emit(self)
 			return
 
-	progress += current_speed * delta
+	progress += current_speed * passo_delta
 	
-	# Fluxo de direções controlado: impede inversão de sentido e limita inclinação
 	var move_delta: Vector2 = global_position - _last_position
 	if move_delta.length_squared() > 0.0001:
 		if move_delta.x > 0.001:
 			var target_angle: float = move_delta.angle()
-			# Clampa para ângulo seguro (~16 graus) acompanhando as rampas sem empinar excessivamente
 			target_angle = clampf(target_angle, -0.28, 0.28)
-			rotation = lerp_angle(rotation, target_angle, rotation_smoothing_speed * delta)
+			rotation = lerp_angle(rotation, target_angle, rotation_smoothing_speed * passo_delta)
 		else:
-			# Sem deslocamento para a frente: mantém 0 radianos
-			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
+			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
 	else:
-		rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
+		rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
 	
 	_last_position = global_position
 

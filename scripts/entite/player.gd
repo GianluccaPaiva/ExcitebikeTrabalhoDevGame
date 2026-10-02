@@ -7,6 +7,7 @@ enum State {
 }
 signal hospital 
 signal desaceleracao_concluida
+signal manobra_sucesso(quantidade_giros: int)
 
 # --- CONFIGURAÇÕES DE FÍSICA E MOVIMENTO (Ajustáveis no Inspetor) ---
 @export_group("Movimento no Solo")
@@ -50,6 +51,8 @@ var last_ramp_speed: float = 0.0
 var ramp_launch_timer: float = 0.0
 var max_speed_base: float = 0.0
 var tempo_efeito_restante: float = 0.0
+var rotacao_inicio_salto: float = 0.0
+var tempo_no_ar: float = 0.0
 
 func update_hub_ui() -> void:
 	if hub_ui:
@@ -75,7 +78,7 @@ func _ready() -> void:
 	update_hub_ui()
 
 
-func aplicar_efeito_pista(fator: float, duracao: float) -> void:
+func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
 	max_speed = max_speed_base * fator
 	tempo_efeito_restante = duracao
 	if fator > 1.0:
@@ -188,6 +191,8 @@ func _process_chao(delta: float) -> void:
 
 # --- ESTADO: NO AR (MANOBRAS, FLIPS E ROTAÇÃO) ---
 func _process_ar(delta: float) -> void:
+	tempo_no_ar += delta
+	
 	# 1. Aplicação contínua da gravidade com sustentação aerodinâmica equilibrada
 	# Nariz levemente empinado (-7° a -35°): efeito de planeio suave
 	# Nariz apontado para baixo (> +10°): mergulho rápido para pouso antecipado
@@ -263,6 +268,8 @@ func _check_floor_transitions() -> void:
 func _decolar_da_rampa() -> void:
 	state = State.NO_AR
 	floor_snap_length = 0.0 # Libera o snap para não prender a moto ao topo da rampa
+	rotacao_inicio_salto = rotation # Registra a rotação para contar flips
+	tempo_no_ar = 0.0
 
 	# Se a moto estava subindo uma rampa ou saindo da crista com velocidade:
 	if ramp_launch_timer > 0.0 and last_ramp_vector.y < -0.08:
@@ -297,6 +304,11 @@ func _processar_aterrissagem() -> void:
 
 	if diff_abs <= safe_limit:
 		# POUSO SEGURO / FLIP BEM SUCEDIDO:
+		# A pedido do usuário, estamos atrelando a manobra diretamente à lógica nativa do pouso seguro.
+		# Se o jogador aterrissar com segurança (não capotar) após um salto real (mais de 0.4s no ar), ganha o bônus.
+		if tempo_no_ar >= 0.4:
+			manobra_sucesso.emit(1)
+		
 		state = State.NO_CHAO
 		rotation = ground_angle
 		floor_snap_length = 8.0 # Restaura a aderência de snap ao solo após o pouso
