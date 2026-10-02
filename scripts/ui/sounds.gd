@@ -33,9 +33,7 @@ func _inicializar() -> void:
 
 ## Vincula todos os botões no grupo "ui_buttons"
 func _configurar_botoes_da_cena() -> void:
-	for btn in get_tree().get_nodes_in_group("ui_buttons"):
-		if btn is Button:
-			_vincular_botao(btn)
+	for btn_untyped in get_tree().get_nodes_in_group("ui_buttons"):`n`t`tvar btn: Button = btn_untyped as Button`n`t`tif btn:`n`t`t`t_vincular_botao(btn)
 
 
 ## Vincula os sinais de foco e mouse do botão

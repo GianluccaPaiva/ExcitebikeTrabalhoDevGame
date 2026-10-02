@@ -150,7 +150,7 @@ func _conectar_player() -> void:
 			player.manobra_sucesso.connect(_on_player_manobra_sucesso)
 
 func _on_player_manobra_sucesso(giros: int) -> void:
-	var tempo_reduzido = bonus_tempo_manobra * giros
+	var tempo_reduzido: float = bonus_tempo_manobra * giros
 	tempo_decorrido = maxf(0.0, tempo_decorrido - tempo_reduzido)
 	if OS.is_debug_build(): print("🤸 Manobra concluída! Bônus aplicado: -%.1f s no cronômetro!" % tempo_reduzido)
 
@@ -159,7 +159,7 @@ func _on_player_manobra_sucesso(giros: int) -> void:
 func _conectar_bots() -> void:
 	bots.clear()
 	bots_concluidos.clear()
-	for bot_node in get_tree().get_nodes_in_group("bots"):
+	for bot_node_untyped in get_tree().get_nodes_in_group("bots"):`n`t`tvar bot_node: Node2D = bot_node_untyped as Node2D
 		bots.append(bot_node)
 		if bot_node.has_signal("percurso_concluido"):
 			if not bot_node.percurso_concluido.is_connected(_on_bot_percurso_concluido):
@@ -167,7 +167,7 @@ func _conectar_bots() -> void:
 
 
 ## Callback executado quando um bot conclui seu percurso na trilha
-func _on_bot_percurso_concluido(bot: Node2D) -> void:
+func _on_bot_percurso_concluido(bot: PathFollow2D) -> void:
 	if bot and not bots_concluidos.has(bot):
 		bots_concluidos.append(bot)
 	_verificar_condicao_transicao()
@@ -219,22 +219,22 @@ func _on_hospital() -> void:
 
 
 func _conectar_sensores_efeitos() -> void:
-	for sensor in get_tree().get_nodes_in_group("boost_sensors"):
+	for sensor_untyped in get_tree().get_nodes_in_group("boost_sensors"):`n`t`tvar sensor: Area2D = sensor_untyped as Area2D
 		if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
 			sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
 		if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
 			sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
 
-	for sensor in get_tree().get_nodes_in_group("slower_sensors"):
+	for sensor_untyped in get_tree().get_nodes_in_group("slower_sensors"):`n`t`tvar sensor: Area2D = sensor_untyped as Area2D
 		if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
 			sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
 		if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
 			sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
 
-func _on_sensor_efeito_entered(corpo_ou_area: Node, fator: float) -> void:
-	var corredor = _resolver_corredor(corpo_ou_area)
+func _on_sensor_efeito_entered(corpo_ou_area: Node2D, fator: float) -> void:
+	var corredor: Node2D = _resolver_corredor(corpo_ou_area)
 	if corredor and corredor.has_method("aplicar_efeito_pista"):
-		var saltos = saltos_de_frame_bots if corredor != player else 0
+		var saltos: int = saltos_de_frame_bots if corredor != player else 0
 		corredor.aplicar_efeito_pista(fator, duracao_efeitos_pista, saltos)
 
 
@@ -331,7 +331,7 @@ func _registrar_chegada(corredor: Node2D) -> void:
 
 
 ## Identifica o nó raiz representativo do competidor (Player ou Seguidor/Inimigo)
-func _resolver_corredor(origem: Node) -> Node2D:
+func _resolver_corredor(origem: Node2D) -> Node2D:
 	if origem == null:
 		return null
 

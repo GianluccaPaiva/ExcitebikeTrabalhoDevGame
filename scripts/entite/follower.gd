@@ -31,7 +31,7 @@ var percurso_finalizado: bool = false
 var current_speed: float = -1.0
 var em_desaceleracao: bool = false
 @export var taxa_desaceleracao: float = 215.0
-var tempo_efeito_restante: float = 0.0
+@onready var efeito_timer: Timer = $Enemy/EfeitoTimer
 
 
 func _ready() -> void:
@@ -63,7 +63,7 @@ var _delta_acumulado: float = 0.0
 
 func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
 	current_speed = speed * fator
-	tempo_efeito_restante = duracao
+	efeito_timer.start(duracao)
 	_frame_skip_ativo = saltos_de_frame
 
 
@@ -113,7 +113,7 @@ func _physics_process(delta: float) -> void:
 
 	# Lógica do Frame Skip (salto de frames/stuttering)
 	var passo_delta: float = delta
-	if _frame_skip_ativo > 0 and tempo_efeito_restante > 0.0:
+	if _frame_skip_ativo > 0 and not efeito_timer.is_stopped():
 		_delta_acumulado += delta
 		_frame_count += 1
 		if _frame_count <= _frame_skip_ativo:
