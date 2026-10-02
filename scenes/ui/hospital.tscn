@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bagbwqw0wuc6y" path="res://scripts/ui/hospital.gd" id="1_hospital"]
 [ext_resource type="Texture2D" uid="uid://c67thkyr12ut" path="res://assets/ui/ambulance.png" id="2_l3lar"]
-[ext_resource type="Texture2D" uid="uid://mthdsofdodlj" path="res://assets/ui/way.png" id="3_0s3va"]
+[ext_resource type="Texture2D" uid="uid://dxsu0c7osqov0" path="res://assets/ui/Estrada Neon Pixelada em Fundo Transparente.png" id="3_qp5j8"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="4_font"]
 [ext_resource type="Texture2D" uid="uid://begpegjmbj556" path="res://assets/ui/citys/NexusCity.jpg" id="4_ps12v"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="6_qp5j8"]
@@ -13,9 +13,7 @@ font_size = 8
 font_color = Color(0.96, 0.26, 0.21, 1)
 outline_size = 1
 outline_color = Color(0, 0, 0, 1)
-shadow_size = 1
 shadow_color = Color(0, 0, 0, 0.85)
-shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
 bg_color = Color(0.08, 0.08, 0.12, 1)
@@ -79,14 +77,14 @@ vertical_alignment = 1
 
 [node name="ParallaxWay" type="Parallax2D" parent="." unique_id=160700492]
 scroll_offset = Vector2(0, 22)
-repeat_size = Vector2(20, 0)
+repeat_size = Vector2(200, 0)
 autoscroll = Vector2(-150, 0)
 repeat_times = 28
 
 [node name="Way" type="Sprite2D" parent="ParallaxWay" unique_id=1224029222]
-position = Vector2(20, 105)
-scale = Vector2(0.15820311, 0.08558557)
-texture = ExtResource("3_0s3va")
+position = Vector2(41.17334, 111)
+scale = Vector2(0.18345456, 0.08315564)
+texture = ExtResource("3_qp5j8")
 
 [node name="ParallaxCity" type="Parallax2D" parent="." unique_id=67486778]
 repeat_size = Vector2(256, 0)
@@ -100,7 +98,6 @@ texture = ExtResource("4_ps12v")
 [node name="Ambulance" type="Sprite2D" parent="." unique_id=1550957547]
 position = Vector2(85, 122)
 texture = ExtResource("2_l3lar")
-
 
 [node name="Restart" type="Button" parent="." unique_id=1961831488]
 layout_mode = 1
