@@ -6,7 +6,7 @@ extends Node2D
 
 const VOLUME_MOTO_DB: float = -6.0
 const VOLUME_PARANDO_DB: float = -4.0
-const VOLUME_QUEDA_DB: float = 0.0
+const VOLUME_QUEDA_DB: float = 2.5
 const VOLUME_MORTE_DB: float = 2.0
 
 @onready var audio_moto: AudioStreamPlayer = get_node_or_null("AudioMoto")

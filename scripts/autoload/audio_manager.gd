@@ -41,7 +41,7 @@ func _ready() -> void:
 	_player_4_lugar = _criar_player("Audio4Lugar", STREAM_4_LUGAR, -4.0)
 	_player_game_over = _criar_player("AudioGameOver", STREAM_GAME_OVER, -2.0)
 	_player_ambulancia = _criar_player("AudioAmbulancia", STREAM_AMBULANCIA, -4.0)
-	_player_torcida_queda = _criar_player("AudioTorcidaQueda", STREAM_TORCIDA_QUEDA, -1.5)
+	_player_torcida_queda = _criar_player("AudioTorcidaQueda", STREAM_TORCIDA_QUEDA, -3.5)
 
 
 func _criar_player(nome: String, stream: AudioStream, vol_db: float) -> AudioStreamPlayer:
@@ -85,17 +85,21 @@ func parar_estadio() -> void:
 
 
 func tocar_torcida_queda() -> void:
-	if is_instance_valid(_player_torcida_queda):
-		_player_torcida_queda.stop()
-		_player_torcida_queda.play()
+	# Micro-atraso de reação da torcida (110ms) para que o impacto da queda no chão
+	# soe com total presença e clareza no primeiro plano antes do susto do público
+	get_tree().create_timer(0.11, false).timeout.connect(func() -> void:
+		if is_instance_valid(_player_torcida_queda):
+			_player_torcida_queda.stop()
+			_player_torcida_queda.play()
 
-	# Ducking dinâmico: atenua momentaneamente o fundo do estádio para dar destaque à reação
-	if is_instance_valid(_player_estadio) and _player_estadio.playing:
-		if _tween_ducking and _tween_ducking.is_valid():
-			_tween_ducking.kill()
-		_tween_ducking = create_tween()
-		_tween_ducking.tween_property(_player_estadio, "volume_db", -14.0, 0.12)
-		_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 1.4).set_delay(0.35)
+		# Ducking dinâmico: atenua momentaneamente o fundo do estádio para dar destaque à reação
+		if is_instance_valid(_player_estadio) and _player_estadio.playing:
+			if _tween_ducking and _tween_ducking.is_valid():
+				_tween_ducking.kill()
+			_tween_ducking = create_tween()
+			_tween_ducking.tween_property(_player_estadio, "volume_db", -14.0, 0.12)
+			_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 1.4).set_delay(0.35)
+	, CONNECT_ONE_SHOT)
 
 
 func parar_torcida_queda() -> void:
