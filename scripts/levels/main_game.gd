@@ -19,6 +19,8 @@ var transicao_em_andamento: bool = false
 @export_group("Cronômetro & Limites")
 ## Tempo limite / tempo final da corrida em segundos (110.0s = 01:50:00). Vai reduzindo no _process até zerar.
 @export var tempo_limite: float = 110.0
+## Porcentagem de chance (0 a 100%) de exibir a cena de referência do Beta quando o tempo esgotar.
+@export_range(0.0, 100.0, 1.0, "suffix:%") var chance_referencia_beta: float = 50.0
 
 var cronometro_ativo: bool = false
 var tempo_decorrido: float = 0.0
@@ -112,7 +114,14 @@ func _on_tempo_esgotado() -> void:
 	print("⌛ [MainGame] TEMPO ESGOTADO! O tempo limite zerou (1:50).")
 	print("==================================================")
 	await get_tree().create_timer(1.2).timeout
-	get_tree().change_scene_to_file("res://scenes/ui/tempo_esgotado.tscn")
+
+	var sorteio: float = randf_range(0.0, 100.0)
+	if sorteio < chance_referencia_beta:
+		print("🎭 [MainGame] Referência Beta ativada (sorteio: %.1f%% / chance: %.1f%%)" % [sorteio, chance_referencia_beta])
+		get_tree().change_scene_to_file("res://scenes/referencia/beta.tscn")
+	else:
+		print("🛑 [MainGame] Indo direto para Tempo Esgotado (sorteio: %.1f%% / chance: %.1f%%)" % [sorteio, chance_referencia_beta])
+		get_tree().change_scene_to_file("res://scenes/ui/tempo_esgotado.tscn")
 
 
 ## Conecta sinais emitidos pelo Player

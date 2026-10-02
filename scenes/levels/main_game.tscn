@@ -51,6 +51,7 @@ point_count = 63
 
 [node name="MainGame" type="Node2D" unique_id=869416145]
 script = ExtResource("8_maingame")
+chance_referencia_beta = 10.0
 
 [node name="FundoArquibancada" type="Parallax2D" parent="." unique_id=344981667]
 scroll_scale = Vector2(0.5, 0.5)

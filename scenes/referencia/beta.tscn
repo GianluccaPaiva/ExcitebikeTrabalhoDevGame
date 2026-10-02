@@ -277,29 +277,29 @@ text = "Sobrou nada."
 label_settings = SubResource("LabelSettings_tigreso")
 horizontal_alignment = 1
 
-[node name="BtnVoltar" type="Button" parent="UI" unique_id=495907199]
+[node name="BtnContinuar" type="Button" parent="UI" unique_id=495907199]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -44.0
+offset_left = -50.0
 offset_top = -24.0
-offset_right = 44.0
-offset_bottom = -8.0
+offset_right = 50.0
+offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.988235, 0.74902, 0.0588235, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 8
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
-text = "VOLTAR"
+text = "CONTINUAR"
 
 [node name="Sounds" parent="." unique_id=1255236175 instance=ExtResource("7_sounds")]
 
-[connection signal="pressed" from="UI/BtnVoltar" to="." method="_on_btn_voltar_pressed"]
+[connection signal="pressed" from="UI/BtnContinuar" to="." method="_on_btn_continuar_pressed"]
