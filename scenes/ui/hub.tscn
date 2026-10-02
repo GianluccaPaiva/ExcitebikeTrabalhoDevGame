@@ -22,6 +22,19 @@ font_size = 8
 font_color = Color(0.988235, 0.74902, 0.0588235, 1)
 shadow_color = Color(0, 0, 0, 0.8)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vidas"]
+bg_color = Color(0, 0, 0, 0.1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.06)
+anti_aliasing = false
+
 [node name="Hub" type="CanvasLayer" unique_id=1621250794]
 script = ExtResource("1_was6o")
 
@@ -74,8 +87,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
+[node name="PainelVidas" type="Panel" parent="Control" unique_id=2081947163]
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 74.0
+offset_bottom = 28.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_vidas")
+
 [node name="Vidas" type="Node2D" parent="Control" unique_id=1012411217]
-position = Vector2(14, 14)
+position = Vector2(16, 14)
 
 [node name="MotoVida1" type="Sprite2D" parent="Control/Vidas" unique_id=1478222441]
 rotation = -0.349066
