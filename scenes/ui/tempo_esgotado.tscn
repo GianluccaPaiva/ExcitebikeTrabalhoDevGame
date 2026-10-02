@@ -33,12 +33,6 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 anti_aliasing = false
 
-[sub_resource type="LabelSettings" id="LabelSettings_detalhe"]
-font = ExtResource("2_font")
-font_size = 8
-font_color = Color(0.85, 0.85, 0.9, 1)
-shadow_color = Color(0, 0, 0, 0.8)
-
 [sub_resource type="LabelSettings" id="LabelSettings_alerta"]
 font = ExtResource("2_font")
 font_size = 8
@@ -160,12 +154,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_painel")
 layout_mode = 2
 theme_override_constants/separation = 4
 alignment = 1
-
-[node name="LabelTempo" type="Label" parent="UI/PainelInfo/VBox" unique_id=1278753382]
-layout_mode = 2
-text = "TEMPO RESTANTE: 00:00:00"
-label_settings = SubResource("LabelSettings_detalhe")
-horizontal_alignment = 1
 
 [node name="LabelStatus" type="Label" parent="UI/PainelInfo/VBox" unique_id=617820500]
 layout_mode = 2

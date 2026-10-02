@@ -7,17 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://ij8e048dj43d" path="res://assets/sprites/referencia/Doc_girl.png" id="5_doc"]
 [ext_resource type="Texture2D" uid="uid://wobpgast4sho" path="res://assets/sprites/referencia/Absolute_tigreso.png" id="6_tigreso"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="7_sounds"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_maca"]
-bg_color = Color(0.9, 0.9, 0.95, 1)
-border_width_left = 1
-border_width_top = 2
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.5, 0.55, 0.6, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-anti_aliasing = false
+[ext_resource type="Texture2D" uid="uid://b1irxupcgi18v" path="res://assets/sprites/referencia/cama.png" id="8_cama"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_titulo"]
 font = ExtResource("2_font")
@@ -156,44 +146,13 @@ color = Color(0.35, 0.38, 0.42, 1)
 [node name="Maca" type="Node2D" parent="Cenario" unique_id=38427999]
 position = Vector2(10, 150)
 
-[node name="Colchao" type="Panel" parent="Cenario/Maca" unique_id=300078433]
-offset_left = 118.0
-offset_top = -11.0
-offset_right = 279.0
-offset_bottom = 14.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_maca")
-
-[node name="Colchao" type="Panel" parent="Cenario/Maca/Colchao" unique_id=2032858839]
-layout_mode = 0
-offset_left = 112.0
-offset_right = 273.0
-offset_bottom = 25.0
-rotation = -0.85993755
-theme_override_styles/panel = SubResource("StyleBoxFlat_maca")
-
-[node name="Travesseiro" type="ColorRect" parent="Cenario/Maca" unique_id=34108811]
-offset_left = 250.0
-offset_top = 2.0
-offset_right = 271.0
-offset_bottom = 16.0
-rotation = -2.635918
-
-[node name="PeEsq" type="ColorRect" parent="Cenario/Maca" unique_id=1726186402]
-offset_left = 123.0
-offset_top = 14.0
-offset_right = 130.0
-offset_bottom = 38.0
-color = Color(0.4, 0.45, 0.5, 1)
-
-[node name="PeDir" type="ColorRect" parent="Cenario/Maca" unique_id=21422290]
-offset_left = 232.0
-offset_top = 13.0
-offset_right = 239.0
-offset_bottom = 44.0
-color = Color(0.4, 0.45, 0.5, 1)
+[node name="SpriteCama" type="Sprite2D" parent="Cenario/Maca" unique_id=300078433]
+position = Vector2(194, -16)
+scale = Vector2(0.08, 0.08)
+texture = ExtResource("8_cama")
 
 [node name="PlayerAcidentado" type="Sprite2D" parent="Cenario/Maca" unique_id=1945638503]
-position = Vector2(225.99998, -16.000004)
+position = Vector2(196.00002, -38.999996)
 rotation = 0.261799
 scale = Vector2(2.0014048, 1.7952821)
 texture = ExtResource("3_player")
@@ -216,6 +175,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = -1.0
+offset_right = 2.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 

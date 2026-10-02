@@ -129,25 +129,25 @@ func _carregar_dados_padrao_teste() -> void:
 	dados_corrida = [
 		{
 			"is_player": true,
-			"texture": preload("res://assets/sprites/Player.png"),
+			"texture": preload("res://assets/sprites/entites/Player.png"),
 			"name": "Player",
 			"colocacao": 1
 		},
 		{
 			"is_player": false,
-			"texture": preload("res://assets/sprites/Racer_1.png"),
+			"texture": preload("res://assets/sprites/entites/Racer_1.png"),
 			"name": "Inimigo1",
 			"colocacao": 2
 		},
 		{
 			"is_player": false,
-			"texture": preload("res://assets/sprites/Racer_2.png"),
+			"texture": preload("res://assets/sprites/entites/Racer_2.png"),
 			"name": "Inimigo2",
 			"colocacao": 3
 		},
 		{
 			"is_player": false,
-			"texture": preload("res://assets/sprites/Racer_2.png"),
+			"texture": preload("res://assets/sprites/entites/Racer_2.png"),
 			"material": preload("res://assets/shaders/racer_yellow.tres"),
 			"name": "Inimigo3",
 			"colocacao": 4

@@ -6,7 +6,7 @@ signal percurso_concluido(bot: Node2D)
 @export var speed: float = 140.0
 @export var initial_progress: float = 0.0
 @export var rotation_smoothing_speed: float = 14.0
-@export var enemy_texture: Texture2D = preload("res://assets/sprites/Racer_1.png"):
+@export var enemy_texture: Texture2D = preload("res://assets/sprites/entites/Racer_1.png"):
 	set(val):
 		enemy_texture = val
 		_aplicar_textura()
@@ -127,7 +127,7 @@ func _aplicar_textura() -> void:
 	if sprite:
 		var tex_alvo: Texture2D = enemy_texture
 		if tex_alvo == null:
-			tex_alvo = preload("res://assets/sprites/Racer_1.png")
+			tex_alvo = preload("res://assets/sprites/entites/Racer_1.png")
 		if sprite.texture != tex_alvo:
 			sprite.texture = tex_alvo
 
@@ -175,4 +175,3 @@ func is_percurso_finalizado() -> bool:
 ## Inicia a desaceleração do bot ao atingir a reta pós-chegada
 func iniciar_desaceleracao_automatica(_x_alvo: float = 0.0) -> void:
 	em_desaceleracao = true
-

@@ -376,14 +376,14 @@ func _is_player_corredor(corredor: Node2D) -> bool:
 ## Extrai a textura representativa do competidor para exibição no pódio
 func _extrair_textura_corredor(corredor: Node2D) -> Texture2D:
 	if corredor == null:
-		return preload("res://assets/sprites/Racer_1.png")
+		return preload("res://assets/sprites/entites/Racer_1.png")
 
 	# Se for o Player
 	if _is_player_corredor(corredor):
 		var sp_player: Sprite2D = corredor.get_node_or_null("Sprite2D")
 		if sp_player and sp_player.texture:
 			return sp_player.texture
-		return preload("res://assets/sprites/Player.png")
+		return preload("res://assets/sprites/entites/Player.png")
 
 	# Se for um Seguidor/Bot com enemy_texture exportada
 	if "enemy_texture" in corredor and corredor.enemy_texture != null:
@@ -394,7 +394,7 @@ func _extrair_textura_corredor(corredor: Node2D) -> Texture2D:
 	if sp_bot and sp_bot.texture:
 		return sp_bot.texture
 
-	return preload("res://assets/sprites/Racer_1.png")
+	return preload("res://assets/sprites/entites/Racer_1.png")
 
 
 ## Extrai o material visual do competidor (caso utilize shader de palette swap)
