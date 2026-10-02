@@ -4,10 +4,10 @@ extends Node2D
 ## Encapsula os reprodutores de som da moto (motor, parada, quedas e morte)
 ## e isola todo o cálculo de pitch, decibéis e pausa local.
 
-const VOLUME_MOTO_DB: float = -6.0
-const VOLUME_PARANDO_DB: float = -4.0
-const VOLUME_QUEDA_DB: float = 2.5
-const VOLUME_MORTE_DB: float = 2.0
+@export var volume_moto_db: float = -6.0
+@export var volume_parando_db: float = -4.0
+@export var volume_queda_db: float = 2.5
+@export var volume_morte_db: float = 2.0
 
 @onready var audio_moto: AudioStreamPlayer = get_node_or_null("AudioMoto")
 @onready var audio_moto_parando: AudioStreamPlayer = get_node_or_null("AudioMotoParando")
@@ -18,13 +18,13 @@ const VOLUME_MORTE_DB: float = 2.0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if audio_moto:
-		audio_moto.volume_db = VOLUME_MOTO_DB
+		audio_moto.volume_db = volume_moto_db
 	if audio_moto_parando:
-		audio_moto_parando.volume_db = VOLUME_PARANDO_DB
+		audio_moto_parando.volume_db = volume_parando_db
 	if audio_queda:
-		audio_queda.volume_db = VOLUME_QUEDA_DB
+		audio_queda.volume_db = volume_queda_db
 	if audio_morte:
-		audio_morte.volume_db = VOLUME_MORTE_DB
+		audio_morte.volume_db = volume_morte_db
 
 
 func _notification(what: int) -> void:
@@ -63,7 +63,7 @@ func atualizar_motor(acelerando: bool, current_speed: float, max_speed: float, i
 	audio_moto.pitch_scale = lerpf(0.85, 1.35, fator_vel)
 
 	if not audio_moto.playing:
-		audio_moto.volume_db = VOLUME_MOTO_DB
+		audio_moto.volume_db = volume_moto_db
 		audio_moto.play()
 
 
