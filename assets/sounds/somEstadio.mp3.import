@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/somEstadio.mp3-eece30a01248a99d16d8dca2bfc30b
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

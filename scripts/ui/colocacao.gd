@@ -25,6 +25,8 @@ const CONFIG_MEDALHAS: Dictionary = {
 @onready var btn_restart: Button = $Control/Restart
 @onready var btn_menu: Button = $Control/Menu
 @onready var sounds: Sounds = $Control/Sounds
+@onready var audio_podio: AudioStreamPlayer = get_node_or_null("AudioPodio")
+@onready var audio_4_lugar: AudioStreamPlayer = get_node_or_null("Audio4Lugar")
 
 
 ## Registra os dados da corrida antes de trocar para esta cena
@@ -41,6 +43,7 @@ func _ready() -> void:
 	get_tree().paused = false
 	_atualizar_sprites_podio()
 	_atualizar_resultado_e_medalha()
+	_tocar_som_resultado()
 
 
 ## Atualiza dinamicamente as texturas e frames de cada degrau do pódio
@@ -158,6 +161,7 @@ func _carregar_dados_padrao_teste() -> void:
 func _on_restart_pressed() -> void:
 	btn_restart.disabled = true
 	btn_menu.disabled = true
+	_parar_sons()
 	if sounds:
 		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
@@ -167,9 +171,28 @@ func _on_restart_pressed() -> void:
 func _on_menu_pressed() -> void:
 	btn_restart.disabled = true
 	btn_menu.disabled = true
+	_parar_sons()
 	if sounds:
 		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
+
+
+## Dispara o áudio correspondente à classificação do jogador
+func _tocar_som_resultado() -> void:
+	if posicao_player <= 3:
+		if audio_podio and not audio_podio.playing:
+			audio_podio.play()
+	else:
+		if audio_4_lugar and not audio_4_lugar.playing:
+			audio_4_lugar.play()
+
+
+## Interrompe os áudios da cena antes da troca de contexto
+func _parar_sons() -> void:
+	if audio_podio and audio_podio.playing:
+		audio_podio.stop()
+	if audio_4_lugar and audio_4_lugar.playing:
+		audio_4_lugar.stop()
 
 
 ## Mantido por segurança para conexões herdadas

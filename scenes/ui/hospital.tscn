@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://begpegjmbj556" path="res://assets/ui/citys/NexusCity.jpg" id="4_ps12v"]
 [ext_resource type="AudioStream" uid="uid://7a6qrnr0pisy" path="res://assets/sounds/Ambulance.mp3" id="5_o6res"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="6_qp5j8"]
+[ext_resource type="AudioStream" uid="uid://ct4lwib0ia287" path="res://assets/sounds/somGameOver.mp3" id="7_gameover"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hospital"]
 font = ExtResource("4_font")
@@ -105,9 +106,13 @@ texture = ExtResource("2_l3lar")
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Ambulance" unique_id=1694230239]
 position = Vector2(-85, -96)
 stream = ExtResource("5_o6res")
-volume_db = 4.86
+volume_db = -4.0
 autoplay = true
 parameters/looping = true
+
+[node name="AudioGameOver" type="AudioStreamPlayer" parent="." unique_id=1999888771]
+stream = ExtResource("7_gameover")
+autoplay = true
 
 [node name="Restart" type="Button" parent="." unique_id=1961831488]
 layout_mode = 1

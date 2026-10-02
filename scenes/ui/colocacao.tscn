@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://c05moetqxqe66" path="res://assets/sprites/Racer_2.png" id="3_hjwqk"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="4_font"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="6_3jcyx"]
+[ext_resource type="AudioStream" uid="uid://cwir132hoycl5" path="res://assets/sounds/podio.mp3" id="7_podio"]
+[ext_resource type="AudioStream" uid="uid://bnqli6u860jq4" path="res://assets/sounds/som4lugar.mp3" id="8_4lugar"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yv8jb"]
 font = ExtResource("4_font")
@@ -161,6 +163,11 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
 text = "MENU"
 
 [node name="Sounds" parent="Control" unique_id=1546176675 instance=ExtResource("6_3jcyx")]
+[node name="AudioPodio" type="AudioStreamPlayer" parent="." unique_id=2098765431]
+stream = ExtResource("7_podio")
+
+[node name="Audio4Lugar" type="AudioStreamPlayer" parent="." unique_id=2098765432]
+stream = ExtResource("8_4lugar")
 
 [connection signal="pressed" from="Control/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="Control/Menu" to="." method="_on_menu_pressed"]
