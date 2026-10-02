@@ -22,6 +22,14 @@ var transicao_em_andamento: bool = false
 ## Porcentagem de chance (0 a 100%) de exibir a cena de referência do Beta quando o tempo esgotar.
 @export_range(0.0, 100.0, 1.0, "suffix:%") var chance_referencia_beta: float = 50.0
 
+@export_group("Efeitos da Pista")
+## Tempo de duração do efeito de velocidade (em segundos)
+@export var duracao_efeitos_pista: float = 1.5
+## Fator multiplicador de velocidade no Boost (ex: 1.4 = +40%)
+@export var fator_boost: float = 1.4
+## Fator multiplicador de velocidade no Slower (ex: 0.6 = -40%)
+@export var fator_slower: float = 0.6
+
 var cronometro_ativo: bool = false
 var tempo_decorrido: float = 0.0
 var _tempo_ultimo_log: float = 0.0
@@ -53,6 +61,7 @@ func _ready() -> void:
 			hub_ui.set_temp_limite(tempo_limite)
 	TempoEsgotado.definir_tempo_limite(tempo_limite)
 	_conectar_sensores()
+	_conectar_sensores_efeitos()
 	_conectar_player()
 	_conectar_bots()
 	_conectar_countdown()
@@ -202,6 +211,33 @@ func _on_hospital() -> void:
 	AudioManager.parar_audios_corrida()
 	await get_tree().create_timer(1.4).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/hospital.tscn")
+
+
+func _conectar_sensores_efeitos() -> void:
+	var pista = get_node_or_null("PistaVisual")
+	if not pista: return
+	
+	for node in pista.get_children():
+		if node.name.begins_with("Boost"):
+			var sensor = node.get_node_or_null("SensorBoost")
+			if sensor:
+				if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
+					sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
+				if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
+					sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
+		
+		elif node.name.begins_with("Slower"):
+			var sensor = node.get_node_or_null("SensorSlower")
+			if sensor:
+				if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
+					sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
+				if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
+					sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
+
+func _on_sensor_efeito_entered(corpo_ou_area: Node, fator: float) -> void:
+	var corredor = _resolver_corredor(corpo_ou_area)
+	if corredor and corredor.has_method("aplicar_efeito_pista"):
+		corredor.aplicar_efeito_pista(fator, duracao_efeitos_pista)
 
 
 ## Conecta os sinais de colisão dos sensores da pista

@@ -48,6 +48,8 @@ var qtd_acidentes: int = 0
 var last_ramp_vector: Vector2 = Vector2.RIGHT
 var last_ramp_speed: float = 0.0
 var ramp_launch_timer: float = 0.0
+var max_speed_base: float = 0.0
+var tempo_efeito_restante: float = 0.0
 
 func update_hub_ui() -> void:
 	if hub_ui:
@@ -63,6 +65,7 @@ func _ready() -> void:
 	# Permite que rampas de até 60 graus sejam tratadas perfeitamente como piso
 	floor_max_angle = deg_to_rad(60.0)
 	floor_snap_length = 8.0
+	max_speed_base = max_speed
 	
 	if moto_caida_sprite:
 		moto_caida_sprite.visible = false
@@ -72,7 +75,20 @@ func _ready() -> void:
 	update_hub_ui()
 
 
+func aplicar_efeito_pista(fator: float, duracao: float) -> void:
+	max_speed = max_speed_base * fator
+	tempo_efeito_restante = duracao
+	if fator > 1.0:
+		current_speed = max_speed
+	elif fator < 1.0:
+		current_speed *= fator
+
 func _physics_process(delta: float) -> void:
+	if tempo_efeito_restante > 0.0:
+		tempo_efeito_restante -= delta
+		if tempo_efeito_restante <= 0.0:
+			max_speed = max_speed_base
+
 	# Enquanto a contagem regressiva estiver rodando, mantém o player perfeitamente estático no grid
 	if controles_bloqueados and not em_desaceleracao_automatica:
 		velocity = Vector2.ZERO

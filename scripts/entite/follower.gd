@@ -28,6 +28,7 @@ var percurso_finalizado: bool = false
 var current_speed: float = -1.0
 var em_desaceleracao: bool = false
 @export var taxa_desaceleracao: float = 215.0
+var tempo_efeito_restante: float = 0.0
 
 
 func _ready() -> void:
@@ -53,6 +54,11 @@ func _ready() -> void:
 			anim.pause()
 
 
+func aplicar_efeito_pista(fator: float, duracao: float) -> void:
+	current_speed = speed * fator
+	tempo_efeito_restante = duracao
+
+
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		_aplicar_textura()
@@ -69,6 +75,11 @@ func _process(delta: float) -> void:
 
 	if current_speed < 0.0:
 		current_speed = speed
+
+	if tempo_efeito_restante > 0.0 and not em_desaceleracao:
+		tempo_efeito_restante -= delta
+		if tempo_efeito_restante <= 0.0:
+			current_speed = speed
 
 	# Zona de desaceleração pós-chegada (para parar suavemente antes dos fotógrafos/guys)
 	if global_position.x >= 17640.0:
