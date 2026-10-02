@@ -149,31 +149,30 @@ func parar_audios_corrida() -> void:
 func tocar_torcida_queda() -> void:
 	# Micro-atraso de reação da torcida (110ms) para que o impacto da queda no chão
 	# soe com total presença e clareza no primeiro plano antes do susto do público
-	get_tree().create_timer(0.11, false).timeout.connect(func() -> void:
-		if is_instance_valid(_player_torcida_queda):
-			_player_torcida_queda.stop()
-			_player_torcida_queda.play()
-			if _audio_pausado:
-				_player_torcida_queda.stream_paused = true
+	await get_tree().create_timer(0.11, false).timeout
+	_tocar_torcida_queda_impl()
 
-		# Ducking dinâmico: atenua momentaneamente o fundo do estádio para dar destaque à reação
-		if is_instance_valid(_player_estadio) and _estadio_ativo:
-			if not _player_estadio.playing:
-				_player_estadio.play()
-			if not _audio_pausado and _player_estadio.stream_paused:
-				_player_estadio.stream_paused = false
-
-			if _tween_ducking and _tween_ducking.is_valid():
-				_tween_ducking.kill()
-			_tween_ducking = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_STOP)
-			_tween_ducking.tween_property(_player_estadio, "volume_db", -14.0, 0.12)
-			_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 1.4).set_delay(0.35)
-	, CONNECT_ONE_SHOT)
-
-
-func parar_torcida_queda() -> void:
-	if is_instance_valid(_player_torcida_queda) and _player_torcida_queda.playing:
+func _tocar_torcida_queda_impl() -> void:
+	if is_instance_valid(_player_torcida_queda):
 		_player_torcida_queda.stop()
+		_tocar(_player_torcida_queda)
+		if _audio_pausado:
+			_player_torcida_queda.stream_paused = true
+
+	# Ducking dinâmico: atenua momentaneamente o fundo do estádio para dar destaque à reação
+	if is_instance_valid(_player_estadio) and _estadio_ativo:
+		_tocar(_player_estadio)
+		if not _audio_pausado and _player_estadio.stream_paused:
+			_player_estadio.stream_paused = false
+
+		if _tween_ducking and _tween_ducking.is_valid():
+			_tween_ducking.kill()
+		_tween_ducking = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_STOP)
+		_tween_ducking.tween_property(_player_estadio, "volume_db", -14.0, 0.12)
+		_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 1.4).set_delay(0.35)
+
+
+func parar_torcida_queda() -> void:`n`t_parar(_player_torcida_queda)
 
 
 func tocar_linha_chegada() -> void:
@@ -185,54 +184,32 @@ func tocar_linha_chegada() -> void:
 			_player_linha_chegada.play()
 
 
-func parar_linha_chegada() -> void:
-	if is_instance_valid(_player_linha_chegada) and _player_linha_chegada.playing:
-		_player_linha_chegada.stop()
+func parar_linha_chegada() -> void:`n`t_parar(_player_linha_chegada)
 
 
 # --- MÉTODOS DE CONTROLE DA TELA DE COLOCAÇÃO / PÓDIO ---
 
-func tocar_podio() -> void:
-	parar_audios_corrida()
-	parar_audios_colocacao()
-	if is_instance_valid(_player_podio):
-		_player_podio.play()
+func tocar_podio() -> void:`n`tparar_audios_corrida()`n`tparar_audios_colocacao()`n`t_tocar(_player_podio)
 
 
-func tocar_quarto_lugar() -> void:
-	parar_audios_corrida()
-	parar_audios_colocacao()
-	if is_instance_valid(_player_4_lugar):
-		_player_4_lugar.play()
+func tocar_quarto_lugar() -> void:`n`tparar_audios_corrida()`n`tparar_audios_colocacao()`n`t_tocar(_player_4_lugar)
 
 
-func parar_audios_colocacao() -> void:
-	if is_instance_valid(_player_podio) and _player_podio.playing:
-		_player_podio.stop()
-	if is_instance_valid(_player_4_lugar) and _player_4_lugar.playing:
-		_player_4_lugar.stop()
+func parar_audios_colocacao() -> void:`n`t_parar(_player_podio)`n`t_parar(_player_4_lugar)
 
 
 # --- MÉTODOS DE CONTROLE DA TELA DE HOSPITAL / GAME OVER ---
 
-func tocar_game_over() -> void:
-	if is_instance_valid(_player_game_over) and not _player_game_over.playing:
-		_player_game_over.play()
+func tocar_game_over() -> void:`n`t_tocar(_player_game_over)
 
 
-func parar_game_over() -> void:
-	if is_instance_valid(_player_game_over) and _player_game_over.playing:
-		_player_game_over.stop()
+func parar_game_over() -> void:`n`t_parar(_player_game_over)
 
 
-func tocar_ambulancia() -> void:
-	if is_instance_valid(_player_ambulancia) and not _player_ambulancia.playing:
-		_player_ambulancia.play()
+func tocar_ambulancia() -> void:`n`t_tocar(_player_ambulancia)
 
 
-func parar_ambulancia() -> void:
-	if is_instance_valid(_player_ambulancia) and _player_ambulancia.playing:
-		_player_ambulancia.stop()
+func parar_ambulancia() -> void:`n`t_parar(_player_ambulancia)
 
 
 # --- PARADA GERAL ---
@@ -241,3 +218,9 @@ func parar_todos() -> void:
 	for p in _todos_players:
 		if is_instance_valid(p) and p.playing:
 			p.stop()
+
+func _tocar(p: AudioStreamPlayer) -> void:
+	if is_instance_valid(p) and not p.playing: p.play()
+
+func _parar(p: AudioStreamPlayer) -> void:
+	if is_instance_valid(p) and p.playing: p.stop()
