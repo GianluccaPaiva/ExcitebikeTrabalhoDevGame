@@ -1,6 +1,19 @@
+class_name TempoEsgotado
 extends Control
 
 ## Cenário de Derrota por Tempo Esgotado (Timeout / Desqualificação)
+
+## Tempo limite da corrida para exibição dinâmica (padrão 110.0s = 01:50:00)
+static var tempo_limite_configurado: float = 110.0
+
+static func definir_tempo_limite(tempo: float) -> void:
+	tempo_limite_configurado = tempo
+
+static func formatar_tempo(tempo: float) -> String:
+	var minutos: int = int(tempo / 60.0)
+	var segundos: int = int(fmod(tempo, 60.0))
+	var centesimos: int = int(fmod(tempo * 100.0, 100.0))
+	return "%02d:%02d:%02d" % [minutos, segundos, centesimos]
 
 @onready var label_titulo: Label = $UI/Header/LabelTitulo
 @onready var label_subtitulo: Label = $UI/Header/LabelSubtitulo
@@ -17,6 +30,9 @@ func _ready() -> void:
 	AudioManager.parar_audios_corrida()
 	AudioManager.tocar_game_over()
 	get_tree().paused = false
+
+	if label_subtitulo:
+		label_subtitulo.text = "LIMITE DE %s EXCEDIDO" % formatar_tempo(tempo_limite_configurado)
 
 	if btn_restart:
 		btn_restart.grab_focus()

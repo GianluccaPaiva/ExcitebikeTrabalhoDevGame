@@ -51,6 +51,7 @@ func _ready() -> void:
 			hub_ui.set_temp_atual(0.0)
 		if hub_ui.has_method("set_temp_limite"):
 			hub_ui.set_temp_limite(tempo_limite)
+	TempoEsgotado.definir_tempo_limite(tempo_limite)
 	_conectar_sensores()
 	_conectar_player()
 	_conectar_bots()
@@ -110,8 +111,10 @@ func _on_tempo_esgotado() -> void:
 	transicao_em_andamento = true
 	cronometro_ativo = false
 	AudioManager.parar_audios_corrida()
+	TempoEsgotado.definir_tempo_limite(tempo_limite)
+	var tempo_str: String = TempoEsgotado.formatar_tempo(tempo_limite)
 	print("==================================================")
-	print("⌛ [MainGame] TEMPO ESGOTADO! O tempo limite zerou (1:50).")
+	print("⌛ [MainGame] TEMPO ESGOTADO! O tempo limite zerou (%s)." % tempo_str)
 	print("==================================================")
 	await get_tree().create_timer(1.2).timeout
 
