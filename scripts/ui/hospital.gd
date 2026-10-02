@@ -12,8 +12,8 @@ const FRASES_GAME_OVER: Array[String] = [
 	"ACABOU PRO BETA!",
 	"CAIXÃO E VELA PRETA!",
 	"FOI DE SUS!",
-	"DETONADO",
-	"MORREU MAS PASSA BEM",
+	"DETONADO!",
+	"MORREU MAS PASSA BEM!",
 ]
 
 @onready var label_status: Label = $Label
