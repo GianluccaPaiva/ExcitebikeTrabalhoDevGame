@@ -196,9 +196,7 @@ func _process_ar(delta: float) -> void:
 	elif rotation > 0.18:
 		eff_gravity = gravity * 1.15 # Mergulho para encaixar em descidas
 
-	velocity.y += eff_gravity * delta
-	if velocity.y > max_fall_speed:
-		velocity.y = max_fall_speed
+	velocity.y = minf(velocity.y + (eff_gravity * delta), max_fall_speed)
 
 	# Amortecimento aerodinâmico suave fora da rampa se a inércia ultrapassar a velocidade máxima
 	if not em_desaceleracao_automatica and velocity.x > max_speed:
