@@ -28,8 +28,6 @@ var _arvore_estava_pausada: bool = false
 
 # Lista de todos os reprodutores nativos para operações em lote
 var _todos_players: Array[AudioStreamPlayer] = []
-var _players_pausados: Array[AudioStreamPlayer] = []
-var _players2d_pausados: Array[AudioStreamPlayer2D] = []
 
 # Controle de cooldown do som da linha de chegada
 var _ultimo_tempo_chegada_ms: int = -999999
@@ -75,70 +73,21 @@ func pausar_audio_jogo(pausar: bool) -> void:
 	_audio_pausado = pausar
 	_arvore_estava_pausada = pausar
 
-	if pausar:
-		_players_pausados.clear()
-		_players2d_pausados.clear()
+	var sfx_idx: int = AudioServer.get_bus_index("SFX")
+	var amb_idx: int = AudioServer.get_bus_index("Ambiente")
+	if sfx_idx >= 0: AudioServer.set_bus_mute(sfx_idx, pausar)
+	if amb_idx >= 0: AudioServer.set_bus_mute(amb_idx, pausar)
 
-		# Pausa reprodutores nativos do AudioManager que estejam em execução
-		for p in _todos_players:
-			if is_instance_valid(p) and p.playing and not p.stream_paused:
-				p.stream_paused = true
-				if not _players_pausados.has(p):
-					_players_pausados.append(p)
-
-		# Coleta e congela demais nós de áudio pela árvore (ex: PlayerAudio, CountdownUI, etc.)
-		var root: Window = get_tree().root
-		if is_instance_valid(root):
-			_coletar_e_pausar(root)
-	else:
-		# Descongela nós coletados
-		for p in _players_pausados:
-			if is_instance_valid(p) and p.stream_paused:
-				p.stream_paused = false
-		_players_pausados.clear()
-
-		for p2 in _players2d_pausados:
-			if is_instance_valid(p2) and p2.stream_paused:
-				p2.stream_paused = false
-		_players2d_pausados.clear()
-
-		# Garantia explícita para os reprodutores nativos do AudioManager
-		for p in _todos_players:
-			if is_instance_valid(p) and p.stream_paused:
-				p.stream_paused = false
-
-		# Blindagem do som contínuo do estádio se ele estiver ativo durante a corrida
-		if _estadio_ativo and is_instance_valid(_player_estadio):
-			_player_estadio.stream_paused = false
-			if not _player_estadio.playing:
-				_player_estadio.play()
-			if not (_tween_ducking and _tween_ducking.is_valid()):
-				_player_estadio.volume_db = -8.0
-
-
-func _coletar_e_pausar(no: Node) -> void:
-	if not is_instance_valid(no):
-		return
-
-	# Não pausa sons pertencentes ao menu de Pause para que feedback de botões continue audível
-	if no.name == "Pause" or (no.get_parent() and no.get_parent().name == "Pause"):
-		return
-
-	if no is AudioStreamPlayer:
-		var p: AudioStreamPlayer = no as AudioStreamPlayer
-		if p.playing and not p.stream_paused:
-			p.stream_paused = true
-			if not _players_pausados.has(p):
-				_players_pausados.append(p)
-	elif no is AudioStreamPlayer2D:
-		var p2: AudioStreamPlayer2D = no as AudioStreamPlayer2D
-		if p2.playing and not p2.stream_paused:
-			p2.stream_paused = true
-			if not _players2d_pausados.has(p2):
-				_players2d_pausados.append(p2)
-
-	for filho in no.get_children():
-		_coletar_e_pausar(filho)
+	# Pausa reprodutores nativos do AudioManager
+	for p in _todos_players:
+		if is_instance_valid(p):
+			p.stream_paused = pausar
+	
+	if not pausar and _estadio_ativo and is_instance_valid(_player_estadio):
+		if not _player_estadio.playing:
+			_player_estadio.play()
+		if not (_tween_ducking and _tween_ducking.is_valid()):
+			_player_estadio.volume_db = -8.0
 
 
 
