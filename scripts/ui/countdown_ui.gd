@@ -42,6 +42,7 @@ func iniciar_contagem() -> void:
 	label_contagem.text = "VAI!"
 	_animar_texto(1.5)
 	corrida_iniciada.emit()
+	get_tree().call_group("racers", "iniciar_corrida")
 	
 	await get_tree().create_timer(tempo_exibicao_vai, false).timeout
 	if not is_inside_tree() or not _contagem_ativa:

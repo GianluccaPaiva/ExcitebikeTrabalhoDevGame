@@ -160,16 +160,11 @@ func _on_player_manobra_sucesso(giros: int) -> void:
 func _conectar_bots() -> void:
 	bots.clear()
 	bots_concluidos.clear()
-	var pistas: Node = get_node_or_null("Entities/PistasInimigos")
-	if pistas:
-		for trilha in pistas.get_children():
-			for child in trilha.get_children():
-				if child is PathFollow2D:
-					var bot_node: Node2D = child as Node2D
-					bots.append(bot_node)
-					if bot_node.has_signal("percurso_concluido"):
-						if not bot_node.percurso_concluido.is_connected(_on_bot_percurso_concluido):
-							bot_node.percurso_concluido.connect(_on_bot_percurso_concluido)
+	for bot_node in get_tree().get_nodes_in_group("bots"):
+		bots.append(bot_node)
+		if bot_node.has_signal("percurso_concluido"):
+			if not bot_node.percurso_concluido.is_connected(_on_bot_percurso_concluido):
+				bot_node.percurso_concluido.connect(_on_bot_percurso_concluido)
 
 
 ## Callback executado quando um bot conclui seu percurso na trilha
@@ -225,25 +220,17 @@ func _on_hospital() -> void:
 
 
 func _conectar_sensores_efeitos() -> void:
-	var pista = get_node_or_null("PistaVisual")
-	if not pista: return
-	
-	for node in pista.get_children():
-		if node.name.begins_with("Boost"):
-			var sensor = node.get_node_or_null("SensorBoost")
-			if sensor:
-				if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
-					sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
-				if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
-					sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
-		
-		elif node.name.begins_with("Slower"):
-			var sensor = node.get_node_or_null("SensorSlower")
-			if sensor:
-				if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
-					sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
-				if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
-					sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
+	for sensor in get_tree().get_nodes_in_group("boost_sensors"):
+		if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
+			sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
+		if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
+			sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
+
+	for sensor in get_tree().get_nodes_in_group("slower_sensors"):
+		if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
+			sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
+		if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
+			sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
 
 func _on_sensor_efeito_entered(corpo_ou_area: Node, fator: float) -> void:
 	var corredor = _resolver_corredor(corpo_ou_area)

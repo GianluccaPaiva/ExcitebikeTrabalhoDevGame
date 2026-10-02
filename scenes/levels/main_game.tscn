@@ -97,7 +97,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost" unique_id=1585121723]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost" unique_id=1585121723]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost/SensorBoost" unique_id=2097937020]
 visible = false
@@ -118,7 +118,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(685.75323, 0, 32.317932, 112)
 
-[node name="SensorSlower" type="Area2D" parent="PistaVisual/Slower" unique_id=1585713824]
+[node name="SensorSlower" type="Area2D" groups=["slower_sensors"] parent="PistaVisual/Slower" unique_id=1585713824]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Slower/SensorSlower" unique_id=977076733]
 visible = false
@@ -147,7 +147,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost_2" unique_id=798278618]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost_2" unique_id=798278618]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost_2/SensorBoost" unique_id=1313311628]
 visible = false
@@ -161,7 +161,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost_3" unique_id=395770569]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost_3" unique_id=395770569]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost_3/SensorBoost" unique_id=1547178762]
 visible = false
@@ -175,7 +175,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(685.75323, 0, 32.317932, 112)
 
-[node name="SensorSlower" type="Area2D" parent="PistaVisual/Slower_2" unique_id=718938379]
+[node name="SensorSlower" type="Area2D" groups=["slower_sensors"] parent="PistaVisual/Slower_2" unique_id=718938379]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Slower_2/SensorSlower" unique_id=1330189147]
 visible = false
@@ -190,7 +190,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost_4" unique_id=181884853]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost_4" unique_id=181884853]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost_4/SensorBoost" unique_id=750993243]
 visible = false
@@ -225,7 +225,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(685.75323, 0, 32.317932, 112)
 
-[node name="SensorSlower" type="Area2D" parent="PistaVisual/Slower_3" unique_id=2027328656]
+[node name="SensorSlower" type="Area2D" groups=["slower_sensors"] parent="PistaVisual/Slower_3" unique_id=2027328656]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Slower_3/SensorSlower" unique_id=296492701]
 visible = false
@@ -247,7 +247,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost_5" unique_id=753969258]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost_5" unique_id=753969258]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost_5/SensorBoost" unique_id=199800461]
 visible = false
@@ -268,7 +268,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost_6" unique_id=360522826]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost_6" unique_id=360522826]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost_6/SensorBoost" unique_id=1995705414]
 visible = false
@@ -289,7 +289,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(685.75323, 0, 32.317932, 112)
 
-[node name="SensorSlower" type="Area2D" parent="PistaVisual/Slower_4" unique_id=1397614761]
+[node name="SensorSlower" type="Area2D" groups=["slower_sensors"] parent="PistaVisual/Slower_4" unique_id=1397614761]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Slower_4/SensorSlower" unique_id=628778918]
 visible = false
@@ -304,7 +304,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost_7" unique_id=874417540]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost_7" unique_id=874417540]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost_7/SensorBoost" unique_id=1281826022]
 visible = false
@@ -339,7 +339,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost_8" unique_id=1048588616]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost_8" unique_id=1048588616]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost_8/SensorBoost" unique_id=1896713694]
 visible = false
@@ -360,7 +360,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(717.8308, 0, 35.549744, 112)
 
-[node name="SensorBoost" type="Area2D" parent="PistaVisual/Boost_9" unique_id=1874896335]
+[node name="SensorBoost" type="Area2D" groups=["boost_sensors"] parent="PistaVisual/Boost_9" unique_id=1874896335]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Boost_9/SensorBoost" unique_id=1284961231]
 visible = false
@@ -374,7 +374,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(685.75323, 0, 32.317932, 112)
 
-[node name="SensorSlower" type="Area2D" parent="PistaVisual/Slower_5" unique_id=1890115124]
+[node name="SensorSlower" type="Area2D" groups=["slower_sensors"] parent="PistaVisual/Slower_5" unique_id=1890115124]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Slower_5/SensorSlower" unique_id=1154566971]
 visible = false
@@ -415,7 +415,7 @@ polygon = PackedVector2Array(0, 240, 0, 160, 502, 160, 514, 150, 526, 160, 1404,
 
 [node name="Entities" type="Node2D" parent="." unique_id=1937540672]
 
-[node name="Player" parent="Entities" unique_id=1096744221 instance=ExtResource("3_viahy")]
+[node name="Player" groups=["racers"] parent="Entities" unique_id=1096744221 instance=ExtResource("3_viahy")]
 position = Vector2(16, 142)
 gravity = 480.0
 
@@ -424,7 +424,7 @@ gravity = 480.0
 [node name="TrilhaInimigo1" type="Path2D" parent="Entities/PistasInimigos" unique_id=141497780]
 curve = SubResource("Curve2D_inimigo1")
 
-[node name="Inimigo1" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigo1" unique_id=662664191]
+[node name="Inimigo1" type="PathFollow2D" groups=["bots", "racers"] parent="Entities/PistasInimigos/TrilhaInimigo1" unique_id=662664191]
 position = Vector2(36.986763, 132.00002)
 progress = 37.0
 rotates = false
@@ -439,7 +439,7 @@ position = Vector2(-4.099457, 1.5258789e-05)
 [node name="TrilhaInimigo2" type="Path2D" parent="Entities/PistasInimigos" unique_id=141497781]
 curve = SubResource("Curve2D_inimigo2")
 
-[node name="Inimigo2" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigo2" unique_id=662664192]
+[node name="Inimigo2" type="PathFollow2D" groups=["bots", "racers"] parent="Entities/PistasInimigos/TrilhaInimigo2" unique_id=662664192]
 position = Vector2(52.99359, 110)
 progress = 53.0
 rotates = false
@@ -455,7 +455,7 @@ position = Vector2(11.007351, -2)
 [node name="TrilhaInimigo3" type="Path2D" parent="Entities/PistasInimigos" unique_id=141497782]
 curve = SubResource("Curve2D_inimigo3")
 
-[node name="Inimigo3" type="PathFollow2D" parent="Entities/PistasInimigos/TrilhaInimigo3" unique_id=662664193]
+[node name="Inimigo3" type="PathFollow2D" groups=["bots", "racers"] parent="Entities/PistasInimigos/TrilhaInimigo3" unique_id=662664193]
 position = Vector2(24.985477, 154.00002)
 progress = 25.0
 rotates = false

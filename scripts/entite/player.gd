@@ -377,6 +377,9 @@ func _recuperar_de_acidente() -> void:
 
 
 ## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
+func iniciar_corrida() -> void:
+	liberar_controles()
+
 func liberar_controles() -> void:
 	controles_bloqueados = false
 
