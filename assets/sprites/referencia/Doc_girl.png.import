@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wobpgast4sho"
-path="res://.godot/imported/Absolute_tigreso.png-426877c3459660ec72bd5aef8322bc1a.ctex"
+uid="uid://ij8e048dj43d"
+path="res://.godot/imported/Doc_girl.png-127d3207e780637d6834b40ebaf67010.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/Absolute_tigreso.png"
-dest_files=["res://.godot/imported/Absolute_tigreso.png-426877c3459660ec72bd5aef8322bc1a.ctex"]
+source_file="res://assets/sprites/referencia/Doc_girl.png"
+dest_files=["res://.godot/imported/Doc_girl.png-127d3207e780637d6834b40ebaf67010.ctex"]
 
 [params]
 

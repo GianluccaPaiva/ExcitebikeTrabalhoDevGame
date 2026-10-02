@@ -4,8 +4,8 @@
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/Player.png" id="3_player"]
 [ext_resource type="Texture2D" uid="uid://begpegjmbj556" path="res://assets/ui/citys/NexusCity.jpg" id="4_city"]
-[ext_resource type="Texture2D" uid="uid://ij8e048dj43d" path="res://assets/sprites/Doc_girl.png" id="5_doc"]
-[ext_resource type="Texture2D" uid="uid://wobpgast4sho" path="res://assets/sprites/Absolute_tigreso.png" id="6_tigreso"]
+[ext_resource type="Texture2D" uid="uid://ij8e048dj43d" path="res://assets/sprites/referencia/Doc_girl.png" id="5_doc"]
+[ext_resource type="Texture2D" uid="uid://wobpgast4sho" path="res://assets/sprites/referencia/Absolute_tigreso.png" id="6_tigreso"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="7_sounds"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_maca"]
@@ -25,7 +25,6 @@ font_size = 8
 font_color = Color(0.988235, 0.74902, 0.0588235, 1)
 outline_size = 1
 outline_color = Color(0, 0, 0, 1)
-shadow_size = 1
 shadow_color = Color(0, 0, 0, 0.8)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_balao_doc"]
@@ -63,7 +62,6 @@ anti_aliasing = false
 font = ExtResource("2_font")
 font_size = 8
 font_color = Color(0.95, 0.2, 0.2, 1)
-shadow_size = 1
 shadow_color = Color(0, 0, 0, 0.5)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
