@@ -25,8 +25,12 @@ var _chegada_registrada_player: bool = false
 @onready var sensor_chegada: Area2D = get_node_or_null("PistaVisual/Chegada/SensorChegada")
 @onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
 @onready var countdown_ui: CanvasLayer = get_node_or_null("CountdownUI")
+@onready var hub_ui: CanvasLayer = get_node_or_null("Entities/Player/Hub")
+
 func _ready() -> void:
 	AudioManager.iniciar_estadio_largada()
+	if not hub_ui and player:
+		hub_ui = player.get_node_or_null("Hub") as CanvasLayer
 	colocacoes.clear()
 	bots.clear()
 	bots_concluidos.clear()
@@ -36,6 +40,8 @@ func _ready() -> void:
 	tempo_decorrido = 0.0
 	_tempo_ultimo_log = 0.0
 	_chegada_registrada_player = false
+	if hub_ui and hub_ui.has_method("set_timer_atual"):
+		hub_ui.set_timer_atual(0.0)
 	_conectar_sensores()
 	_conectar_player()
 	_conectar_bots()
@@ -68,6 +74,8 @@ func _process(delta: float) -> void:
 
 	if cronometro_ativo:
 		tempo_decorrido += delta
+		if hub_ui and hub_ui.has_method("set_timer_atual"):
+			hub_ui.set_timer_atual(tempo_decorrido)
 		if tempo_decorrido - _tempo_ultimo_log >= 1.0:
 			_tempo_ultimo_log = tempo_decorrido
 			var px: float = player.global_position.x if player else 0.0

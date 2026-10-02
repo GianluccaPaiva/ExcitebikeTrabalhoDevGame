@@ -13,7 +13,19 @@ extends CanvasLayer
 var _vidas_sprites: Array[Sprite2D] = []
 var _posicoes_originais_y: Dictionary = {}
 var _vidas_ativas: int = 3
+## Atualiza o cronômetro do HUD formatando tempo total decorrido em MM:SS:CC (Minutos, Segundos e Centésimos)
+func set_timer_atual(tempo: float) -> void:
+	var minutos: int = int(tempo / 60.0)
+	var segundos: int = int(fmod(tempo, 60.0))
+	var centesimos: int = int(fmod(tempo * 100.0, 100.0))
+	var tempo_formatado: String = "%02d:%02d:%02d" % [minutos, segundos, centesimos]
+	if temp_atual:
+		temp_atual.text = tempo_formatado
 
+
+## Compatibilidade com chamadas anteriores de set_temp_atual
+func set_temp_atual(tempo: float) -> void:
+	set_timer_atual(tempo)
 
 func _ready() -> void:
 	_vidas_sprites = [moto_vida_1, moto_vida_2, moto_vida_3]
@@ -33,10 +45,6 @@ func resetar_vidas() -> void:
 			if _posicoes_originais_y.has(sp):
 				sp.position.y = _posicoes_originais_y[sp]
 
-
-func set_temp_atual(temp: float) -> void:
-	if temp_atual:
-		temp_atual.text = str(temp)
 
 
 func set_km_h(km: Variant) -> void:
