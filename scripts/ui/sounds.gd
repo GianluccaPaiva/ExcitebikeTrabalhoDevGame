@@ -31,33 +31,11 @@ func _inicializar() -> void:
 	_pode_tocar_som = true
 
 
-## Localiza a raiz da cena ativa e vincula todos os botões filhos
+## Vincula todos os botões no grupo "ui_buttons"
 func _configurar_botoes_da_cena() -> void:
-	# Conecta diretamente os botões do nó pai imediato (ex: Pause)
-	if get_parent():
-		_conectar_botoes_recursivo(get_parent())
-
-	var raiz: Node = owner
-	if raiz == null:
-		raiz = get_tree().current_scene
-	if raiz == null:
-		raiz = self
-		while raiz.get_parent() != null and not (raiz.get_parent() is Window):
-			raiz = raiz.get_parent()
-
-	if raiz and raiz != get_parent():
-		_conectar_botoes_recursivo(raiz)
-
-
-## Percorre recursivamente a árvore conectando mouse_entered e focus_entered
-func _conectar_botoes_recursivo(nodo: Node) -> void:
-	if nodo == null:
-		return
-
-	for filho in nodo.get_children():
-		if filho is Button:
-			_vincular_botao(filho)
-		_conectar_botoes_recursivo(filho)
+	for btn in get_tree().get_nodes_in_group("ui_buttons"):
+		if btn is Button:
+			_vincular_botao(btn)
 
 
 ## Vincula os sinais de foco e mouse do botão

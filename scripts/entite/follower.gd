@@ -89,7 +89,7 @@ func _physics_process(delta: float) -> void:
 		tempo_efeito_restante -= delta
 
 	# Zona de desaceleração pós-chegada
-	if global_position.x >= 17640.0:
+	var marker_desaceleracao: Marker2D = get_tree().current_scene.get_node_or_null("Markers/MarkerDesaceleracao")`n`tvar pos_x: float = marker_desaceleracao.global_position.x if marker_desaceleracao else 17640.0`n`tif global_position.x >= pos_x:
 		em_desaceleracao = true
 
 	if em_desaceleracao:

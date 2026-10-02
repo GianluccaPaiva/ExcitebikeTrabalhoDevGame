@@ -257,7 +257,7 @@ text = "Sobrou nada."
 label_settings = SubResource("LabelSettings_tigreso")
 horizontal_alignment = 1
 
-[node name="BtnContinuar" type="Button" parent="UI" unique_id=495907199]
+[node name="BtnContinuar" type="Button" groups=["ui_buttons"] parent="UI" unique_id=495907199]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5

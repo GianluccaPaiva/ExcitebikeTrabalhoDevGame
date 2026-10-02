@@ -177,7 +177,7 @@ grow_vertical = 0
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="Restart" type="Button" parent="UI/Botoes" unique_id=1059816185]
+[node name="Restart" type="Button" groups=["ui_buttons"] parent="UI/Botoes" unique_id=1059816185]
 custom_minimum_size = Vector2(88, 20)
 layout_mode = 2
 focus_neighbor_right = NodePath("../Menu")
@@ -191,7 +191,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
 text = "REINICIAR"
 
-[node name="Menu" type="Button" parent="UI/Botoes" unique_id=319257709]
+[node name="Menu" type="Button" groups=["ui_buttons"] parent="UI/Botoes" unique_id=319257709]
 custom_minimum_size = Vector2(88, 20)
 layout_mode = 2
 focus_neighbor_left = NodePath("../Restart")

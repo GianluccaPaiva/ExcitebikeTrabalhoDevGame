@@ -113,8 +113,8 @@ func _process(delta: float) -> void:
 		if tempo_decorrido - _tempo_ultimo_log >= 1.0:
 			_tempo_ultimo_log = tempo_decorrido
 			var px: float = player.global_position.x if player else 0.0
-			var pct: float = clampf((px / 17850.0) * 100.0, 0.0, 100.0)
-			if OS.is_debug_build(): print("[Cronômetro] ⏱️ %05.1fs | Restante: %05.1fs | X: %5.0f / 17850 px (%4.1f%%)" % [tempo_decorrido, tempo_limite_restante, px, pct])
+			var pct: float = clampf((px / $Markers/MarkerFimPista.global_position.x) * 100.0, 0.0, 100.0)
+			if OS.is_debug_build(): print("[Cronômetro] ⏱️ %05.1fs | Restante: %05.1fs | X: %5.0f / FIM px (%4.1f%%)" % [tempo_decorrido, tempo_limite_restante, px, pct])
 
 
 ## Callback executado quando o tempo limite do hub zera (1:50)
@@ -284,7 +284,7 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 					if pos_filmers_x == 0.0 or child.global_position.x < pos_filmers_x:
 						pos_filmers_x = child.global_position.x
 		if pos_filmers_x == 0.0:
-			pos_filmers_x = 17855.0
+			pos_filmers_x = $Markers/MarkerFilmers.global_position.x
 
 		if body.has_method("iniciar_desaceleracao_automatica"):
 			body.iniciar_desaceleracao_automatica(pos_filmers_x)

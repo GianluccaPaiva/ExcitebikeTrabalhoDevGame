@@ -120,7 +120,7 @@ texture = ExtResource("3_hjwqk")
 hframes = 6
 vframes = 6
 
-[node name="Restart" type="Button" parent="Control" unique_id=694277677]
+[node name="Restart" type="Button" groups=["ui_buttons"] parent="Control" unique_id=694277677]
 custom_minimum_size = Vector2(120, 20)
 layout_mode = 0
 offset_left = 68.0
@@ -139,7 +139,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
 text = " REINICIAR "
 
-[node name="Menu" type="Button" parent="Control" unique_id=1522268969]
+[node name="Menu" type="Button" groups=["ui_buttons"] parent="Control" unique_id=1522268969]
 custom_minimum_size = Vector2(120, 20)
 layout_mode = 0
 offset_left = 68.0

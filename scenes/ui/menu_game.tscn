@@ -211,7 +211,7 @@ grow_vertical = 0
 theme_override_constants/separation = 4
 metadata/_edit_use_anchors_ = true
 
-[node name="Jogar" type="Button" parent="UI/BotoesContainer" unique_id=1814312722]
+[node name="Jogar" type="Button" groups=["ui_buttons"] parent="UI/BotoesContainer" unique_id=1814312722]
 custom_minimum_size = Vector2(120, 20)
 layout_mode = 2
 size_flags_vertical = 2
@@ -227,7 +227,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
 text = "JOGAR"
 
-[node name="Sair" type="Button" parent="UI/BotoesContainer" unique_id=827626581]
+[node name="Sair" type="Button" groups=["ui_buttons"] parent="UI/BotoesContainer" unique_id=827626581]
 custom_minimum_size = Vector2(120, 20)
 layout_mode = 2
 size_flags_vertical = 10
