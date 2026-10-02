@@ -11,15 +11,21 @@ extends Control
 @onready var tigreso: Sprite2D = $Cenario/AbsoluteTigreso
 @onready var player_sprite: Sprite2D = $Cenario/Maca/PlayerAcidentado
 @onready var sounds: Sounds = get_node_or_null("Sounds")
+@onready var falcao: Sprite2D = $Cenario/Quadro/Falcao
+
+@export var lista_png_falcao: Array[Texture2D] = []
+
 
 var _tempo_anim: float = 0.0
 var _doc_base_y: float = 0.0
 var _tigreso_base_y: float = 0.0
 var _player_base_pos: Vector2 = Vector2.ZERO
 var _player_base_rot: float = 0.0
-var _balao_doc_scale: Vector2 = Vector2.ONE
-var _balao_tigreso_scale: Vector2 = Vector2.ONE
 
+func _aleatoriza_falcao() -> void:
+	if falcao and lista_png_falcao.size() > 0:
+		var index: int = randi() % lista_png_falcao.size()
+		falcao.texture = lista_png_falcao[index]
 
 func _ready() -> void:
 	if doc_girl:
@@ -41,6 +47,8 @@ func _ready() -> void:
 
 	if btn_continuar:
 		btn_continuar.grab_focus()
+
+	_aleatoriza_falcao()
 
 	_executar_dialogo()
 

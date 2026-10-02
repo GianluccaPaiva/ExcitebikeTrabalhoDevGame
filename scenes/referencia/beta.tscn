@@ -2,9 +2,12 @@
 
 [ext_resource type="Script" uid="uid://dndnj150yti3s" path="res://scripts/referencia/beta.gd" id="1_beta"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://bmqnrvi1ojy1c" path="res://assets/sprites/referencia/falcaoQuasePeregrino.png" id="3_28iro"]
 [ext_resource type="Texture2D" uid="uid://cjsoo6rtijqu5" path="res://assets/sprites/referencia/falcaoPeregrino.png" id="3_amkwq"]
 [ext_resource type="Texture2D" uid="uid://xnpvvmx2y14q" path="res://assets/sprites/entites/Player.png" id="3_player"]
+[ext_resource type="Texture2D" uid="uid://b5bjms3pl5ut6" path="res://assets/sprites/referencia/falcaoCasada.png" id="4_5ie22"]
 [ext_resource type="Texture2D" uid="uid://begpegjmbj556" path="res://assets/ui/citys/NexusCity.jpg" id="4_city"]
+[ext_resource type="Texture2D" uid="uid://bjbouhmthnl5s" path="res://assets/sprites/referencia/falcaoAgiota.png" id="5_6pkb3"]
 [ext_resource type="Texture2D" uid="uid://ij8e048dj43d" path="res://assets/sprites/referencia/Doc_girl.png" id="5_doc"]
 [ext_resource type="Texture2D" uid="uid://wobpgast4sho" path="res://assets/sprites/referencia/Absolute_tigreso.png" id="6_tigreso"]
 [ext_resource type="PackedScene" uid="uid://udyyhxxn6tkp" path="res://scenes/ui/sounds.tscn" id="7_sounds"]
@@ -81,6 +84,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_beta")
+lista_png_falcao = Array[Texture2D]([ExtResource("3_amkwq"), ExtResource("3_28iro"), ExtResource("4_5ie22"), ExtResource("5_6pkb3")])
 
 [node name="Cenario" type="Node2D" parent="." unique_id=1292681511]
 
@@ -119,7 +123,7 @@ offset_right = 237.0
 offset_bottom = 79.0
 color = Color(0.1, 0.15, 0.22, 1)
 
-[node name="CidadeJanela" type="Sprite2D" parent="Cenario/Quadro" unique_id=1868321339]
+[node name="Falcao" type="Sprite2D" parent="Cenario/Quadro" unique_id=1868321339]
 position = Vector2(25.118408, 23.385803)
 scale = Vector2(0.046681616, 0.038983364)
 texture = ExtResource("3_amkwq")
