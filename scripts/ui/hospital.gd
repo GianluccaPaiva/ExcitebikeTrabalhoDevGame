@@ -14,7 +14,6 @@ const FRASES_GAME_OVER: Array[String] = [
 	"FOI DE SUS!",
 	"DETONADO",
 	"MORREU MAS PASSA BEM",
-	"SON"
 ]
 
 @onready var label_status: Label = $Label
