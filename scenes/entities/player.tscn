@@ -163,5 +163,11 @@ speed_scale = 0.2
 
 [node name="Hub" parent="." unique_id=1621250794 instance=ExtResource("3_1ie0h")]
 
+[node name="CrashTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="EfeitoTimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="PlayerAudio" parent="." instance=ExtResource("4_audio")]
 

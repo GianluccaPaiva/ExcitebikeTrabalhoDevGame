@@ -46,6 +46,7 @@ var _chegada_registrada_player: bool = false
 @onready var hub_ui: CanvasLayer = get_node_or_null("Entities/Player/Hub")
 
 func _ready() -> void:
+	race_timer.timeout.connect(_on_tempo_esgotado)
 	AudioManager.iniciar_estadio_largada()
 	if not hub_ui and player:
 		hub_ui = player.get_node_or_null("Hub") as CanvasLayer
@@ -84,6 +85,7 @@ func _on_corrida_iniciada() -> void:
 		cronometro_ativo = true
 		tempo_decorrido = 0.0
 		_tempo_ultimo_log = 0.0
+		race_timer.start(tempo_limite)
 		if OS.is_debug_build(): print("==================================================")
 		if OS.is_debug_build(): print("🟢 [Cronômetro] CORRIDA INICIADA! Cronômetro iniciado.")
 		if OS.is_debug_build(): print("==================================================")
@@ -97,7 +99,7 @@ func _process(delta: float) -> void:
 
 	if cronometro_ativo:
 		tempo_decorrido += delta
-		var tempo_limite_restante: float = maxf(tempo_limite - tempo_decorrido, 0.0)
+		var tempo_limite_restante: float = race_timer.time_left
 
 		if hub_ui:
 			if hub_ui.has_method("set_temp_atual"):
@@ -105,10 +107,7 @@ func _process(delta: float) -> void:
 			if hub_ui.has_method("set_temp_limite"):
 				hub_ui.set_temp_limite(tempo_limite_restante)
 
-		# Quando o tempo limite reduz até zerar
-		if tempo_limite > 0.0 and tempo_limite_restante <= 0.0 and not transicao_em_andamento and not _chegada_registrada_player:
-			_on_tempo_esgotado()
-			return
+
 
 		if tempo_decorrido - _tempo_ultimo_log >= 1.0:
 			_tempo_ultimo_log = tempo_decorrido

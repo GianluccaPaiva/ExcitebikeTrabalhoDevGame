@@ -389,7 +389,10 @@ centered = false
 region_enabled = true
 region_rect = Rect2(1693.2595, 0, 99.53931, 112)
 
-[node name="Markers" type="Node2D" parent="."]`n[node name="MarkerDesaceleracao" type="Marker2D" parent="Markers"]`nposition = Vector2(17640, 0)`n[node name="MarkerFimPista" type="Marker2D" parent="Markers"]`nposition = Vector2(17850, 0)`n[node name="MarkerFilmers" type="Marker2D" parent="Markers"]`nposition = Vector2(17855, 0)`n`n[node name="SensorChegada" type="Area2D" parent="PistaVisual/Chegada" unique_id=2038563375]
+[node name="Markers" type="Node2D" parent="."]`n[node name="MarkerDesaceleracao" type="Marker2D" parent="Markers"]`nposition = Vector2(17640, 0)`n[node name="MarkerFimPista" type="Marker2D" parent="Markers"]`nposition = Vector2(17850, 0)`n[node name="MarkerFilmers" type="Marker2D" parent="Markers"]`nposition = Vector2(17855, 0)`n`n[node name="RaceTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="SensorChegada" type="Area2D" parent="PistaVisual/Chegada" unique_id=2038563375]
 position = Vector2(2, 66)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistaVisual/Chegada/SensorChegada" unique_id=1024115546]

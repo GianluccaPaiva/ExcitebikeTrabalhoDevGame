@@ -42,6 +42,9 @@ _data = {
 
 [node name="Enemy" type="Node2D" unique_id=1581498463]
 
+[node name="EfeitoTimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1549068961]
 texture = ExtResource("1_racer1")
 hframes = 6

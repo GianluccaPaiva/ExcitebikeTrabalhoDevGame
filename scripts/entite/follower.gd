@@ -84,12 +84,12 @@ func _physics_process(delta: float) -> void:
 	if current_speed < 0.0:
 		current_speed = speed
 
-	# Decresce o timer de efeito uniformemente (mesma duração do player)
-	if tempo_efeito_restante > 0.0 and not em_desaceleracao:
-		tempo_efeito_restante -= delta
+	# Removido decréscimo manual (efeito_timer gerencia sozinho)
 
 	# Zona de desaceleração pós-chegada
-	var marker_desaceleracao: Marker2D = get_tree().current_scene.get_node_or_null("Markers/MarkerDesaceleracao")`n`tvar pos_x: float = marker_desaceleracao.global_position.x if marker_desaceleracao else 17640.0`n`tif global_position.x >= pos_x:
+	var marker_desaceleracao: Marker2D = get_tree().current_scene.get_node_or_null("Markers/MarkerDesaceleracao")
+	var pos_x: float = marker_desaceleracao.global_position.x if marker_desaceleracao else 17640.0
+	if global_position.x >= pos_x:
 		em_desaceleracao = true
 
 	if em_desaceleracao:
@@ -106,8 +106,8 @@ func _physics_process(delta: float) -> void:
 				percurso_concluido.emit(self)
 			return
 	else:
-		# Se acabou o tempo do efeito, suaviza o retorno à velocidade original (igual inércia do Player!)
-		if tempo_efeito_restante <= 0.0:
+		# Se o timer parou, suaviza o retorno à velocidade original (igual inércia do Player!)
+		if efeito_timer.is_stopped():
 			current_speed = move_toward(current_speed, speed, 120.0 * delta)
 			_frame_skip_ativo = 0
 

@@ -40,7 +40,7 @@ signal manobra_sucesso(quantidade_giros: int)
 @export var controles_bloqueados: bool = true
 var state: State = State.NO_CHAO
 var was_on_floor: bool = true
-var crash_timer: float = 0.0
+@onready var crash_timer: Timer = $CrashTimer
 var current_speed: float = 0.0 # Magnitude da velocidade ao longo da pista
 var em_desaceleracao_automatica: bool = false
 var limite_x_parada: float = 0.0
@@ -50,14 +50,14 @@ var last_ramp_vector: Vector2 = Vector2.RIGHT
 var last_ramp_speed: float = 0.0
 var ramp_launch_timer: float = 0.0
 var max_speed_base: float = 0.0
-var tempo_efeito_restante: float = 0.0
+@onready var efeito_timer: Timer = $EfeitoTimer
 var rotacao_inicio_salto: float = 0.0
 var tempo_no_ar: float = 0.0
 
 func update_hub_ui() -> void:
 	if hub_ui:
 		if hub_ui.has_method("set_km_h"):
-			hub_ui.set_km_h(velocity_to_km_h(current_speed))
+			hub_ui.set_km_h(velocity_to_km_h(get_real_velocity().length()))
 		if hub_ui.has_method("set_quedas"):
 			hub_ui.set_quedas(qtd_acidentes)
 
@@ -65,8 +65,10 @@ func velocity_to_km_h(vel: float) -> float:
 	return vel * PX_TO_KMH # Converte px/s para km/h (1 px/s = 0.36 km/h)
 
 func _ready() -> void:
+	crash_timer.timeout.connect(_recuperar_de_acidente)
+	efeito_timer.timeout.connect(_encerrar_efeito)
 	# Configurações de floor_max_angle e floor_stop_on_slope movidas para o inspetor
-	floor_snap_length = 8.0
+	_mudar_estado(State.NO_CHAO)
 	max_speed_base = max_speed
 	
 	if moto_caida_sprite:
@@ -79,17 +81,13 @@ func _ready() -> void:
 
 func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
 	max_speed = max_speed_base * fator
-	tempo_efeito_restante = duracao
+	efeito_timer.start(duracao)
 	if fator > 1.0:
 		current_speed = max_speed
 	elif fator < 1.0:
 		current_speed *= fator
 
 func _physics_process(delta: float) -> void:
-	if tempo_efeito_restante > 0.0:
-		tempo_efeito_restante -= delta
-		if tempo_efeito_restante <= 0.0:
-			max_speed = max_speed_base
 
 	# Enquanto a contagem regressiva estiver rodando, mantém o player perfeitamente estático no grid
 	if controles_bloqueados and not em_desaceleracao_automatica:
@@ -228,8 +226,10 @@ func _process_ar(delta: float) -> void:
 
 
 # --- ESTADO: ACIDENTE (CRASH) ---
+func _encerrar_efeito() -> void:
+	max_speed = max_speed_base
+
 func _process_acidente(delta: float) -> void:
-	crash_timer -= delta
 	current_speed = 0.0
 	velocity.x = 0.0
 
@@ -237,9 +237,6 @@ func _process_acidente(delta: float) -> void:
 		velocity.y += gravity * delta
 	else:
 		velocity.y = 0.0
-
-	if crash_timer <= 0.0:
-		_recuperar_de_acidente()
 
 
 # --- DETECÇÃO DE TRANSIÇÕES CHÃO / AR ---
@@ -258,8 +255,7 @@ func _check_floor_transitions() -> void:
 
 ## Executado no instante exato da perda de contato com a rampa/chão
 func _decolar_da_rampa() -> void:
-	state = State.NO_AR
-	floor_snap_length = 0.0 # Libera o snap para não prender a moto ao topo da rampa
+	_mudar_estado(State.NO_AR) # Libera o snap para não prender a moto ao topo da rampa
 	rotacao_inicio_salto = rotation # Registra a rotação para contar flips
 	tempo_no_ar = 0.0
 
@@ -296,10 +292,8 @@ func _processar_aterrissagem() -> void:
 		# Se o jogador aterrissar com segurança (não capotar) após um salto real (mais de 0.4s no ar), ganha o bônus.
 		if tempo_no_ar >= TEMPO_MINIMO_MANOBRA:
 			manobra_sucesso.emit(1)
-		
-		state = State.NO_CHAO
-		rotation = ground_angle
-		floor_snap_length = 8.0 # Restaura a aderência de snap ao solo após o pouso
+		_mudar_estado(State.NO_CHAO)
+		rotation = ground_angle # Restaura a aderência de snap ao solo após o pouso
 		ramp_launch_timer = 0.0
 		# Preserva a projeção da velocidade aérea ao longo da pista (conservação vetorial de momento)
 		var projected_speed: float = velocity.dot(ground_dir)
@@ -336,12 +330,11 @@ func _processar_aterrissagem() -> void:
 
 # --- GATILHOS DE ACIDENTE E RECUPERAÇÃO ---
 func _disparar_acidente() -> void:
-	state = State.ACIDENTE
 	current_speed = 0.0
 	velocity = Vector2.ZERO
 	rotation = 0.0
-	crash_timer = crash_duration
-	floor_snap_length = 8.0
+crash_timer.start(crash_duration)
+	_mudar_estado(State.ACIDENTE)
 	ramp_launch_timer = 0.0
 
 	if player_audio:
@@ -363,9 +356,9 @@ func _recuperar_de_acidente() -> void:
 	state = State.NO_CHAO
 	rotation = 0.0
 	current_speed = 0.0
-	velocity = Vector2.ZERO
-	floor_snap_length = 8.0
+velocity = Vector2.ZERO
 	ramp_launch_timer = 0.0
+	_mudar_estado(State.NO_CHAO)
 
 	if moto_caida_sprite:
 		moto_caida_sprite.visible = false
@@ -412,3 +405,7 @@ func iniciar_desaceleracao_automatica(x_alvo: float = 17855.0) -> void:
 func travar_controles() -> void:
 	iniciar_desaceleracao_automatica()
 
+
+func _mudar_estado(novo_estado: State) -> void:
+	state = novo_estado
+	floor_snap_length = 0.0 if state == State.NO_AR else 8.0
