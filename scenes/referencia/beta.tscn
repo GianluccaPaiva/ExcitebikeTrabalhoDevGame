@@ -166,7 +166,7 @@ scale = Vector2(0.065, 0.065)
 texture = ExtResource("5_doc")
 
 [node name="AbsoluteTigreso" type="Sprite2D" parent="Cenario" unique_id=1976976082]
-position = Vector2(107.99999, 126)
+position = Vector2(100.99999, 123)
 scale = Vector2(0.068, 0.068)
 texture = ExtResource("6_tigreso")
 
@@ -195,10 +195,11 @@ horizontal_alignment = 1
 
 [node name="BalaoDoc" type="PanelContainer" parent="UI" unique_id=1701150449]
 layout_mode = 0
-offset_left = 2.0
-offset_top = 48.0
-offset_right = 118.0
-offset_bottom = 82.0
+offset_left = -2.0
+offset_top = 50.0
+offset_right = 114.0
+offset_bottom = 84.0
+scale = Vector2(0.9599988, 1)
 pivot_offset = Vector2(58, 17)
 theme_override_styles/panel = SubResource("StyleBoxFlat_balao_doc")
 
@@ -218,10 +219,11 @@ horizontal_alignment = 1
 
 [node name="BalaoTigreso" type="PanelContainer" parent="UI" unique_id=761387740]
 layout_mode = 0
-offset_left = 120.0
-offset_top = 50.0
-offset_right = 236.0
-offset_bottom = 76.0
+offset_left = 111.99999
+offset_top = 76.0
+offset_right = 228.0
+offset_bottom = 102.0
+scale = Vector2(0.9599988, 1.0361388)
 pivot_offset = Vector2(58, 13)
 theme_override_styles/panel = SubResource("StyleBoxFlat_balao_tigreso")
 
