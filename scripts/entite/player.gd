@@ -9,6 +9,8 @@ signal hospital
 signal desaceleracao_concluida
 signal manobra_sucesso(quantidade_giros: int)
 
+const PX_TO_KMH: float = 0.36
+
 # --- CONFIGURAÇÕES DE FÍSICA E MOVIMENTO (Ajustáveis no Inspetor) ---
 @export_group("Movimento no Solo")
 @export var max_speed: float = 260.0
