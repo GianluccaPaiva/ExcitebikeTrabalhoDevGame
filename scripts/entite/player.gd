@@ -10,6 +10,12 @@ signal desaceleracao_concluida
 signal manobra_sucesso(quantidade_giros: int)
 
 const PX_TO_KMH: float = 0.36
+const ANGULO_PLANEIO_MAX: float = -0.12
+const ANGULO_PLANEIO_MIN: float = -0.62
+const ANGULO_MERGULHO_MIN: float = 0.18
+const FATOR_PLANEIO: float = 0.85
+const FATOR_MERGULHO: float = 1.15
+const TEMPO_MINIMO_MANOBRA: float = 0.4
 
 # --- CONFIGURAÇÕES DE FÍSICA E MOVIMENTO (Ajustáveis no Inspetor) ---
 @export_group("Movimento no Solo")
