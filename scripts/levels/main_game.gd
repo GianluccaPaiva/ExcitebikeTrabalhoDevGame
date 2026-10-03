@@ -159,7 +159,8 @@ func _on_player_manobra_sucesso(giros: int) -> void:
 func _conectar_bots() -> void:
 	bots.clear()
 	bots_concluidos.clear()
-	for bot_node_untyped in get_tree().get_nodes_in_group("bots"):`n`t`tvar bot_node: Node2D = bot_node_untyped as Node2D
+	for bot_node_untyped in get_tree().get_nodes_in_group("bots"):
+		var bot_node: Node2D = bot_node_untyped as Node2D
 		bots.append(bot_node)
 		if bot_node.has_signal("percurso_concluido"):
 			if not bot_node.percurso_concluido.is_connected(_on_bot_percurso_concluido):
@@ -219,13 +220,15 @@ func _on_hospital() -> void:
 
 
 func _conectar_sensores_efeitos() -> void:
-	for sensor_untyped in get_tree().get_nodes_in_group("boost_sensors"):`n`t`tvar sensor: Area2D = sensor_untyped as Area2D
+	for sensor_untyped in get_tree().get_nodes_in_group("boost_sensors"):
+		var sensor: Area2D = sensor_untyped as Area2D
 		if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
 			sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
 		if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
 			sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
 
-	for sensor_untyped in get_tree().get_nodes_in_group("slower_sensors"):`n`t`tvar sensor: Area2D = sensor_untyped as Area2D
+	for sensor_untyped in get_tree().get_nodes_in_group("slower_sensors"):
+		var sensor: Area2D = sensor_untyped as Area2D
 		if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
 			sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
 		if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):

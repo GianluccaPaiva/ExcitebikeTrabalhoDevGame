@@ -172,7 +172,8 @@ func _tocar_torcida_queda_impl() -> void:
 		_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 1.4).set_delay(0.35)
 
 
-func parar_torcida_queda() -> void:`n`t_parar(_player_torcida_queda)
+func parar_torcida_queda() -> void:
+	_parar(_player_torcida_queda)
 
 
 func tocar_linha_chegada() -> void:
@@ -184,32 +185,45 @@ func tocar_linha_chegada() -> void:
 			_player_linha_chegada.play()
 
 
-func parar_linha_chegada() -> void:`n`t_parar(_player_linha_chegada)
+func parar_linha_chegada() -> void:
+	_parar(_player_linha_chegada)
 
 
 # --- MÉTODOS DE CONTROLE DA TELA DE COLOCAÇÃO / PÓDIO ---
 
-func tocar_podio() -> void:`n`tparar_audios_corrida()`n`tparar_audios_colocacao()`n`t_tocar(_player_podio)
+func tocar_podio() -> void:
+	parar_audios_corrida()
+	parar_audios_colocacao()
+	_tocar(_player_podio)
 
 
-func tocar_quarto_lugar() -> void:`n`tparar_audios_corrida()`n`tparar_audios_colocacao()`n`t_tocar(_player_4_lugar)
+func tocar_quarto_lugar() -> void:
+	parar_audios_corrida()
+	parar_audios_colocacao()
+	_tocar(_player_4_lugar)
 
 
-func parar_audios_colocacao() -> void:`n`t_parar(_player_podio)`n`t_parar(_player_4_lugar)
+func parar_audios_colocacao() -> void:
+	_parar(_player_podio)
+	_parar(_player_4_lugar)
 
 
 # --- MÉTODOS DE CONTROLE DA TELA DE HOSPITAL / GAME OVER ---
 
-func tocar_game_over() -> void:`n`t_tocar(_player_game_over)
+func tocar_game_over() -> void:
+	_tocar(_player_game_over)
 
 
-func parar_game_over() -> void:`n`t_parar(_player_game_over)
+func parar_game_over() -> void:
+	_parar(_player_game_over)
 
 
-func tocar_ambulancia() -> void:`n`t_tocar(_player_ambulancia)
+func tocar_ambulancia() -> void:
+	_tocar(_player_ambulancia)
 
 
-func parar_ambulancia() -> void:`n`t_parar(_player_ambulancia)
+func parar_ambulancia() -> void:
+	_parar(_player_ambulancia)
 
 
 # --- PARADA GERAL ---
