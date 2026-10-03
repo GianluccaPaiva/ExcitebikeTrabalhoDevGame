@@ -326,6 +326,9 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	if not transicao_em_andamento:
 		AudioManager.tocar_linha_chegada()
 
+	var nome_corredor: String = corredor.name
+	if corredor is CharacterBody2D or corredor.name == "Player":
+		nome_corredor = "Player"
 		_chegada_registrada_player = true
 		cronometro_ativo = false
 		if OS.is_debug_build():
