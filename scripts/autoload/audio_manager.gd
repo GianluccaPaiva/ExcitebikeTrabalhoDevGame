@@ -11,6 +11,7 @@ const STREAM_4_LUGAR: AudioStream = preload("res://assets/sounds/som4lugar.mp3")
 const STREAM_GAME_OVER: AudioStream = preload("res://assets/sounds/somGameOver.mp3")
 const STREAM_AMBULANCIA: AudioStream = preload("res://assets/sounds/Ambulance.mp3")
 const STREAM_TORCIDA_QUEDA: AudioStream = preload("res://assets/sounds/somTorcidaQueda.wav")
+const STREAM_VAIA: AudioStream = preload("res://assets/sounds/somVaia.mp3")
 
 # Nós de reprodução dedicados
 var _player_estadio: AudioStreamPlayer
@@ -20,9 +21,11 @@ var _player_4_lugar: AudioStreamPlayer
 var _player_game_over: AudioStreamPlayer
 var _player_ambulancia: AudioStreamPlayer
 var _player_torcida_queda: AudioStreamPlayer
+var _player_vaia: AudioStreamPlayer
 
 var _tween_ducking: Tween = null
 var _estadio_ativo: bool = false
+var _vaia_ativa: bool = false
 var _audio_pausado: bool = false
 var _arvore_estava_pausada: bool = false
 
@@ -49,6 +52,12 @@ func _ready() -> void:
 	_player_game_over = _criar_player("AudioGameOver", STREAM_GAME_OVER, -2.0)
 	_player_ambulancia = _criar_player("AudioAmbulancia", STREAM_AMBULANCIA, -4.0)
 	_player_torcida_queda = _criar_player("AudioTorcidaQueda", STREAM_TORCIDA_QUEDA, -3.5)
+
+	_player_vaia = _criar_player("AudioVaia", STREAM_VAIA, -5.0)
+	_player_vaia.finished.connect(func() -> void:
+		if is_instance_valid(_player_vaia) and _vaia_ativa and not _audio_pausado:
+			_player_vaia.play()
+	)
 
 
 func _criar_player(nome: String, stream: AudioStream, vol_db: float) -> AudioStreamPlayer:
@@ -154,6 +163,7 @@ func tocar_estadio() -> void:
 
 ## Inicia a torcida no grid de largada em volume atenuado (-16 dB) para não abafar o countdown
 func iniciar_estadio_largada() -> void:
+	parar_vaia()
 	_estadio_ativo = true
 	if is_instance_valid(_player_estadio):
 		_player_estadio.volume_db = -16.0
@@ -194,6 +204,7 @@ func parar_audios_corrida() -> void:
 	parar_estadio()
 	parar_torcida_queda()
 	parar_linha_chegada()
+	parar_vaia()
 
 
 func tocar_torcida_queda() -> void:
@@ -285,9 +296,26 @@ func parar_ambulancia() -> void:
 		_player_ambulancia.stop()
 
 
+# --- MÉTODOS DE CONTROLE DA TELA DE TEMPO ESGOTADO / VAIA ---
+
+func tocar_vaia() -> void:
+	parar_audios_corrida()
+	_vaia_ativa = true
+	if is_instance_valid(_player_vaia) and not _player_vaia.playing:
+		_player_vaia.play()
+
+
+func parar_vaia() -> void:
+	_vaia_ativa = false
+	if is_instance_valid(_player_vaia) and _player_vaia.playing:
+		_player_vaia.stop()
+
+
 # --- PARADA GERAL ---
 
 func parar_todos() -> void:
+	_estadio_ativo = false
+	_vaia_ativa = false
 	for p in _todos_players:
 		if is_instance_valid(p) and p.playing:
 			p.stop()

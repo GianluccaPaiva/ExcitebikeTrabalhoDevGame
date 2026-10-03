@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/somVaia.mp3-3b3a29266a46115f94e0663f613f195f.
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

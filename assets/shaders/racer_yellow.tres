@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c8y3m8l5p2q1"]
 
-[ext_resource type="Shader" uid="uid://d1g4r5s8x2w3" path="res://assets/shaders/racer_palette_swap.gdshader" id="1_shader"]
+[ext_resource type="Shader" uid="uid://bpb7hdkay4jxf" path="res://assets/shaders/racer_palette_swap.gdshader" id="1_shader"]
 
 [resource]
 shader = ExtResource("1_shader")
