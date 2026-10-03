@@ -283,7 +283,7 @@ region_enabled = true
 region_rect = Rect2(1258.3381, 0, 67.755005, 112)
 
 [node name="Slower_4" type="Sprite2D" parent="PistaVisual" unique_id=741826524]
-position = Vector2(8780, 64)
+position = Vector2(8620, 64)
 texture = ExtResource("2_valbi")
 centered = false
 region_enabled = true
@@ -430,7 +430,7 @@ progress = 37.0
 rotates = false
 loop = false
 script = ExtResource("4_follower")
-speed = 226.0
+speed = 241.0
 initial_progress = 37.0
 
 [node name="Enemy" parent="Entities/PistasInimigos/TrilhaInimigo1/Inimigo1" unique_id=101010101 instance=ExtResource("5_enemy")]
@@ -445,7 +445,7 @@ progress = 53.0
 rotates = false
 loop = false
 script = ExtResource("4_follower")
-speed = 247.0
+speed = 262.0
 initial_progress = 53.0
 enemy_texture = ExtResource("6_racer2")
 
@@ -461,7 +461,7 @@ progress = 25.0
 rotates = false
 loop = false
 script = ExtResource("4_follower")
-speed = 238.0
+speed = 253.0
 initial_progress = 25.0
 enemy_texture = ExtResource("6_racer2")
 enemy_material = ExtResource("12_racer_yellow")
