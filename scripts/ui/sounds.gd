@@ -52,11 +52,8 @@ func _vincular_botao(btn: Button) -> void:
 
 ## Remove o foco de qualquer controle que tenha recebido foco na inicialização da cena
 func _remover_foco_ativo() -> void:
-	var viewport: Viewport = get_viewport()
-	if viewport:
-		var foco_atual: Control = viewport.gui_get_focus_owner()
-		if foco_atual:
-			foco_atual.release_focus()
+	# Funcionalidade desativada: remover o foco quebrava a navegacao por gamepad no menu!
+	pass
 
 
 ## Ao passar o mouse sobre o botão, ganha foco e toca som
