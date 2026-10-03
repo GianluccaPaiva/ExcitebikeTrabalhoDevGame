@@ -58,7 +58,7 @@ saltos_de_frame_bots = 13
 [node name="FundoArquibancada" type="Parallax2D" parent="." unique_id=344981667]
 scroll_scale = Vector2(0.5, 0.5)
 repeat_size = Vector2(256, 0)
-repeat_times = 200
+repeat_times = 140
 
 [node name="Sprite2D" type="Sprite2D" parent="FundoArquibancada" unique_id=181275346]
 position = Vector2(-6, -10.999999)
