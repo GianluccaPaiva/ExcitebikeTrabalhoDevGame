@@ -128,7 +128,10 @@ func _physics_process(delta: float) -> void:
 # --- ESTADO: NO CHÃO (DESLOCAMENTO VETORIAL ALINHADO AO RELEVO) ---
 func _process_chao(delta: float) -> void:
 	# Calcula o ângulo e o vetor tangente unitário da superfície da pista usando API nativa
-	var ground_angle: float = get_floor_angle()
+	var fn: Vector2 = get_floor_normal()
+	if fn.length_squared() < 0.01:
+		fn = Vector2.UP
+	var ground_angle: float = fn.angle() + (PI / 2.0)
 	var ground_dir: Vector2 = Vector2.RIGHT.rotated(ground_angle)
 	
 	# Alinha visualmente e fisicamente a moto com o ângulo do relevo
@@ -283,7 +286,10 @@ func _decolar_da_rampa() -> void:
 
 # --- LÓGICA MATEMÁTICA DE POUSO (COMPATÍVEL COM FLIPS DE 360°) ---
 func _processar_aterrissagem() -> void:
-	var ground_angle: float = get_floor_angle()
+	var fn: Vector2 = get_floor_normal()
+	if fn.length_squared() < 0.01:
+		fn = Vector2.UP
+	var ground_angle: float = fn.angle() + (PI / 2.0)
 	var ground_dir: Vector2 = Vector2.RIGHT.rotated(ground_angle)
 
 	# angle_difference calcula a menor distância angular (módulo 2*PI)
