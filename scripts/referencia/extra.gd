@@ -6,7 +6,8 @@ extends Control
 @onready var label_doc: Label = $UI/BalaoDoc/Margin/LabelDoc
 @onready var balao_tigreso: PanelContainer = $UI/BalaoTigreso
 @onready var label_tigreso: Label = $UI/BalaoTigreso/Margin/LabelTigreso
-@onready var btn_continuar: Button = get_node_or_null("UI/BtnContinuar")
+@onready var btn_restart: Button = get_node_or_null("UI/Botoes/Restart")
+@onready var btn_menu: Button = get_node_or_null("UI/Botoes/Menu")
 @onready var doc_girl: Sprite2D = $Cenario/DocGirl
 @onready var tigreso: Sprite2D = $Cenario/AbsoluteTigreso
 @onready var player_sprite: Sprite2D = $Cenario/Maca/PlayerAcidentado
@@ -45,8 +46,8 @@ func _ready() -> void:
 		balao_tigreso.scale = Vector2.ONE
 		balao_tigreso.modulate.a = 0.0
 
-	if btn_continuar:
-		btn_continuar.grab_focus()
+	if btn_restart:
+		btn_restart.grab_focus()
 
 	_aleatoriza_falcao()
 
@@ -97,15 +98,23 @@ func _executar_dialogo() -> void:
 		tween_p.tween_property(player_sprite, "rotation_degrees", _player_base_rot, 0.08)
 
 
-## Botão Continuar: leva para o cenário de Tempo Esgotado
-func _on_btn_continuar_pressed() -> void:
-	if btn_continuar:
-		btn_continuar.disabled = true
+## Botão Reiniciar: recarrega a fase principal
+func _on_restart_pressed() -> void:
+	if btn_restart:
+		btn_restart.disabled = true
+	if btn_menu:
+		btn_menu.disabled = true
 	if sounds and sounds.has_method("choice_select"):
 		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/ui/tempo_esgotado.tscn")
+	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
 
 
-## Compatibilidade com conexões legadas
-func _on_btn_voltar_pressed() -> void:
-	_on_btn_continuar_pressed()
+## Botão Menu: retorna ao menu principal
+func _on_menu_pressed() -> void:
+	if btn_restart:
+		btn_restart.disabled = true
+	if btn_menu:
+		btn_menu.disabled = true
+	if sounds and sounds.has_method("choice_select"):
+		await sounds.choice_select(0.25)
+	get_tree().change_scene_to_file("res://scenes/ui/menu.tscn")

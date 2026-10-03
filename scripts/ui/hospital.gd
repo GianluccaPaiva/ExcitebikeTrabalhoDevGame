@@ -24,6 +24,7 @@ const FRASES_GAME_OVER: Array[String] = [
 
 var _vibration_timer: float = 0.0
 var _ambulance_base_y: float = 98.0
+var _transicionando: bool = false
 
 
 func _ready() -> void:
@@ -35,6 +36,28 @@ func _ready() -> void:
 	get_tree().paused = false
 
 	_sortear_frase()
+	_iniciar_timer_extra()
+
+
+## Timer de 10 segundos com 30% de chance de exibir a tela Extra
+func _iniciar_timer_extra() -> void:
+	await get_tree().create_timer(10.0).timeout
+	if not is_inside_tree() or _transicionando:
+		return
+
+	var sorteio: float = randf_range(0.0, 100.0)
+	if sorteio <= 30.0:
+		_transicionando = true
+		if btn_restart:
+			btn_restart.disabled = true
+		if btn_menu:
+			btn_menu.disabled = true
+		AudioManager.parar_game_over()
+		AudioManager.parar_ambulancia()
+		print("🚑 [Hospital] 10 segundos decorridos! Sorteio bem-sucedido (%.1f%% <= 30%%): exibindo tela Extra..." % sorteio)
+		get_tree().change_scene_to_file("res://scenes/referencia/extra.tscn")
+	else:
+		print("🚑 [Hospital] 10 segundos decorridos! Sorteio não contemplado (%.1f%% > 30%%): permanecendo no Hospital." % sorteio)
 
 
 func _process(delta: float) -> void:
@@ -52,6 +75,7 @@ func _sortear_frase() -> void:
 
 ## Reinicia a corrida recarregando o circuito
 func _on_restart_pressed() -> void:
+	_transicionando = true
 	btn_restart.disabled = true
 	btn_menu.disabled = true
 	AudioManager.parar_game_over()
@@ -63,6 +87,7 @@ func _on_restart_pressed() -> void:
 
 ## Botão de menu: transiciona para a cena de Menu Principal
 func _on_menu_pressed() -> void:
+	_transicionando = true
 	btn_restart.disabled = true
 	btn_menu.disabled = true
 	AudioManager.parar_game_over()
