@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://c00wopddiquqk"]
+[gd_scene format=3 uid="uid://0kd72f8c1kfl"]
 
-[ext_resource type="Script" path="res://scripts/referencia/beta.gd" id="1_beta"]
+[ext_resource type="Script" uid="uid://dndnj150yti3s" path="res://scripts/referencia/extra.gd" id="1_extra"]
 [ext_resource type="FontFile" uid="uid://gaqhy3lqe8gk" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://bmqnrvi1ojy1c" path="res://assets/sprites/referencia/falcaoQuasePeregrino.png" id="3_28iro"]
 [ext_resource type="Texture2D" uid="uid://cjsoo6rtijqu5" path="res://assets/sprites/referencia/falcaoPeregrino.png" id="3_amkwq"]
@@ -76,14 +76,14 @@ border_width_bottom = 1
 border_color = Color(1, 1, 1, 1)
 anti_aliasing = false
 
-[node name="Beta" type="Control" unique_id=19098169]
+[node name="Extra" type="Control" unique_id=19098169]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_beta")
+script = ExtResource("1_extra")
 lista_png_falcao = Array[Texture2D]([ExtResource("3_amkwq"), ExtResource("3_28iro"), ExtResource("4_5ie22"), ExtResource("5_6pkb3")])
 
 [node name="Cenario" type="Node2D" parent="." unique_id=1292681511]
@@ -257,19 +257,26 @@ text = "Sobrou nada."
 label_settings = SubResource("LabelSettings_tigreso")
 horizontal_alignment = 1
 
-[node name="BtnContinuar" type="Button" groups=["ui_buttons"] parent="UI" unique_id=495907199]
+[node name="Botoes" type="HBoxContainer" parent="UI" unique_id=1524825850]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -50.0
-offset_top = -34.0
-offset_right = 50.0
-offset_bottom = -16.0
+offset_left = -92.0
+offset_top = -32.0
+offset_right = 92.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Restart" type="Button" parent="UI/Botoes" unique_id=1059816185]
+custom_minimum_size = Vector2(88, 20)
+layout_mode = 2
+focus_neighbor_right = NodePath("../Menu")
 theme_override_colors/font_color = Color(0.988235, 0.74902, 0.0588235, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
@@ -278,8 +285,23 @@ theme_override_font_sizes/font_size = 8
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
-text = "CONTINUAR"
+text = "REINICIAR"
+
+[node name="Menu" type="Button" parent="UI/Botoes" unique_id=319257709]
+custom_minimum_size = Vector2(88, 20)
+layout_mode = 2
+focus_neighbor_left = NodePath("../Restart")
+theme_override_colors/font_color = Color(0.988235, 0.74902, 0.0588235, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+text = "MENU"
 
 [node name="Sounds" parent="." unique_id=1255236175 instance=ExtResource("7_sounds")]
 
-[connection signal="pressed" from="UI/BtnContinuar" to="." method="_on_btn_continuar_pressed"]
+[connection signal="pressed" from="UI/Botoes/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="UI/Botoes/Menu" to="." method="_on_menu_pressed"]
