@@ -36,6 +36,9 @@ var transicao_em_andamento: bool = false
 
 var cronometro_ativo: bool = false
 var tempo_decorrido: float = 0.0
+var tempo_real_decorrido: float = 0.0
+var total_tempo_descontado_manobras: float = 0.0
+var corrida_ativa_geral: bool = false
 var _tempo_ultimo_log: float = 0.0
 var _chegada_registrada_player: bool = false
 
@@ -57,7 +60,10 @@ func _ready() -> void:
 	player_desacelerou = false
 	transicao_em_andamento = false
 	cronometro_ativo = false
+	corrida_ativa_geral = false
 	tempo_decorrido = 0.0
+	tempo_real_decorrido = 0.0
+	total_tempo_descontado_manobras = 0.0
 	_tempo_ultimo_log = 0.0
 	_chegada_registrada_player = false
 	if hub_ui:
@@ -82,9 +88,12 @@ func _conectar_countdown() -> void:
 
 func _on_corrida_iniciada() -> void:
 	AudioManager.elevar_estadio_corrida()
+	corrida_ativa_geral = true
 	if not cronometro_ativo and not _chegada_registrada_player:
 		cronometro_ativo = true
 		tempo_decorrido = 0.0
+		tempo_real_decorrido = 0.0
+		total_tempo_descontado_manobras = 0.0
 		_tempo_ultimo_log = 0.0
 		race_timer.start(tempo_limite)
 		if OS.is_debug_build(): print("==================================================")
@@ -98,6 +107,9 @@ func _process(delta: float) -> void:
 			_on_corrida_iniciada()
 		return
 
+	if corrida_ativa_geral and not transicao_em_andamento:
+		tempo_real_decorrido += delta
+
 	if cronometro_ativo:
 		tempo_decorrido += delta
 		var tempo_limite_restante: float = race_timer.time_left
@@ -110,11 +122,11 @@ func _process(delta: float) -> void:
 
 
 
-		if tempo_decorrido - _tempo_ultimo_log >= 1.0:
-			_tempo_ultimo_log = tempo_decorrido
+		if tempo_real_decorrido - _tempo_ultimo_log >= 1.0:
+			_tempo_ultimo_log = tempo_real_decorrido
 			var px: float = player.global_position.x if player else 0.0
 			var pct: float = clampf((px / $Markers/MarkerFimPista.global_position.x) * 100.0, 0.0, 100.0)
-			if OS.is_debug_build(): print("[Cronômetro] ⏱️ %05.1fs | Restante: %05.1fs | X: %5.0f / FIM px (%4.1f%%)" % [tempo_decorrido, tempo_limite_restante, px, pct])
+			if OS.is_debug_build(): print("[Cron�metro] ?? Real: %05.1fs | HUD: %05.1fs | Restante: %05.1fs | X: %5.0f / FIM px (%4.1f%%)" % [tempo_real_decorrido, tempo_decorrido, tempo_limite_restante, px, pct])
 
 
 ## Callback executado quando o tempo limite do hub zera (1:50)
@@ -152,8 +164,9 @@ func _conectar_player() -> void:
 
 func _on_player_manobra_sucesso(giros: int) -> void:
 	var tempo_reduzido: float = bonus_tempo_manobra * giros
+	total_tempo_descontado_manobras += tempo_reduzido
 	tempo_decorrido = maxf(0.0, tempo_decorrido - tempo_reduzido)
-	if OS.is_debug_build(): print("🤸 Manobra concluída! Bônus aplicado: -%.1f s no cronômetro!" % tempo_reduzido)
+	if OS.is_debug_build(): print("?? [Manobra] Giro 360� x%d! B�nus aplicado: -%.1fs (Total abatido: -%.1fs) | HUD: %.2fs | Tempo Real: %.2fs" % [giros, tempo_reduzido, total_tempo_descontado_manobras, tempo_decorrido, tempo_real_decorrido])
 
 
 ## Mapeia e conecta os adversários autônomos na pista
@@ -322,15 +335,17 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	if not transicao_em_andamento:
 		AudioManager.tocar_linha_chegada()
 
-	if OS.is_debug_build(): print("[MainGame] 🏁 %dº LUGAR: %s cruzou a linha de chegada!" % [colocacao, corredor.name])
-	if corredor is CharacterBody2D or corredor.name == "Player":
 		_chegada_registrada_player = true
 		cronometro_ativo = false
-		if OS.is_debug_build(): print("==================================================")
-		if OS.is_debug_build(): print("🏁 [Cronômetro] CHEGADA! O Player cruzou a linha de chegada!")
-		if OS.is_debug_build(): print("⏱️ TEMPO TOTAL DO PERCURSO: %.3f s (%.2f segundos)" % [tempo_decorrido, tempo_decorrido])
-		if OS.is_debug_build(): print("📍 Posição X Final: %.1f px" % corredor.global_position.x)
-		if OS.is_debug_build(): print("==================================================")
+		if OS.is_debug_build():
+			print("==================================================")
+			print("?? [MainGame] %d� LUGAR: PLAYER cruzou a linha de chegada!" % colocacao)
+			print("?? TEMPO REAL F�SICO: %.3f s" % tempo_real_decorrido)
+			print("?? TEMPO COM B�NUS DE MANOBRAS: %.3f s (Total abatido por flips: -%.1f s)" % [tempo_decorrido, total_tempo_descontado_manobras])
+			print("?? Posi��o X Final: %.1f px" % corredor.global_position.x)
+			print("==================================================")
+	else:
+		if OS.is_debug_build(): print("?? [MainGame] %d� LUGAR: %s cruzou a linha de chegada | ?? TEMPO REAL: %.3f s" % [colocacao, nome_corredor, tempo_real_decorrido])
 	corredor_chegou.emit(corredor, colocacao)
 
 
