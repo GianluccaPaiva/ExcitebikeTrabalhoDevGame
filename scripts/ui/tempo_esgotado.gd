@@ -29,6 +29,7 @@ var _tempo_anim: float = 0.0
 func _ready() -> void:
 	AudioManager.parar_audios_corrida()
 	AudioManager.tocar_game_over()
+	AudioManager.tocar_vaia()
 	get_tree().paused = false
 
 	if label_subtitulo:
@@ -38,6 +39,11 @@ func _ready() -> void:
 		btn_restart.grab_focus()
 
 	_iniciar_animacao_alerta()
+
+
+func _exit_tree() -> void:
+	AudioManager.parar_vaia()
+	AudioManager.parar_game_over()
 
 
 func _process(delta: float) -> void:
@@ -61,6 +67,7 @@ func _on_restart_pressed() -> void:
 	btn_restart.disabled = true
 	btn_menu.disabled = true
 	AudioManager.parar_game_over()
+	AudioManager.parar_vaia()
 	if sounds and sounds.has_method("choice_select"):
 		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
@@ -71,6 +78,7 @@ func _on_menu_pressed() -> void:
 	btn_restart.disabled = true
 	btn_menu.disabled = true
 	AudioManager.parar_game_over()
+	AudioManager.parar_vaia()
 	if sounds and sounds.has_method("choice_select"):
 		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")

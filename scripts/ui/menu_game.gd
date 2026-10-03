@@ -10,6 +10,7 @@ extends Control
 
 
 func _ready() -> void:
+	AudioManager.parar_todos()
 	# Foco inicial imediato no botão Jogar para permitir navegação por teclado/gamepad
 	if btn_jogar:
 		btn_jogar.grab_focus()
