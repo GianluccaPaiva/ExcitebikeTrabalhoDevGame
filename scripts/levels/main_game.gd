@@ -44,6 +44,7 @@ var _chegada_registrada_player: bool = false
 @onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
 @onready var countdown_ui: CanvasLayer = get_node_or_null("CountdownUI")
 @onready var hub_ui: CanvasLayer = get_node_or_null("Entities/Player/Hub")
+@onready var race_timer: Timer = $RaceTimer
 
 func _ready() -> void:
 	race_timer.timeout.connect(_on_tempo_esgotado)
