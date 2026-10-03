@@ -333,7 +333,7 @@ func _disparar_acidente() -> void:
 	current_speed = 0.0
 	velocity = Vector2.ZERO
 	rotation = 0.0
-crash_timer.start(crash_duration)
+	crash_timer.start(crash_duration)
 	_mudar_estado(State.ACIDENTE)
 	ramp_launch_timer = 0.0
 
@@ -356,7 +356,7 @@ func _recuperar_de_acidente() -> void:
 	state = State.NO_CHAO
 	rotation = 0.0
 	current_speed = 0.0
-velocity = Vector2.ZERO
+	velocity = Vector2.ZERO
 	ramp_launch_timer = 0.0
 	_mudar_estado(State.NO_CHAO)
 
