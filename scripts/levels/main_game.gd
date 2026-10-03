@@ -124,7 +124,7 @@ func _process(delta: float) -> void:
 			_tempo_ultimo_log = tempo_real_decorrido
 			var px: float = player.global_position.x if player else 0.0
 			var pct: float = clampf((px / $Markers/MarkerFimPista.global_position.x) * 100.0, 0.0, 100.0)
-			if OS.is_debug_build(): print("[Cronômetro] ?? Real: %05.1fs | HUD: %05.1fs | Restante: %05.1fs | X: %5.0f / FIM px (%4.1f%%)" % [tempo_real_decorrido, tempo_decorrido, tempo_limite_restante, px, pct])
+			if OS.is_debug_build(): print("[Cronï¿½metro] ?? Real: %05.1fs | HUD: %05.1fs | Restante: %05.1fs | X: %5.0f / FIM px (%4.1f%%)" % [tempo_real_decorrido, tempo_decorrido, tempo_limite_restante, px, pct])
 
 
 ## Callback executado quando o tempo limite do hub zera (1:50)
@@ -157,7 +157,7 @@ func _on_player_manobra_sucesso(giros: int) -> void:
 	var tempo_reduzido: float = bonus_tempo_manobra * giros
 	total_tempo_descontado_manobras += tempo_reduzido
 	tempo_decorrido = maxf(0.0, tempo_decorrido - tempo_reduzido)
-	if OS.is_debug_build(): print("?? [Manobra] Giro 360° x%d! Bônus aplicado: -%.1fs (Total abatido: -%.1fs) | HUD: %.2fs | Tempo Real: %.2fs" % [giros, tempo_reduzido, total_tempo_descontado_manobras, tempo_decorrido, tempo_real_decorrido])
+	if OS.is_debug_build(): print("?? [Manobra] Giro 360ï¿½ x%d! Bï¿½nus aplicado: -%.1fs (Total abatido: -%.1fs) | HUD: %.2fs | Tempo Real: %.2fs" % [giros, tempo_reduzido, total_tempo_descontado_manobras, tempo_decorrido, tempo_real_decorrido])
 
 
 ## Mapeia e conecta os adversÃ¡rios autÃ´nomos na pista
@@ -333,13 +333,13 @@ func _registrar_chegada(corredor: Node2D) -> void:
 		cronometro_ativo = false
 		if OS.is_debug_build():
 			print("==================================================")
-			print("?? [MainGame] %dº LUGAR: PLAYER cruzou a linha de chegada!" % colocacao)
-			print("?? TEMPO REAL FÍSICO: %.3f s" % tempo_real_decorrido)
-			print("?? TEMPO COM BÔNUS DE MANOBRAS: %.3f s (Total abatido por flips: -%.1f s)" % [tempo_decorrido, total_tempo_descontado_manobras])
-			print("?? Posição X Final: %.1f px" % corredor.global_position.x)
+			print("?? [MainGame] %dï¿½ LUGAR: PLAYER cruzou a linha de chegada!" % colocacao)
+			print("?? TEMPO REAL Fï¿½SICO: %.3f s" % tempo_real_decorrido)
+			print("?? TEMPO COM Bï¿½NUS DE MANOBRAS: %.3f s (Total abatido por flips: -%.1f s)" % [tempo_decorrido, total_tempo_descontado_manobras])
+			print("?? Posiï¿½ï¿½o X Final: %.1f px" % corredor.global_position.x)
 			print("==================================================")
 	else:
-		if OS.is_debug_build(): print("?? [MainGame] %dº LUGAR: %s cruzou a linha de chegada | ?? TEMPO REAL: %.3f s" % [colocacao, nome_corredor, tempo_real_decorrido])
+		if OS.is_debug_build(): print("?? [MainGame] %dï¿½ LUGAR: %s cruzou a linha de chegada | ?? TEMPO REAL: %.3f s" % [colocacao, nome_corredor, tempo_real_decorrido])
 	corredor_chegou.emit(corredor, colocacao)
 
 
