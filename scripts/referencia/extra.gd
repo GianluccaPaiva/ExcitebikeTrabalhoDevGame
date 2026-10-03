@@ -116,4 +116,4 @@ func _on_menu_pressed() -> void:
 		btn_menu.disabled = true
 	if sounds and sounds.has_method("choice_select"):
 		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/ui/menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
