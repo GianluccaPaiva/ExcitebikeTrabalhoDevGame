@@ -126,6 +126,8 @@ _data = {
 
 [node name="Player" type="CharacterBody2D" unique_id=1096744221]
 script = ExtResource("1_08t41")
+floor_stop_on_slope = true
+floor_max_angle = 1.0472
 air_rotation_speed = 12.5
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=539002940]
@@ -161,5 +163,10 @@ speed_scale = 0.2
 
 [node name="Hub" parent="." unique_id=1621250794 instance=ExtResource("3_1ie0h")]
 
-[node name="PlayerAudio" parent="." instance=ExtResource("4_audio")]
+[node name="CrashTimer" type="Timer" parent="."]
+one_shot = true
 
+[node name="EfeitoTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="PlayerAudio" parent="." instance=ExtResource("4_audio")]

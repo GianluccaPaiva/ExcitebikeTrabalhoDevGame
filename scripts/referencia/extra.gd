@@ -1,6 +1,7 @@
 extends Control
 
-## Cena de Referência / Consultório: "O que sobrou para o beta?"
+## Cena de Referência / Consultório: Easter Egg do Hospital
+## Exibe diálogo temático dos médicos com o jogador acidentado.
 
 @onready var balao_doc: PanelContainer = $UI/BalaoDoc
 @onready var label_doc: Label = $UI/BalaoDoc/Margin/LabelDoc
@@ -16,17 +17,17 @@ extends Control
 
 @export var lista_png_falcao: Array[Texture2D] = []
 
-
 var _tempo_anim: float = 0.0
 var _doc_base_y: float = 0.0
 var _tigreso_base_y: float = 0.0
 var _player_base_pos: Vector2 = Vector2.ZERO
 var _player_base_rot: float = 0.0
 
+
 func _aleatoriza_falcao() -> void:
 	if falcao and lista_png_falcao.size() > 0:
-		var index: int = randi() % lista_png_falcao.size()
-		falcao.texture = lista_png_falcao[index]
+		falcao.texture = lista_png_falcao.pick_random()
+
 
 func _ready() -> void:
 	if doc_girl:
@@ -36,9 +37,9 @@ func _ready() -> void:
 	if player_sprite:
 		_player_base_pos = player_sprite.position
 		_player_base_rot = player_sprite.rotation_degrees
-		
+
 	AudioManager.parar_audios_corrida()
-	
+
 	if balao_doc:
 		balao_doc.scale = Vector2.ONE
 		balao_doc.modulate.a = 0.0
@@ -50,7 +51,6 @@ func _ready() -> void:
 		btn_restart.grab_focus()
 
 	_aleatoriza_falcao()
-
 	_executar_dialogo()
 
 
@@ -61,14 +61,13 @@ func _process(delta: float) -> void:
 		doc_girl.position.y = _doc_base_y + sin(_tempo_anim * 2.5) * 1.0
 	if tigreso:
 		tigreso.position.y = _tigreso_base_y + cos(_tempo_anim * 2.0) * 0.8
-	# Tremedeira leve do paciente preservando a posição exata configurada no editor
+	# Tremedeira leve do paciente preservando a posição exata
 	if player_sprite:
 		player_sprite.position.x = _player_base_pos.x + (randf() - 0.5) * 0.5
 		player_sprite.position.y = _player_base_pos.y
 
 
 func _executar_dialogo() -> void:
-	# Pausa inicial antes da fala
 	await get_tree().create_timer(0.6).timeout
 	if not is_inside_tree():
 		return
@@ -79,7 +78,6 @@ func _executar_dialogo() -> void:
 		var tween_doc: Tween = create_tween()
 		tween_doc.tween_property(balao_doc, "modulate:a", 1.0, 0.2)
 
-	# Pausa dramática
 	await get_tree().create_timer(1.8).timeout
 	if not is_inside_tree():
 		return
@@ -90,7 +88,7 @@ func _executar_dialogo() -> void:
 		var tween_tigreso: Tween = create_tween()
 		tween_tigreso.tween_property(balao_tigreso, "modulate:a", 1.0, 0.2)
 
-	# Efeito de tremor dramático no paciente respeitando a rotação exata
+	# Efeito de tremor dramático no paciente
 	if player_sprite:
 		var tween_p: Tween = create_tween()
 		tween_p.tween_property(player_sprite, "rotation_degrees", _player_base_rot + 4.0, 0.08)
@@ -117,4 +115,4 @@ func _on_menu_pressed() -> void:
 		btn_menu.disabled = true
 	if sounds and sounds.has_method("choice_select"):
 		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/ui/menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")

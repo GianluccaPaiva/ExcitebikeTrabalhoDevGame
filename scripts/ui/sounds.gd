@@ -1,12 +1,13 @@
 class_name Sounds
 extends Node2D
 
-## Gerenciador de som da cena Sounds
-## Conecta automaticamente os botões da cena para focar e tocar o som Select ao passar o mouse ou focar
-## Configurado com PROCESS_MODE_ALWAYS para que continue funcionando perfeitamente mesmo com o jogo pausado (freeze)
+## Gerenciador de sons de interface (UI)
+## Conecta automaticamente os botões da cena pertencentes ao grupo "botoes_interface"
+## para tocar os efeitos sonoros de seleção e confirmação.
+## Configurado com PROCESS_MODE_ALWAYS para funcionar durante pausas do jogo.
 
-@onready var select: AudioStreamPlayer2D = $Select
-@onready var choice: AudioStreamPlayer2D = $Choice
+@onready var select: AudioStreamPlayer = $Select
+@onready var choice: AudioStreamPlayer = $Choice
 
 var _pode_tocar_som: bool = false
 
@@ -15,53 +16,26 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if select:
 		select.process_mode = Node.PROCESS_MODE_ALWAYS
-		select.panning_strength = 0.0
-		select.max_distance = 100000.0
 	if choice:
 		choice.process_mode = Node.PROCESS_MODE_ALWAYS
-		choice.panning_strength = 0.0
-		choice.max_distance = 100000.0
 
 	call_deferred("_inicializar")
 
 
 func _inicializar() -> void:
 	_configurar_botoes_da_cena()
-	_remover_foco_ativo()
-
-	# Aguarda a tela estabilizar para não tocar som nem deixar botão focado na inicialização
+	# Aguarda a tela estabilizar para liberar sons de hover/foco
 	await get_tree().process_frame
-	_remover_foco_ativo()
 	_pode_tocar_som = true
 
 
-## Localiza a raiz da cena ativa e vincula todos os botões filhos
+## Localiza os botões registrados nos grupos de interface e vincula os eventos
 func _configurar_botoes_da_cena() -> void:
-	# Conecta diretamente os botões do nó pai imediato (ex: Pause)
-	if get_parent():
-		_conectar_botoes_recursivo(get_parent())
-
-	var raiz: Node = owner
-	if raiz == null:
-		raiz = get_tree().current_scene
-	if raiz == null:
-		raiz = self
-		while raiz.get_parent() != null and not (raiz.get_parent() is Window):
-			raiz = raiz.get_parent()
-
-	if raiz and raiz != get_parent():
-		_conectar_botoes_recursivo(raiz)
-
-
-## Percorre recursivamente a árvore conectando mouse_entered e focus_entered
-func _conectar_botoes_recursivo(nodo: Node) -> void:
-	if nodo == null:
-		return
-
-	for filho in nodo.get_children():
-		if filho is Button:
-			_vincular_botao(filho)
-		_conectar_botoes_recursivo(filho)
+	for grupo_nome in ["botoes_interface", "ui_buttons"]:
+		for no_generico in get_tree().get_nodes_in_group(grupo_nome):
+			var botao: Button = no_generico as Button
+			if botao:
+				_vincular_botao(botao)
 
 
 ## Vincula os sinais de foco e mouse do botão
@@ -71,21 +45,12 @@ func _vincular_botao(btn: Button) -> void:
 	btn.set_meta("_sounds_conectado", true)
 
 	btn.focus_mode = Control.FOCUS_ALL
-	btn.mouse_entered.connect(_on_botao_mouse_entered.bind(btn))
-	btn.focus_entered.connect(_on_botao_focus_entered)
-
-
-## Remove o foco de qualquer controle que tenha recebido foco na inicialização da cena
-func _remover_foco_ativo() -> void:
-	var viewport: Viewport = get_viewport()
-	if viewport:
-		var foco_atual: Control = viewport.gui_get_focus_owner()
-		if foco_atual:
-			foco_atual.release_focus()
+	btn.mouse_entered.connect(_ao_entrar_mouse_botao.bind(btn))
+	btn.focus_entered.connect(_ao_receber_foco_botao)
 
 
 ## Ao passar o mouse sobre o botão, ganha foco e toca som
-func _on_botao_mouse_entered(btn: Button) -> void:
+func _ao_entrar_mouse_botao(btn: Button) -> void:
 	if not _pode_tocar_som:
 		return
 
@@ -97,7 +62,7 @@ func _on_botao_mouse_entered(btn: Button) -> void:
 
 
 ## Ao receber foco (via teclado/gamepad ou grab_focus), toca som
-func _on_botao_focus_entered() -> void:
+func _ao_receber_foco_botao() -> void:
 	play_select()
 
 
@@ -110,7 +75,7 @@ func play_select() -> void:
 
 
 ## Toca o áudio de confirmação / escolha com corte de duração configurável (padrão 0.25s)
-## process_always = true no timer garante que o corte e retorno funcionem mesmo durante o pause/freeze
+## process_always = true no timer garante que funcione mesmo durante o pause
 func choice_select(duracao: float = 0.25) -> void:
 	if choice:
 		choice.play()

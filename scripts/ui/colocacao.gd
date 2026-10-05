@@ -1,12 +1,12 @@
 class_name Colocacao
 extends CanvasLayer
 
+## Tela de Classificação e Pódio final da corrida
 
-## Cada item é um Dictionary: { "is_player": bool, "texture": Texture2D, "name": String, "colocacao": int }
 static var dados_corrida: Array[Dictionary] = []
 static var posicao_player: int = 1
 
-## Configurações das medalhas no pódio: recorte exato no medals.png (152x216) e cor temática
+## Configurações das medalhas no pódio: recorte em medals.png (152x216) e cor temática
 const CONFIG_MEDALHAS: Dictionary = {
 	1: { "regiao": Rect2(128, 36, 152, 216), "cor": Color(1.0, 0.9, 0.2) },   # Ouro / 1º Lugar
 	2: { "regiao": Rect2(352, 36, 152, 216), "cor": Color(0.85, 0.9, 1.0) },  # Prata / 2º Lugar
@@ -34,7 +34,6 @@ static func definir_resultado(dados: Array[Dictionary], pos_player: int) -> void
 
 
 func _ready() -> void:
-	# Se a cena for executada diretamente no editor (F6), usa dados de teste
 	if dados_corrida.is_empty():
 		_carregar_dados_padrao_teste()
 
@@ -45,7 +44,7 @@ func _ready() -> void:
 	_tocar_som_resultado()
 
 
-## Atualiza dinamicamente as texturas e frames de cada degrau do pódio
+## Atualiza as texturas e frames de cada degrau do pódio
 func _atualizar_sprites_podio() -> void:
 	var sprites: Array[Sprite2D] = [
 		sprite_primeiro,
@@ -72,7 +71,7 @@ func _atualizar_sprites_podio() -> void:
 		sp.frame = 0
 
 
-## Atualiza a mensagem e a medalha integrada ao texto (Opção A)
+## Atualiza a mensagem e a medalha integrada ao texto
 func _atualizar_resultado_e_medalha() -> void:
 	if not header_resultado:
 		return
@@ -83,7 +82,7 @@ func _atualizar_resultado_e_medalha() -> void:
 		_configurar_estado_fora_podio()
 
 
-## Define o estado visual padronizado para as posições no pódio (1º, 2º e 3º com medalha)
+## Define o estado visual para posições no pódio (1º, 2º e 3º com medalha)
 func _configurar_estado_podio(config: Dictionary) -> void:
 	label_prefixo.text = "VOCÊ FICOU EM"
 	label_prefixo.visible = true
@@ -95,7 +94,7 @@ func _configurar_estado_podio(config: Dictionary) -> void:
 	_animar_medalha()
 
 
-## Define o estado para quem ficou fora do pódio (4º colocado, frase completa sem medalha)
+## Define o estado para quem ficou fora do pódio (4º colocado)
 func _configurar_estado_fora_podio() -> void:
 	label_prefixo.text = "VOCÊ FICOU EM %dº LUGAR!" % posicao_player
 	label_prefixo.visible = true
@@ -112,7 +111,7 @@ func _obter_atlas_medalha(regiao: Rect2) -> AtlasTexture:
 	return atlas
 
 
-## Animação pop-in da medalha ao carregar a tela
+## Animação pop-in da medalha
 func _animar_medalha() -> void:
 	if not icone_medalha:
 		return
@@ -124,7 +123,7 @@ func _animar_medalha() -> void:
 		.set_ease(Tween.EASE_OUT)
 
 
-## Gera dados padrão de simulação quando a cena é aberta de forma independente
+## Dados padrão quando a cena é executada isoladamente
 func _carregar_dados_padrao_teste() -> void:
 	dados_corrida = [
 		{
@@ -156,7 +155,6 @@ func _carregar_dados_padrao_teste() -> void:
 	posicao_player = 1
 
 
-## Reinicia a corrida recarregando o circuito
 func _on_restart_pressed() -> void:
 	btn_restart.disabled = true
 	btn_menu.disabled = true
@@ -166,7 +164,6 @@ func _on_restart_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
 
 
-## Botão de menu: transiciona para a cena de Menu Principal
 func _on_menu_pressed() -> void:
 	btn_restart.disabled = true
 	btn_menu.disabled = true
@@ -176,7 +173,6 @@ func _on_menu_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
 
 
-## Dispara o áudio correspondente à classificação do jogador
 func _tocar_som_resultado() -> void:
 	if posicao_player <= 3:
 		AudioManager.tocar_podio()
@@ -184,11 +180,5 @@ func _tocar_som_resultado() -> void:
 		AudioManager.tocar_quarto_lugar()
 
 
-## Interrompe os áudios da cena antes da troca de contexto
 func _parar_sons() -> void:
 	AudioManager.parar_audios_colocacao()
-
-
-## Mantido por segurança para conexões herdadas
-func _on_button_pressed() -> void:
-	_on_restart_pressed()

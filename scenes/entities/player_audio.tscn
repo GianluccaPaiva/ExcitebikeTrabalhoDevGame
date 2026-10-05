@@ -12,15 +12,19 @@ script = ExtResource("1_audio")
 [node name="AudioMoto" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_moto")
 volume_db = -6.0
+bus = &"SFX"
 
 [node name="AudioMotoParando" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_parando")
 volume_db = -4.0
+bus = &"SFX"
 
 [node name="AudioQueda" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_queda")
 volume_db = 2.5
+bus = &"SFX"
 
 [node name="AudioMorte" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_morte")
 volume_db = 2.0
+bus = &"SFX"

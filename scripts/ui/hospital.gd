@@ -1,6 +1,8 @@
 extends Control
 
-## Lista de frases bem-humoradas sorteadas aleatoriamente a cada Game Over
+## Tela de Hospital (Game Over após 3 acidentes)
+## Apresenta frases bem-humoradas e gerencia o Easter Egg da tela Extra.
+
 const FRASES_GAME_OVER: Array[String] = [
 	"FIM DE JOGO!",
 	"SE FODEU!",
@@ -22,8 +24,8 @@ const FRASES_GAME_OVER: Array[String] = [
 @onready var btn_menu: Button = $Menu
 @onready var sounds: Sounds = $Sounds
 
-var _vibration_timer: float = 0.0
-var _ambulance_base_y: float = 98.0
+var _temporizador_vibracao: float = 0.0
+var _posicao_base_ambulancia_y: float = 98.0
 var _transicionando: bool = false
 
 
@@ -32,14 +34,14 @@ func _ready() -> void:
 	AudioManager.tocar_game_over()
 	AudioManager.tocar_ambulancia()
 	if ambulance:
-		_ambulance_base_y = ambulance.position.y
+		_posicao_base_ambulancia_y = ambulance.position.y
 	get_tree().paused = false
 
 	_sortear_frase()
 	_iniciar_timer_extra()
 
 
-## Timer de 10 segundos com 30% de chance de exibir a tela Extra
+## Timer de 10 segundos com 30% de chance de abrir a tela Extra
 func _iniciar_timer_extra() -> void:
 	await get_tree().create_timer(10.0).timeout
 	if not is_inside_tree() or _transicionando:
@@ -54,26 +56,25 @@ func _iniciar_timer_extra() -> void:
 			btn_menu.disabled = true
 		AudioManager.parar_game_over()
 		AudioManager.parar_ambulancia()
-		print("🚑 [Hospital] 10 segundos decorridos! Sorteio bem-sucedido (%.1f%% <= 30%%): exibindo tela Extra..." % sorteio)
+		if OS.is_debug_build():
+			print("🚑 [Hospital] 10s decorridos! Sorteio bem-sucedido (%.1f%% <= 30%%): abrindo tela Extra..." % sorteio)
 		get_tree().change_scene_to_file("res://scenes/referencia/extra.tscn")
 	else:
-		print("🚑 [Hospital] 10 segundos decorridos! Sorteio não contemplado (%.1f%% > 30%%): permanecendo no Hospital." % sorteio)
+		if OS.is_debug_build():
+			print("🚑 [Hospital] 10s decorridos! Sorteio não contemplado (%.1f%% > 30%%): permanecendo no Hospital." % sorteio)
 
 
 func _process(delta: float) -> void:
-	# Vibração sutil simulando o motor da ambulância em alta velocidade no asfalto
 	if ambulance:
-		_vibration_timer += delta * 24.0
-		ambulance.position.y = _ambulance_base_y + sin(_vibration_timer) * 0.7
+		_temporizador_vibracao += delta * 24.0
+		ambulance.position.y = _posicao_base_ambulancia_y + sin(_temporizador_vibracao) * 0.7
 
 
-## Sorteia uma frase aleatória da lista a cada exibição da tela
 func _sortear_frase() -> void:
 	if label_status:
 		label_status.text = FRASES_GAME_OVER.pick_random()
 
 
-## Reinicia a corrida recarregando o circuito
 func _on_restart_pressed() -> void:
 	_transicionando = true
 	btn_restart.disabled = true
@@ -85,7 +86,6 @@ func _on_restart_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
 
 
-## Botão de menu: transiciona para a cena de Menu Principal
 func _on_menu_pressed() -> void:
 	_transicionando = true
 	btn_restart.disabled = true
@@ -95,8 +95,3 @@ func _on_menu_pressed() -> void:
 	if sounds:
 		await sounds.choice_select(0.25)
 	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
-
-
-## Mantido por segurança para conexões herdadas
-func _on_button_pressed() -> void:
-	_on_restart_pressed()

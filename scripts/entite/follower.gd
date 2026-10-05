@@ -1,9 +1,14 @@
 @tool
+class_name Follower
 extends PathFollow2D
 
 signal percurso_concluido(bot: Node2D)
 
-@export var speed: float = 140.0
+@export var speed: float = 140.0:
+	set(val):
+		speed = val
+		velocidade_base = val
+
 @export var initial_progress: float = 0.0
 @export var rotation_smoothing_speed: float = 14.0
 @export var enemy_texture: Texture2D = preload("res://assets/sprites/entites/Racer_1.png"):
@@ -22,31 +27,41 @@ signal percurso_concluido(bot: Node2D)
 		_aplicar_modulate()
 
 @export var corrida_iniciada: bool = false
-
-var _last_position: Vector2 = Vector2.ZERO
-var percurso_finalizado: bool = false
-var current_speed: float = -1.0
-var em_desaceleracao: bool = false
 @export var taxa_desaceleracao: float = 215.0
+
+# Variáveis em PT-BR
+var velocidade_base: float = 140.0
+var velocidade_atual: float = -1.0
+var percurso_finalizado: bool = false
+var em_desaceleracao: bool = false
 var tempo_efeito_restante: float = 0.0
+
+var _posicao_anterior: Vector2 = Vector2.ZERO
+var _pulos_de_quadro_ativo: int = 0
+var _contador_quadros: int = 0
+var _delta_acumulado: float = 0.0
+
+@onready var _sprite_cache: Sprite2D = get_node_or_null("Enemy/Sprite2D")
+@onready var _animacao_cache: AnimationPlayer = get_node_or_null("Enemy/AnimationPlayer")
 
 
 func _ready() -> void:
+	velocidade_base = speed
 	rotates = false # Impede que a engine rotacione o seguidor automaticamente
 	loop = false
 	rotation = 0.0
 	_aplicar_textura()
 	_aplicar_material()
 	_aplicar_modulate()
-	
+
 	if Engine.is_editor_hint():
 		return
-	
+
 	if initial_progress > 0.0 and progress == 0.0:
 		progress = initial_progress
-	
-	_last_position = global_position
-	
+
+	_posicao_anterior = global_position
+
 	# Se a corrida ainda não começou, pausa a animação das rodas no grid
 	if not corrida_iniciada:
 		var anim: AnimationPlayer = _obter_animation_player()
@@ -54,17 +69,14 @@ func _ready() -> void:
 			anim.pause()
 
 
-var _frame_skip_ativo: int = 0
-var _frame_count: int = 0
-var _delta_acumulado: float = 0.0
-
 func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
-	current_speed = speed * fator
+	velocidade_atual = velocidade_base * fator
 	tempo_efeito_restante = duracao
-	_frame_skip_ativo = saltos_de_frame
+	_pulos_de_quadro_ativo = saltos_de_frame
 
 
-func _process(delta: float) -> void:
+## Movimento físico executado em taxa fixa de quadros (60Hz)
+func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		_aplicar_textura()
 		_aplicar_material()
@@ -74,82 +86,81 @@ func _process(delta: float) -> void:
 		return
 
 	if not corrida_iniciada:
-		_last_position = global_position
+		_posicao_anterior = global_position
 		rotation = 0.0
 		return
 
-	if current_speed < 0.0:
-		current_speed = speed
+	if velocidade_atual < 0.0:
+		velocidade_atual = velocidade_base
 
-	# Decresce o timer de efeito uniformemente (mesma duração do player)
+	# Temporizador do efeito da pista (boost ou lama)
 	if tempo_efeito_restante > 0.0 and not em_desaceleracao:
 		tempo_efeito_restante -= delta
 
-	# Zona de desaceleração pós-chegada
+	# Ponto pós-chegada para desaceleração
 	if global_position.x >= 17640.0:
 		em_desaceleracao = true
 
 	if em_desaceleracao:
-		current_speed = move_toward(current_speed, 0.0, taxa_desaceleracao * delta)
-		if current_speed <= 1.0:
-			current_speed = 0.0
+		velocidade_atual = move_toward(velocidade_atual, 0.0, taxa_desaceleracao * delta)
+		if velocidade_atual <= 1.0:
+			velocidade_atual = 0.0
 			var anim: AnimationPlayer = _obter_animation_player()
 			if anim and anim.is_playing() and anim.current_animation != "RESET":
 				anim.pause()
 			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
-			_last_position = global_position
+			_posicao_anterior = global_position
 			if not percurso_finalizado:
 				percurso_finalizado = true
 				percurso_concluido.emit(self)
 			return
 	else:
-		# Se acabou o tempo do efeito, suaviza o retorno à velocidade original (igual inércia do Player!)
 		if tempo_efeito_restante <= 0.0:
-			current_speed = move_toward(current_speed, speed, 120.0 * delta)
-			_frame_skip_ativo = 0
+			velocidade_atual = move_toward(velocidade_atual, velocidade_base, 120.0 * delta)
+			_pulos_de_quadro_ativo = 0
 
-	# Lógica do Frame Skip (salto de frames/stuttering)
+	# Lógica visual de frame skip na lama
 	var passo_delta: float = delta
-	if _frame_skip_ativo > 0 and tempo_efeito_restante > 0.0:
+	if _pulos_de_quadro_ativo > 0 and tempo_efeito_restante > 0.0:
 		_delta_acumulado += delta
-		_frame_count += 1
-		if _frame_count <= _frame_skip_ativo:
-			return # Pula o avanço neste frame para dar o efeito visual
+		_contador_quadros += 1
+		if _contador_quadros <= _pulos_de_quadro_ativo:
+			return
 		passo_delta = _delta_acumulado
 		_delta_acumulado = 0.0
-		_frame_count = 0
+		_contador_quadros = 0
 	else:
 		_delta_acumulado = 0.0
-		_frame_count = 0
+		_contador_quadros = 0
 
-	# Checa se atingiu o fim da trilha após a rampa final
+	# Checa se atingiu o fim da curva da trilha
 	if get_parent() is Path2D and get_parent().curve:
-		var total_length: float = get_parent().curve.get_baked_length()
-		if progress >= total_length - 2.0:
+		var comprimento_total: float = get_parent().curve.get_baked_length()
+		if progress >= comprimento_total - 2.0:
 			var anim: AnimationPlayer = _obter_animation_player()
 			if anim and anim.is_playing() and anim.current_animation != "RESET":
 				anim.pause()
 			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
-			_last_position = global_position
+			_posicao_anterior = global_position
 			if not percurso_finalizado:
 				percurso_finalizado = true
 				percurso_concluido.emit(self)
 			return
 
-	progress += current_speed * passo_delta
-	
-	var move_delta: Vector2 = global_position - _last_position
-	if move_delta.length_squared() > 0.0001:
-		if move_delta.x > 0.001:
-			var target_angle: float = move_delta.angle()
-			target_angle = clampf(target_angle, -0.28, 0.28)
-			rotation = lerp_angle(rotation, target_angle, rotation_smoothing_speed * passo_delta)
+	progress += velocidade_atual * passo_delta
+
+	var deslocamento: Vector2 = global_position - _posicao_anterior
+	if deslocamento.length_squared() > 0.0001:
+		if deslocamento.x > 0.001:
+			var angulo_alvo: float = deslocamento.angle()
+			angulo_alvo = clampf(angulo_alvo, -0.28, 0.28)
+			rotation = lerp_angle(rotation, angulo_alvo, rotation_smoothing_speed * passo_delta)
 		else:
 			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
 	else:
 		rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
-	
-	_last_position = global_position
+
+	_posicao_anterior = global_position
 
 
 func _aplicar_textura() -> void:
@@ -175,23 +186,27 @@ func _aplicar_modulate() -> void:
 
 
 func _obter_sprite() -> Sprite2D:
-	var sprite: Sprite2D = get_node_or_null("Enemy/Sprite2D")
-	if not sprite:
-		sprite = find_child("Sprite2D", true, false) as Sprite2D
-	return sprite
+	if is_instance_valid(_sprite_cache):
+		return _sprite_cache
+	_sprite_cache = get_node_or_null("Enemy/Sprite2D")
+	if not _sprite_cache:
+		_sprite_cache = find_child("Sprite2D", true, false) as Sprite2D
+	return _sprite_cache
 
 
 func _obter_animation_player() -> AnimationPlayer:
-	var anim: AnimationPlayer = get_node_or_null("Enemy/AnimationPlayer")
-	if not anim:
-		anim = find_child("AnimationPlayer", true, false) as AnimationPlayer
-	return anim
+	if is_instance_valid(_animacao_cache):
+		return _animacao_cache
+	_animacao_cache = get_node_or_null("Enemy/AnimationPlayer")
+	if not _animacao_cache:
+		_animacao_cache = find_child("AnimationPlayer", true, false) as AnimationPlayer
+	return _animacao_cache
 
 
 ## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
 func iniciar_corrida() -> void:
 	corrida_iniciada = true
-	_last_position = global_position
+	_posicao_anterior = global_position
 	var anim: AnimationPlayer = _obter_animation_player()
 	if anim:
 		anim.play("andar")
