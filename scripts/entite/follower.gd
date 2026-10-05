@@ -68,13 +68,6 @@ func _ready() -> void:
 		if anim:
 			anim.pause()
 
-
-func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
-	velocidade_atual = velocidade_base * fator
-	tempo_efeito_restante = duracao
-	pulos_de_quadro_ativo = saltos_de_frame
-
-
 ## Movimento físico executado em taxa fixa de quadros (60Hz)
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
@@ -104,15 +97,7 @@ func _physics_process(delta: float) -> void:
 	if em_desaceleracao:
 		velocidade_atual = move_toward(velocidade_atual, 0.0, taxa_desaceleracao * delta)
 		if velocidade_atual <= 1.0:
-			velocidade_atual = 0.0
-			var anim: AnimationPlayer = _obter_animation_player()
-			if anim and anim.is_playing() and anim.current_animation != "RESET":
-				anim.pause()
-			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
-			posicao_anterior = global_position
-			if not percurso_finalizado:
-				percurso_finalizado = true
-				percurso_concluido.emit(self)
+			_parar_e_finalizar_percurso(delta)
 			return
 	else:
 		if tempo_efeito_restante <= 0.0:
@@ -137,14 +122,7 @@ func _physics_process(delta: float) -> void:
 	if get_parent() is Path2D and get_parent().curve:
 		var comprimento_total: float = get_parent().curve.get_baked_length()
 		if progress >= comprimento_total - 2.0:
-			var anim: AnimationPlayer = _obter_animation_player()
-			if anim and anim.is_playing() and anim.current_animation != "RESET":
-				anim.pause()
-			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
-			posicao_anterior = global_position
-			if not percurso_finalizado:
-				percurso_finalizado = true
-				percurso_concluido.emit(self)
+			_parar_e_finalizar_percurso(passo_delta)
 			return
 
 	progress += velocidade_atual * passo_delta
@@ -161,6 +139,53 @@ func _physics_process(delta: float) -> void:
 		rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
 
 	posicao_anterior = global_position
+
+
+# ==============================================================================
+# --- API PÚBLICA (CONTROLE DE CORRIDA E EFEITOS) ---
+# ==============================================================================
+
+## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
+func iniciar_corrida() -> void:
+	corrida_iniciada = true
+	posicao_anterior = global_position
+	var anim: AnimationPlayer = _obter_animation_player()
+	if anim:
+		anim.play("andar")
+
+
+## Aplica boost ou desaceleração ao passar por sensores de pista
+func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
+	velocidade_atual = velocidade_base * fator
+	tempo_efeito_restante = duracao
+	pulos_de_quadro_ativo = saltos_de_frame
+
+
+## Inicia a desaceleração do bot ao atingir a reta pós-chegada
+func iniciar_desaceleracao_automatica(_x_alvo: float = 0.0) -> void:
+	em_desaceleracao = true
+
+
+## Retorna se o bot concluiu todo o percurso da trilha
+func is_percurso_finalizado() -> bool:
+	return percurso_finalizado
+
+
+# ==============================================================================
+# --- MÉTODOS AUXILIARES E VISUAIS ---
+# ==============================================================================
+
+## Congela movimento, alinha rotação e emite sinal de conclusão de percurso
+func _parar_e_finalizar_percurso(delta_rotacao: float) -> void:
+	velocidade_atual = 0.0
+	var anim: AnimationPlayer = _obter_animation_player()
+	if anim and anim.is_playing() and anim.current_animation != "RESET":
+		anim.pause()
+	rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta_rotacao)
+	posicao_anterior = global_position
+	if not percurso_finalizado:
+		percurso_finalizado = true
+		percurso_concluido.emit(self)
 
 
 func _aplicar_textura() -> void:
@@ -201,22 +226,3 @@ func _obter_animation_player() -> AnimationPlayer:
 	if not animacao_cache:
 		animacao_cache = find_child("AnimationPlayer", true, false) as AnimationPlayer
 	return animacao_cache
-
-
-## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
-func iniciar_corrida() -> void:
-	corrida_iniciada = true
-	posicao_anterior = global_position
-	var anim: AnimationPlayer = _obter_animation_player()
-	if anim:
-		anim.play("andar")
-
-
-## Retorna se o bot concluiu todo o percurso da trilha
-func is_percurso_finalizado() -> bool:
-	return percurso_finalizado
-
-
-## Inicia a desaceleração do bot ao atingir a reta pós-chegada
-func iniciar_desaceleracao_automatica(_x_alvo: float = 0.0) -> void:
-	em_desaceleracao = true

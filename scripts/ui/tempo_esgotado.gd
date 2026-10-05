@@ -10,10 +10,7 @@ static func definir_tempo_limite(tempo: float) -> void:
 	tempo_limite_configurado = tempo
 
 static func formatar_tempo(tempo: float) -> String:
-	var minutos: int = int(tempo / 60.0)
-	var segundos: int = int(fmod(tempo, 60.0))
-	var centesimos: int = int(fmod(tempo * 100.0, 100.0))
-	return "%02d:%02d:%02d" % [minutos, segundos, centesimos]
+	return Hub.formatar_tempo(tempo)
 
 @onready var label_titulo: Label = $UI/Header/LabelTitulo
 @onready var label_subtitulo: Label = $UI/Header/LabelSubtitulo
@@ -64,21 +61,21 @@ func _iniciar_animacao_alerta() -> void:
 
 ## Reinicia a corrida recarregando a fase
 func _on_restart_pressed() -> void:
-	btn_restart.disabled = true
-	btn_menu.disabled = true
-	AudioManager.parar_game_over()
-	AudioManager.parar_vaia()
-	if sounds and sounds.has_method("choice_select"):
-		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
+	_transicionar_para("res://scenes/levels/main_game.tscn")
 
 
 ## Retorna ao Menu Principal
 func _on_menu_pressed() -> void:
-	btn_restart.disabled = true
-	btn_menu.disabled = true
+	_transicionar_para("res://scenes/ui/menu_game.tscn")
+
+
+func _transicionar_para(caminho_cena: String) -> void:
+	if btn_restart:
+		btn_restart.disabled = true
+	if btn_menu:
+		btn_menu.disabled = true
 	AudioManager.parar_game_over()
 	AudioManager.parar_vaia()
 	if sounds and sounds.has_method("choice_select"):
 		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
+	get_tree().change_scene_to_file(caminho_cena)

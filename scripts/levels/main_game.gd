@@ -31,7 +31,6 @@ var tempo_decorrido: float = 0.0
 var tempo_real_decorrido: float = 0.0
 var total_tempo_descontado_manobras: float = 0.0
 var corrida_ativa_geral: bool = false
-var tempo_ultimo_log: float = 0.0
 var chegada_registrada_player: bool = false
 
 @onready var player: CharacterBody2D = get_node_or_null("Entities/Player")
@@ -57,7 +56,6 @@ func _ready() -> void:
 	tempo_decorrido = 0.0
 	tempo_real_decorrido = 0.0
 	total_tempo_descontado_manobras = 0.0
-	tempo_ultimo_log = 0.0
 	chegada_registrada_player = false
 
 	if hub_ui:
@@ -94,14 +92,8 @@ func _on_corrida_iniciada() -> void:
 		tempo_decorrido = 0.0
 		tempo_real_decorrido = 0.0
 		total_tempo_descontado_manobras = 0.0
-		tempo_ultimo_log = 0.0
 		if temporizador_corrida and tempo_limite > 0.0:
 			temporizador_corrida.start(tempo_limite)
-
-		if OS.is_debug_build():
-			print("==================================================")
-			print("🟢 [Cronômetro] CORRIDA INICIADA! Cronômetro iniciado.")
-			print("==================================================")
 
 
 func _process(delta: float) -> void:
@@ -126,17 +118,6 @@ func _process(delta: float) -> void:
 		# Quando o tempo limite reduz até zerar
 		if tempo_limite > 0.0 and tempo_limite_restante <= 0.0 and not transicao_em_andamento and not chegada_registrada_player:
 			_on_tempo_esgotado()
-			return
-
-		if tempo_real_decorrido - tempo_ultimo_log >= 1.0:
-			tempo_ultimo_log = tempo_real_decorrido
-			var px: float = player.global_position.x if player else 0.0
-			var pos_fim_x: float = _obter_posicao_fim_pista()
-			var pct: float = clampf((px / pos_fim_x) * 100.0, 0.0, 100.0)
-			if OS.is_debug_build():
-				print("[Cronômetro] ⏱️ Real: %05.1fs | HUD: %05.1fs | Restante: %05.1fs | X: %5.0f / %.0f px (%4.1f%%)" % [
-					tempo_real_decorrido, tempo_decorrido, tempo_limite_restante, px, pos_fim_x, pct
-				])
 
 
 ## Callback executado quando o tempo limite do hub zera
@@ -147,11 +128,6 @@ func _on_tempo_esgotado() -> void:
 	cronometro_ativo = false
 	AudioManager.parar_audios_corrida()
 	TempoEsgotado.definir_tempo_limite(tempo_limite)
-	var tempo_str: String = TempoEsgotado.formatar_tempo(tempo_limite)
-	if OS.is_debug_build():
-		print("==================================================")
-		print("⌛ [MainGame] TEMPO ESGOTADO! O tempo limite zerou (%s)." % tempo_str)
-		print("==================================================")
 	await get_tree().create_timer(1.2).timeout
 	get_tree().change_scene_to_file("res://scenes/ui/tempo_esgotado.tscn")
 
@@ -171,10 +147,6 @@ func _on_player_manobra_sucesso(giros: int) -> void:
 	var tempo_reduzido: float = bonus_tempo_manobra * giros
 	total_tempo_descontado_manobras += tempo_reduzido
 	tempo_decorrido = maxf(0.0, tempo_decorrido - tempo_reduzido)
-	if OS.is_debug_build():
-		print("🤸 [Manobra] Giro 360° x%d! Bônus aplicado: -%.1fs (Total abatido: -%.1fs) | HUD: %.2fs | Tempo Real: %.2fs" % [
-			giros, tempo_reduzido, total_tempo_descontado_manobras, tempo_decorrido, tempo_real_decorrido
-		])
 
 
 ## Mapeia e conecta os adversários autônomos na pista utilizando Grupos
@@ -254,27 +226,20 @@ func _on_hospital() -> void:
 
 ## Conecta os sensores de Boost e Slower utilizando Grupos
 func _conectar_sensores_efeitos() -> void:
-	var sensores_b: Array[Node] = get_tree().get_nodes_in_group("sensores_boost")
-	if sensores_b.is_empty():
-		sensores_b = get_tree().get_nodes_in_group("boost_sensors")
-	for sensor_node in sensores_b:
-		var sensor: Area2D = sensor_node as Area2D
-		if sensor:
-			if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
-				sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
-			if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
-				sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_boost))
+	_conectar_grupo_sensores("sensores_boost", fator_boost)
+	_conectar_grupo_sensores("boost_sensors", fator_boost)
+	_conectar_grupo_sensores("sensores_slower", fator_slower)
+	_conectar_grupo_sensores("slower_sensors", fator_slower)
 
-	var sensores_s: Array[Node] = get_tree().get_nodes_in_group("sensores_slower")
-	if sensores_s.is_empty():
-		sensores_s = get_tree().get_nodes_in_group("slower_sensors")
-	for sensor_node in sensores_s:
+
+func _conectar_grupo_sensores(nome_grupo: String, fator: float) -> void:
+	for sensor_node in get_tree().get_nodes_in_group(nome_grupo):
 		var sensor: Area2D = sensor_node as Area2D
 		if sensor:
 			if not sensor.body_entered.is_connected(_on_sensor_efeito_entered):
-				sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
+				sensor.body_entered.connect(_on_sensor_efeito_entered.bind(fator))
 			if not sensor.area_entered.is_connected(_on_sensor_efeito_entered):
-				sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator_slower))
+				sensor.area_entered.connect(_on_sensor_efeito_entered.bind(fator))
 
 
 func _on_sensor_efeito_entered(corpo_ou_area: Node, fator: float) -> void:
@@ -302,13 +267,15 @@ func _conectar_sensores() -> void:
 
 
 func _on_sensor_chegada_body_entered(body: Node2D) -> void:
-	var corredor: Node2D = _resolver_corredor(body)
-	if corredor:
-		_registrar_chegada(corredor)
+	_ao_detectar_chegada(body)
 
 
 func _on_sensor_chegada_area_entered(area: Area2D) -> void:
-	var corredor: Node2D = _resolver_corredor(area)
+	_ao_detectar_chegada(area)
+
+
+func _ao_detectar_chegada(origem: Node) -> void:
+	var corredor: Node2D = _resolver_corredor(origem)
 	if corredor:
 		_registrar_chegada(corredor)
 
@@ -317,7 +284,7 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 	if body == null:
 		return
 
-	if body is CharacterBody2D or body.name == "Player":
+	if _is_player_corredor(body):
 		var pos_filmers_x: float = _obter_posicao_filmers()
 
 		if body.has_method("iniciar_desaceleracao_automatica"):
@@ -328,12 +295,6 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 		if not chegada_registrada_player:
 			chegada_registrada_player = true
 			cronometro_ativo = false
-			if OS.is_debug_build():
-				print("==================================================")
-				print("🛑 [Cronômetro] BARRAMENTO ATINGIDO PELO PLAYER!")
-				print("⏱️ TEMPO TOTAL: %.3f s" % tempo_decorrido)
-				print("📍 Posição X Final: %.1f px" % body.global_position.x)
-				print("==================================================")
 
 		barramento_atingido.emit(body)
 
@@ -354,21 +315,9 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	if not transicao_em_andamento:
 		AudioManager.tocar_linha_chegada()
 
-	var nome_corredor: String = corredor.name
-	if corredor is CharacterBody2D or corredor.name == "Player":
-		nome_corredor = "Player"
+	if _is_player_corredor(corredor):
 		chegada_registrada_player = true
 		cronometro_ativo = false
-		if OS.is_debug_build():
-			print("==================================================")
-			print("🏁 [MainGame] %dº LUGAR: PLAYER cruzou a linha de chegada!" % colocacao)
-			print("⏱️ TEMPO REAL FÍSICO: %.3f s" % tempo_real_decorrido)
-			print("🎮 TEMPO COM BÔNUS DE MANOBRAS: %.3f s (Total abatido por flips: -%.1f s)" % [tempo_decorrido, total_tempo_descontado_manobras])
-			print("📍 Posição X Final: %.1f px" % corredor.global_position.x)
-			print("==================================================")
-	else:
-		if OS.is_debug_build():
-			print("🏁 [MainGame] %dº LUGAR: %s cruzou a linha de chegada | ⏱️ TEMPO REAL: %.3f s" % [colocacao, nome_corredor, tempo_real_decorrido])
 
 	corredor_chegou.emit(corredor, colocacao)
 

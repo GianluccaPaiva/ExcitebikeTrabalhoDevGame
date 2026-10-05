@@ -58,21 +58,19 @@ func _on_continue_pressed() -> void:
 
 
 func _on_restart_pressed() -> void:
-	_ativar_botoes(false)
-	if sounds:
-		await sounds.choice_select(0.25)
-	AudioManager.pausar_audio_jogo(false)
-	AudioManager.parar_todos()
-	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
+	_transicionar_para("res://scenes/levels/main_game.tscn")
 
 
 func _on_menu_pressed() -> void:
+	_transicionar_para("res://scenes/ui/menu_game.tscn")
+
+
+func _transicionar_para(caminho_cena: String) -> void:
 	_ativar_botoes(false)
 	if sounds:
 		await sounds.choice_select(0.25)
 	AudioManager.pausar_audio_jogo(false)
 	AudioManager.parar_todos()
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
+	get_tree().change_scene_to_file(caminho_cena)
 

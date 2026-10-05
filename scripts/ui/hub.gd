@@ -29,12 +29,17 @@ func _ready() -> void:
 	resetar_vidas()
 
 
-## Formata e aplica o tempo em MM:SS:CC no display correspondente
-func _set_timer(tempo: float, tipo: TipoTempo) -> void:
+## Formata tempo em segundos para o padrão MM:SS:CC
+static func formatar_tempo(tempo: float) -> String:
 	var minutos: int = int(tempo / 60.0)
 	var segundos: int = int(fmod(tempo, 60.0))
 	var centesimos: int = int(fmod(tempo * 100.0, 100.0))
-	var tempo_formatado: String = "%02d:%02d:%02d" % [minutos, segundos, centesimos]
+	return "%02d:%02d:%02d" % [minutos, segundos, centesimos]
+
+
+## Formata e aplica o tempo em MM:SS:CC no display correspondente
+func _set_timer(tempo: float, tipo: TipoTempo) -> void:
+	var tempo_formatado: String = formatar_tempo(tempo)
 	match tipo:
 		TipoTempo.ATUAL:
 			if temp_atual:

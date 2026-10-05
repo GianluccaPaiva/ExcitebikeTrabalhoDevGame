@@ -156,21 +156,22 @@ func _carregar_dados_padrao_teste() -> void:
 
 
 func _on_restart_pressed() -> void:
-	btn_restart.disabled = true
-	btn_menu.disabled = true
-	_parar_sons()
-	if sounds:
-		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
+	_transicionar_para("res://scenes/levels/main_game.tscn")
 
 
 func _on_menu_pressed() -> void:
-	btn_restart.disabled = true
-	btn_menu.disabled = true
+	_transicionar_para("res://scenes/ui/menu_game.tscn")
+
+
+func _transicionar_para(caminho_cena: String) -> void:
+	if btn_restart:
+		btn_restart.disabled = true
+	if btn_menu:
+		btn_menu.disabled = true
 	_parar_sons()
 	if sounds:
 		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
+	get_tree().change_scene_to_file(caminho_cena)
 
 
 func _tocar_som_resultado() -> void:

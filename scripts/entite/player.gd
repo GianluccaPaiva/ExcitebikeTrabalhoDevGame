@@ -104,51 +104,6 @@ func _ready() -> void:
 	update_hub_ui()
 
 
-func _mudar_estado(novo_estado: Estado) -> void:
-	estado = novo_estado
-	floor_snap_length = 0.0 if novo_estado == Estado.NO_AR else 8.0
-	if novo_estado != Estado.NO_AR:
-		temporizador_salto_rampa = 0.0
-
-
-func update_hub_ui() -> void:
-	if hub_ui:
-		if hub_ui.has_method("set_km_h"):
-			hub_ui.set_km_h(obter_velocidade_kmh())
-		if hub_ui.has_method("set_quedas"):
-			hub_ui.set_quedas(qtd_acidentes)
-
-
-## Retorna a velocidade escalar real calculada pelo motor de física
-func obter_velocidade_real() -> float:
-	return get_real_velocity().length()
-
-
-## Converte a velocidade física para km/h exibida no velocímetro do HUD
-func obter_velocidade_kmh() -> float:
-	var vel: float = obter_velocidade_real() if not is_zero_approx(velocidade_atual) else 0.0
-	return vel * PX_PARA_KMH
-
-
-func velocity_to_km_h(vel: float) -> float:
-	return vel * PX_PARA_KMH
-
-
-func aplicar_efeito_pista(fator: float, duracao: float, _saltos_de_frame: int = 0) -> void:
-	max_speed = velocidade_maxima_base * fator
-	if temporizador_efeito:
-		temporizador_efeito.start(duracao)
-
-	if fator > 1.0:
-		velocidade_atual = max_speed
-	elif fator < 1.0:
-		velocidade_atual *= fator
-
-
-func _ao_expirar_efeito() -> void:
-	max_speed = velocidade_maxima_base
-
-
 func _physics_process(delta: float) -> void:
 	# Enquanto a contagem regressiva estiver rodando, mantém estático no grid
 	if controles_bloqueados and not em_desaceleracao_automatica:
@@ -179,14 +134,15 @@ func _physics_process(delta: float) -> void:
 		player_audio.atualizar_motor(Input.is_action_pressed("acelerar"), velocidade_atual, max_speed, impedido)
 
 
-# --- ESTADO: NO CHÃO (DESLOCAMENTO VETORIAL ALINHADO AO RELEVO) ---
-func _processar_chao(delta: float) -> void:
-	var normal_piso: Vector2 = get_floor_normal()
-	if normal_piso.length_squared() < 0.01:
-		normal_piso = up_direction
+# ==============================================================================
+# --- PROCESSADORES DE ESTADO FÍSICO ---
+# ==============================================================================
 
-	var angulo_solo: float = normal_piso.angle() + (PI / 2.0)
-	var direcao_solo: Vector2 = Vector2.RIGHT.rotated(angulo_solo)
+## Estado: NO CHÃO (Deslocamento vetorial alinhado ao relevo)
+func _processar_chao(delta: float) -> void:
+	var geom: Dictionary = _calcular_geometria_solo()
+	var angulo_solo: float = geom.angulo
+	var direcao_solo: Vector2 = geom.direcao
 
 	# Inviolabilidade: rotação puramente vetorial/procedural
 	rotation = angulo_solo
@@ -232,18 +188,10 @@ func _processar_chao(delta: float) -> void:
 		velocity.y += gravity * delta
 
 	# Animações de corrida
-	if animation_player:
-		if velocidade_atual > 5.0:
-			if animation_player.current_animation != "andar":
-				animation_player.play("andar")
-			animation_player.speed_scale = clampf(velocidade_atual / max_speed, 0.4, 1.3)
-		else:
-			if animation_player.current_animation != "parado":
-				animation_player.play("parado")
-			animation_player.speed_scale = 1.0
+	_atualizar_animacao_movimento()
 
 
-# --- ESTADO: NO AR (MANOBRAS, FLIPS E ROTAÇÃO PROCEDURAL) ---
+## Estado: NO AR (Manobras, flips e rotação procedural)
 func _processar_ar(delta: float) -> void:
 	tempo_no_ar += delta
 
@@ -278,7 +226,7 @@ func _processar_ar(delta: float) -> void:
 		animation_player.pause()
 
 
-# --- ESTADO: ACIDENTE (CRASH) ---
+## Estado: ACIDENTE (Crash)
 func _processar_acidente(delta: float) -> void:
 	velocidade_atual = 0.0
 	velocity.x = 0.0
@@ -289,7 +237,10 @@ func _processar_acidente(delta: float) -> void:
 		velocity.y = 0.0
 
 
-# --- TRANSIÇÕES DE PISO ---
+# ==============================================================================
+# --- TRANSIÇÕES DE PISO E MECÂNICAS DE SALTO / POUSO ---
+# ==============================================================================
+
 func _verificar_transicoes_piso() -> void:
 	var no_piso_agora: bool = is_on_floor()
 
@@ -317,12 +268,9 @@ func _decolar_da_rampa() -> void:
 
 
 func _processar_aterrissagem() -> void:
-	var normal_piso: Vector2 = get_floor_normal()
-	if normal_piso.length_squared() < 0.01:
-		normal_piso = up_direction
-
-	var angulo_solo: float = normal_piso.angle() + (PI / 2.0)
-	var direcao_solo: Vector2 = Vector2.RIGHT.rotated(angulo_solo)
+	var geom: Dictionary = _calcular_geometria_solo()
+	var angulo_solo: float = geom.angulo
+	var direcao_solo: Vector2 = geom.direcao
 
 	var diferenca_relativa: float = angle_difference(angulo_solo, rotation)
 	var diferenca_absoluta: float = absf(diferenca_relativa)
@@ -344,21 +292,13 @@ func _processar_aterrissagem() -> void:
 			velocidade_atual = clampf(velocidade_projetada, 0.0, max_speed * 1.1)
 
 		if em_desaceleracao_automatica:
-			var dist_restante: float = maxf((limite_x_parada - 65.0) - global_position.x, 20.0)
-			if velocidade_atual > 10.0:
-				taxa_freio_automatico = (velocidade_atual * velocidade_atual) / (2.0 * dist_restante)
-				taxa_freio_automatico = clampf(taxa_freio_automatico, 100.0, 450.0)
+			_calcular_taxa_freio_automatico()
 
-		if animation_player:
-			if controles_bloqueados and not em_desaceleracao_automatica:
+		if controles_bloqueados and not em_desaceleracao_automatica:
+			if animation_player:
 				animation_player.play("parado")
-			else:
-				if velocidade_atual > 5.0:
-					animation_player.play("andar")
-					animation_player.speed_scale = clampf(velocidade_atual / max_speed, 0.3, 1.3)
-				else:
-					animation_player.play("parado")
-					animation_player.speed_scale = 1.0
+		else:
+			_atualizar_animacao_movimento()
 	else:
 		qtd_acidentes += 1
 		queda_ocorreu.emit(qtd_acidentes)
@@ -406,6 +346,17 @@ func _recuperar_de_acidente() -> void:
 		animation_player.speed_scale = 1.0
 
 
+func _mudar_estado(novo_estado: Estado) -> void:
+	estado = novo_estado
+	floor_snap_length = 0.0 if novo_estado == Estado.NO_AR else 8.0
+	if novo_estado != Estado.NO_AR:
+		temporizador_salto_rampa = 0.0
+
+
+# ==============================================================================
+# --- API PÚBLICA (CONTROLE DE CORRIDA E EFEITOS) ---
+# ==============================================================================
+
 ## Chamado para liberar os controles no sinal "VAI!"
 func liberar_controles() -> void:
 	controles_bloqueados = false
@@ -428,15 +379,86 @@ func iniciar_desaceleracao_automatica(x_alvo: float = 17855.0) -> void:
 		player_audio.parar_motor()
 		player_audio.tocar_parando()
 
-	var margem_seguranca: float = 65.0
-	var dist_disponivel: float = maxf((limite_x_parada - margem_seguranca) - global_position.x, 20.0)
-
-	if velocidade_atual > 10.0:
-		taxa_freio_automatico = (velocidade_atual * velocidade_atual) / (2.0 * dist_disponivel)
-		taxa_freio_automatico = clampf(taxa_freio_automatico, 100.0, 450.0)
-	else:
-		taxa_freio_automatico = friction
+	_calcular_taxa_freio_automatico()
 
 
 func travar_controles() -> void:
 	iniciar_desaceleracao_automatica()
+
+
+func aplicar_efeito_pista(fator: float, duracao: float, _saltos_de_frame: int = 0) -> void:
+	max_speed = velocidade_maxima_base * fator
+	if temporizador_efeito:
+		temporizador_efeito.start(duracao)
+
+	if fator > 1.0:
+		velocidade_atual = max_speed
+	elif fator < 1.0:
+		velocidade_atual *= fator
+
+
+func _ao_expirar_efeito() -> void:
+	max_speed = velocidade_maxima_base
+
+
+# ==============================================================================
+# --- MÉTODOS AUXILIARES, GEOMETRIA E TELEMETRIA ---
+# ==============================================================================
+
+## Calcula a inclinação angular e o vetor diretor tangente ao solo
+func _calcular_geometria_solo() -> Dictionary:
+	var normal_piso: Vector2 = get_floor_normal()
+	if normal_piso.length_squared() < 0.01:
+		normal_piso = up_direction
+	var angulo: float = normal_piso.angle() + (PI / 2.0)
+	return {
+		"angulo": angulo,
+		"direcao": Vector2.RIGHT.rotated(angulo)
+	}
+
+
+## Atualiza os frames de rotação de rodas e animações de movimento no solo
+func _atualizar_animacao_movimento() -> void:
+	if not animation_player:
+		return
+	if velocidade_atual > 5.0:
+		if animation_player.current_animation != "andar":
+			animation_player.play("andar")
+		animation_player.speed_scale = clampf(velocidade_atual / max_speed, 0.3, 1.3)
+	else:
+		if animation_player.current_animation != "parado":
+			animation_player.play("parado")
+		animation_player.speed_scale = 1.0
+
+
+## Calcula cinematicamente a desaceleração suave após cruzar a linha de chegada
+func _calcular_taxa_freio_automatico() -> void:
+	var margem_seguranca: float = 65.0
+	var dist_disponivel: float = maxf((limite_x_parada - margem_seguranca) - global_position.x, 20.0)
+	if velocidade_atual > 10.0:
+		taxa_freio_automatico = clampf((velocidade_atual * velocidade_atual) / (2.0 * dist_disponivel), 100.0, 450.0)
+	else:
+		taxa_freio_automatico = friction
+
+
+## Retorna a velocidade escalar real calculada pelo motor de física
+func obter_velocidade_real() -> float:
+	return get_real_velocity().length()
+
+
+## Converte a velocidade física para km/h exibida no velocímetro do HUD
+func obter_velocidade_kmh() -> float:
+	var vel: float = obter_velocidade_real() if not is_zero_approx(velocidade_atual) else 0.0
+	return vel * PX_PARA_KMH
+
+
+func velocity_to_km_h(vel: float) -> float:
+	return vel * PX_PARA_KMH
+
+
+func update_hub_ui() -> void:
+	if hub_ui:
+		if hub_ui.has_method("set_km_h"):
+			hub_ui.set_km_h(obter_velocidade_kmh())
+		if hub_ui.has_method("set_quedas"):
+			hub_ui.set_quedas(qtd_acidentes)

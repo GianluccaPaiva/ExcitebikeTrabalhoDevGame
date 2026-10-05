@@ -49,19 +49,7 @@ func _iniciar_timer_extra() -> void:
 
 	var sorteio: float = randf_range(0.0, 100.0)
 	if sorteio <= 30.0:
-		transicionando = true
-		if btn_restart:
-			btn_restart.disabled = true
-		if btn_menu:
-			btn_menu.disabled = true
-		AudioManager.parar_game_over()
-		AudioManager.parar_ambulancia()
-		if OS.is_debug_build():
-			print("🚑 [Hospital] 10s decorridos! Sorteio bem-sucedido (%.1f%% <= 30%%): abrindo tela Extra..." % sorteio)
-		get_tree().change_scene_to_file("res://scenes/referencia/extra.tscn")
-	else:
-		if OS.is_debug_build():
-			print("🚑 [Hospital] 10s decorridos! Sorteio não contemplado (%.1f%% > 30%%): permanecendo no Hospital." % sorteio)
+		_transicionar_para("res://scenes/referencia/extra.tscn", false)
 
 
 func _process(delta: float) -> void:
@@ -76,22 +64,21 @@ func _sortear_frase() -> void:
 
 
 func _on_restart_pressed() -> void:
-	transicionando = true
-	btn_restart.disabled = true
-	btn_menu.disabled = true
-	AudioManager.parar_game_over()
-	AudioManager.parar_ambulancia()
-	if sounds:
-		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/levels/main_game.tscn")
+	_transicionar_para("res://scenes/levels/main_game.tscn")
 
 
 func _on_menu_pressed() -> void:
+	_transicionar_para("res://scenes/ui/menu_game.tscn")
+
+
+func _transicionar_para(caminho_cena: String, tocar_som_escolha: bool = true) -> void:
 	transicionando = true
-	btn_restart.disabled = true
-	btn_menu.disabled = true
+	if btn_restart:
+		btn_restart.disabled = true
+	if btn_menu:
+		btn_menu.disabled = true
 	AudioManager.parar_game_over()
 	AudioManager.parar_ambulancia()
-	if sounds:
+	if tocar_som_escolha and sounds:
 		await sounds.choice_select(0.25)
-	get_tree().change_scene_to_file("res://scenes/ui/menu_game.tscn")
+	get_tree().change_scene_to_file(caminho_cena)
