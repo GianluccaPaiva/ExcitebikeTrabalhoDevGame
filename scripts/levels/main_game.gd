@@ -31,8 +31,8 @@ var tempo_decorrido: float = 0.0
 var tempo_real_decorrido: float = 0.0
 var total_tempo_descontado_manobras: float = 0.0
 var corrida_ativa_geral: bool = false
-var _tempo_ultimo_log: float = 0.0
-var _chegada_registrada_player: bool = false
+var tempo_ultimo_log: float = 0.0
+var chegada_registrada_player: bool = false
 
 @onready var player: CharacterBody2D = get_node_or_null("Entities/Player")
 @onready var sensor_chegada: Area2D = get_node_or_null("PistaVisual/Chegada/SensorChegada")
@@ -57,8 +57,8 @@ func _ready() -> void:
 	tempo_decorrido = 0.0
 	tempo_real_decorrido = 0.0
 	total_tempo_descontado_manobras = 0.0
-	_tempo_ultimo_log = 0.0
-	_chegada_registrada_player = false
+	tempo_ultimo_log = 0.0
+	chegada_registrada_player = false
 
 	if hub_ui:
 		if hub_ui.has_method("set_temp_atual"):
@@ -89,12 +89,12 @@ func _conectar_countdown() -> void:
 func _on_corrida_iniciada() -> void:
 	AudioManager.elevar_estadio_corrida()
 	corrida_ativa_geral = true
-	if not cronometro_ativo and not _chegada_registrada_player:
+	if not cronometro_ativo and not chegada_registrada_player:
 		cronometro_ativo = true
 		tempo_decorrido = 0.0
 		tempo_real_decorrido = 0.0
 		total_tempo_descontado_manobras = 0.0
-		_tempo_ultimo_log = 0.0
+		tempo_ultimo_log = 0.0
 		if temporizador_corrida and tempo_limite > 0.0:
 			temporizador_corrida.start(tempo_limite)
 
@@ -105,7 +105,7 @@ func _on_corrida_iniciada() -> void:
 
 
 func _process(delta: float) -> void:
-	if not cronometro_ativo and not _chegada_registrada_player:
+	if not cronometro_ativo and not chegada_registrada_player:
 		if player and player.velocity.x > 10.0 and not player_desacelerou and not transicao_em_andamento:
 			_on_corrida_iniciada()
 		return
@@ -124,12 +124,12 @@ func _process(delta: float) -> void:
 				hub_ui.set_temp_limite(tempo_limite_restante)
 
 		# Quando o tempo limite reduz até zerar
-		if tempo_limite > 0.0 and tempo_limite_restante <= 0.0 and not transicao_em_andamento and not _chegada_registrada_player:
+		if tempo_limite > 0.0 and tempo_limite_restante <= 0.0 and not transicao_em_andamento and not chegada_registrada_player:
 			_on_tempo_esgotado()
 			return
 
-		if tempo_real_decorrido - _tempo_ultimo_log >= 1.0:
-			_tempo_ultimo_log = tempo_real_decorrido
+		if tempo_real_decorrido - tempo_ultimo_log >= 1.0:
+			tempo_ultimo_log = tempo_real_decorrido
 			var px: float = player.global_position.x if player else 0.0
 			var pos_fim_x: float = _obter_posicao_fim_pista()
 			var pct: float = clampf((px / pos_fim_x) * 100.0, 0.0, 100.0)
@@ -141,7 +141,7 @@ func _process(delta: float) -> void:
 
 ## Callback executado quando o tempo limite do hub zera
 func _on_tempo_esgotado() -> void:
-	if transicao_em_andamento or _chegada_registrada_player:
+	if transicao_em_andamento or chegada_registrada_player:
 		return
 	transicao_em_andamento = true
 	cronometro_ativo = false
@@ -325,8 +325,8 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 		elif body.has_method("travar_controles"):
 			body.travar_controles()
 
-		if not _chegada_registrada_player:
-			_chegada_registrada_player = true
+		if not chegada_registrada_player:
+			chegada_registrada_player = true
 			cronometro_ativo = false
 			if OS.is_debug_build():
 				print("==================================================")
@@ -357,7 +357,7 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	var nome_corredor: String = corredor.name
 	if corredor is CharacterBody2D or corredor.name == "Player":
 		nome_corredor = "Player"
-		_chegada_registrada_player = true
+		chegada_registrada_player = true
 		cronometro_ativo = false
 		if OS.is_debug_build():
 			print("==================================================")

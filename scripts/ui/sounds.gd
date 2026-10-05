@@ -9,7 +9,7 @@ extends Node2D
 @onready var select: AudioStreamPlayer = $Select
 @onready var choice: AudioStreamPlayer = $Choice
 
-var _pode_tocar_som: bool = false
+var pode_tocar_som: bool = false
 
 
 func _ready() -> void:
@@ -26,7 +26,7 @@ func _inicializar() -> void:
 	_configurar_botoes_da_cena()
 	# Aguarda a tela estabilizar para liberar sons de hover/foco
 	await get_tree().process_frame
-	_pode_tocar_som = true
+	pode_tocar_som = true
 
 
 ## Localiza os botões registrados nos grupos de interface e vincula os eventos
@@ -51,7 +51,7 @@ func _vincular_botao(btn: Button) -> void:
 
 ## Ao passar o mouse sobre o botão, ganha foco e toca som
 func _ao_entrar_mouse_botao(btn: Button) -> void:
-	if not _pode_tocar_som:
+	if not pode_tocar_som:
 		return
 
 	if btn and is_instance_valid(btn):
@@ -68,7 +68,7 @@ func _ao_receber_foco_botao() -> void:
 
 ## Toca o áudio de seleção
 func play_select() -> void:
-	if not _pode_tocar_som:
+	if not pode_tocar_som:
 		return
 	if select:
 		select.play()

@@ -24,9 +24,9 @@ const FRASES_GAME_OVER: Array[String] = [
 @onready var btn_menu: Button = $Menu
 @onready var sounds: Sounds = $Sounds
 
-var _temporizador_vibracao: float = 0.0
-var _posicao_base_ambulancia_y: float = 98.0
-var _transicionando: bool = false
+var temporizador_vibracao: float = 0.0
+var posicao_base_ambulancia_y: float = 98.0
+var transicionando: bool = false
 
 
 func _ready() -> void:
@@ -34,7 +34,7 @@ func _ready() -> void:
 	AudioManager.tocar_game_over()
 	AudioManager.tocar_ambulancia()
 	if ambulance:
-		_posicao_base_ambulancia_y = ambulance.position.y
+		posicao_base_ambulancia_y = ambulance.position.y
 	get_tree().paused = false
 
 	_sortear_frase()
@@ -44,12 +44,12 @@ func _ready() -> void:
 ## Timer de 10 segundos com 30% de chance de abrir a tela Extra
 func _iniciar_timer_extra() -> void:
 	await get_tree().create_timer(10.0).timeout
-	if not is_inside_tree() or _transicionando:
+	if not is_inside_tree() or transicionando:
 		return
 
 	var sorteio: float = randf_range(0.0, 100.0)
 	if sorteio <= 30.0:
-		_transicionando = true
+		transicionando = true
 		if btn_restart:
 			btn_restart.disabled = true
 		if btn_menu:
@@ -66,8 +66,8 @@ func _iniciar_timer_extra() -> void:
 
 func _process(delta: float) -> void:
 	if ambulance:
-		_temporizador_vibracao += delta * 24.0
-		ambulance.position.y = _posicao_base_ambulancia_y + sin(_temporizador_vibracao) * 0.7
+		temporizador_vibracao += delta * 24.0
+		ambulance.position.y = posicao_base_ambulancia_y + sin(temporizador_vibracao) * 0.7
 
 
 func _sortear_frase() -> void:
@@ -76,7 +76,7 @@ func _sortear_frase() -> void:
 
 
 func _on_restart_pressed() -> void:
-	_transicionando = true
+	transicionando = true
 	btn_restart.disabled = true
 	btn_menu.disabled = true
 	AudioManager.parar_game_over()
@@ -87,7 +87,7 @@ func _on_restart_pressed() -> void:
 
 
 func _on_menu_pressed() -> void:
-	_transicionando = true
+	transicionando = true
 	btn_restart.disabled = true
 	btn_menu.disabled = true
 	AudioManager.parar_game_over()

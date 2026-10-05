@@ -14,47 +14,47 @@ const STREAM_TORCIDA_QUEDA: AudioStream = preload("res://assets/sounds/somTorcid
 const STREAM_VAIA: AudioStream = preload("res://assets/sounds/somVaia.mp3")
 
 # Nós de reprodução dedicados
-var _player_estadio: AudioStreamPlayer
-var _player_linha_chegada: AudioStreamPlayer
-var _player_podio: AudioStreamPlayer
-var _player_4_lugar: AudioStreamPlayer
-var _player_game_over: AudioStreamPlayer
-var _player_ambulancia: AudioStreamPlayer
-var _player_torcida_queda: AudioStreamPlayer
-var _player_vaia: AudioStreamPlayer
+var player_estadio: AudioStreamPlayer
+var player_linha_chegada: AudioStreamPlayer
+var player_podio: AudioStreamPlayer
+var player_4_lugar: AudioStreamPlayer
+var player_game_over: AudioStreamPlayer
+var player_ambulancia: AudioStreamPlayer
+var player_torcida_queda: AudioStreamPlayer
+var player_vaia: AudioStreamPlayer
 
-var _tween_ducking: Tween = null
-var _estadio_ativo: bool = false
-var _vaia_ativa: bool = false
-var _audio_pausado: bool = false
-var _arvore_estava_pausada: bool = false
+var tween_ducking: Tween = null
+var estadio_ativo: bool = false
+var vaia_ativa: bool = false
+var audio_pausado: bool = false
+var arvore_estava_pausada: bool = false
 
 # Lista de todos os reprodutores nativos para operações em lote
-var _todos_players: Array[AudioStreamPlayer] = []
+var todos_players: Array[AudioStreamPlayer] = []
 
 # Controle de cooldown do som da linha de chegada
-var _ultimo_tempo_chegada_ms: int = -999999
+var ultimo_tempo_chegada_ms: int = -999999
 const COOLDOWN_CHEGADA_MS: int = 1500
 
 
 func _ready() -> void:
 	# Garante que o AudioManager receba notificações de pausa mesmo com a árvore pausada
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_arvore_estava_pausada = get_tree().paused
-	_audio_pausado = _arvore_estava_pausada
+	arvore_estava_pausada = get_tree().paused
+	audio_pausado = arvore_estava_pausada
 
-	_player_estadio = _criar_player("AudioEstadio", STREAM_ESTADIO, -8.0, "Ambiente")
-	_player_linha_chegada = _criar_player("AudioLinhaChegada", STREAM_LINHA_CHEGADA, -4.0, "SFX")
-	_player_podio = _criar_player("AudioPodio", STREAM_PODIO, -4.0, "Music")
-	_player_4_lugar = _criar_player("Audio4Lugar", STREAM_4_LUGAR, -4.0, "Music")
-	_player_game_over = _criar_player("AudioGameOver", STREAM_GAME_OVER, -2.0, "Music")
-	_player_ambulancia = _criar_player("AudioAmbulancia", STREAM_AMBULANCIA, -4.0, "Ambiente")
-	_player_torcida_queda = _criar_player("AudioTorcidaQueda", STREAM_TORCIDA_QUEDA, -3.5, "Ambiente")
+	player_estadio = _criar_player("AudioEstadio", STREAM_ESTADIO, -8.0, "Ambiente")
+	player_linha_chegada = _criar_player("AudioLinhaChegada", STREAM_LINHA_CHEGADA, -4.0, "SFX")
+	player_podio = _criar_player("AudioPodio", STREAM_PODIO, -4.0, "Music")
+	player_4_lugar = _criar_player("Audio4Lugar", STREAM_4_LUGAR, -4.0, "Music")
+	player_game_over = _criar_player("AudioGameOver", STREAM_GAME_OVER, -2.0, "Music")
+	player_ambulancia = _criar_player("AudioAmbulancia", STREAM_AMBULANCIA, -4.0, "Ambiente")
+	player_torcida_queda = _criar_player("AudioTorcidaQueda", STREAM_TORCIDA_QUEDA, -3.5, "Ambiente")
 
-	_player_vaia = _criar_player("AudioVaia", STREAM_VAIA, -5.0, "UI")
-	_player_vaia.finished.connect(func() -> void:
-		if is_instance_valid(_player_vaia) and _vaia_ativa and not _audio_pausado:
-			_player_vaia.play()
+	player_vaia = _criar_player("AudioVaia", STREAM_VAIA, -5.0, "UI")
+	player_vaia.finished.connect(func() -> void:
+		if is_instance_valid(player_vaia) and vaia_ativa and not audio_pausado:
+			player_vaia.play()
 	)
 
 
@@ -65,23 +65,23 @@ func _criar_player(nome: String, stream: AudioStream, vol_db: float, nome_barram
 	p.volume_db = vol_db
 	p.bus = nome_barramento
 	add_child(p)
-	_todos_players.append(p)
+	todos_players.append(p)
 	return p
 
 
 func _process(_delta: float) -> void:
 	var arvore_pausada: bool = get_tree().paused
-	if arvore_pausada != _audio_pausado:
+	if arvore_pausada != audio_pausado:
 		pausar_audio_jogo(arvore_pausada)
 
 
 ## Pausa ou despausa os barramentos de jogo (SFX e Ambiente) durante a pausa,
 ## permitindo que os sons de interface (UI) continuem funcionando normalmente
 func pausar_audio_jogo(pausar: bool) -> void:
-	if pausar == _audio_pausado:
+	if pausar == audio_pausado:
 		return
-	_audio_pausado = pausar
-	_arvore_estava_pausada = pausar
+	audio_pausado = pausar
+	arvore_estava_pausada = pausar
 
 	var idx_sfx: int = AudioServer.get_bus_index("SFX")
 	var idx_amb: int = AudioServer.get_bus_index("Ambiente")
@@ -91,62 +91,62 @@ func pausar_audio_jogo(pausar: bool) -> void:
 		AudioServer.set_bus_mute(idx_amb, pausar)
 
 	# Pausa fluxos dos reprodutores nativos do gerenciador
-	for p in _todos_players:
+	for p in todos_players:
 		if is_instance_valid(p):
 			p.stream_paused = pausar
 
-	if not pausar and _estadio_ativo and is_instance_valid(_player_estadio):
-		if not _player_estadio.playing:
-			_player_estadio.play()
-		if not (_tween_ducking and _tween_ducking.is_valid()):
-			_player_estadio.volume_db = -8.0
+	if not pausar and estadio_ativo and is_instance_valid(player_estadio):
+		if not player_estadio.playing:
+			player_estadio.play()
+		if not (tween_ducking and tween_ducking.is_valid()):
+			player_estadio.volume_db = -8.0
 
 
 # --- MÉTODOS DE CONTROLE DE ÁUDIO DO ESTÁDIO / CORRIDA ---
 
 func tocar_estadio() -> void:
-	_estadio_ativo = true
-	if is_instance_valid(_player_estadio):
-		_player_estadio.volume_db = -8.0
-		_player_estadio.stream_paused = false
-		if not _player_estadio.playing:
-			_player_estadio.play()
+	estadio_ativo = true
+	if is_instance_valid(player_estadio):
+		player_estadio.volume_db = -8.0
+		player_estadio.stream_paused = false
+		if not player_estadio.playing:
+			player_estadio.play()
 
 
 ## Inicia a torcida no grid de largada em volume atenuado (-16 dB) para não abafar o countdown
 func iniciar_estadio_largada() -> void:
 	parar_vaia()
-	_estadio_ativo = true
-	if is_instance_valid(_player_estadio):
-		_player_estadio.volume_db = -16.0
-		_player_estadio.stream_paused = false
-		if not _player_estadio.playing:
-			_player_estadio.play()
+	estadio_ativo = true
+	if is_instance_valid(player_estadio):
+		player_estadio.volume_db = -16.0
+		player_estadio.stream_paused = false
+		if not player_estadio.playing:
+			player_estadio.play()
 
 
 ## Eleva o estádio para o volume habitual de corrida (-8 dB) ao sinal de largada (VAI!)
 func elevar_estadio_corrida() -> void:
-	_estadio_ativo = true
-	if is_instance_valid(_player_estadio):
-		if not _player_estadio.playing:
-			_player_estadio.play()
-		_player_estadio.stream_paused = false
-		if _tween_ducking and _tween_ducking.is_valid():
-			_tween_ducking.kill()
-		_tween_ducking = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_STOP)
-		_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 0.6)\
+	estadio_ativo = true
+	if is_instance_valid(player_estadio):
+		if not player_estadio.playing:
+			player_estadio.play()
+		player_estadio.stream_paused = false
+		if tween_ducking and tween_ducking.is_valid():
+			tween_ducking.kill()
+		tween_ducking = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_STOP)
+		tween_ducking.tween_property(player_estadio, "volume_db", -8.0, 0.6)\
 			.set_trans(Tween.TRANS_SINE)\
 			.set_ease(Tween.EASE_OUT)
 
 
 func parar_estadio() -> void:
-	_estadio_ativo = false
-	if _tween_ducking and _tween_ducking.is_valid():
-		_tween_ducking.kill()
-	if is_instance_valid(_player_estadio):
-		_player_estadio.volume_db = -8.0
-		if _player_estadio.playing:
-			_player_estadio.stop()
+	estadio_ativo = false
+	if tween_ducking and tween_ducking.is_valid():
+		tween_ducking.kill()
+	if is_instance_valid(player_estadio):
+		player_estadio.volume_db = -8.0
+		if player_estadio.playing:
+			player_estadio.stop()
 	parar_torcida_queda()
 	parar_linha_chegada()
 
@@ -167,40 +167,40 @@ func tocar_torcida_queda() -> void:
 
 
 func _executar_torcida_queda() -> void:
-	if is_instance_valid(_player_torcida_queda):
-		_player_torcida_queda.stop()
-		_tocar(_player_torcida_queda)
-		if _audio_pausado:
-			_player_torcida_queda.stream_paused = true
+	if is_instance_valid(player_torcida_queda):
+		player_torcida_queda.stop()
+		_tocar(player_torcida_queda)
+		if audio_pausado:
+			player_torcida_queda.stream_paused = true
 
 	# Ducking dinâmico: atenua momentaneamente o fundo do estádio para dar destaque à reação
-	if is_instance_valid(_player_estadio) and _estadio_ativo:
-		_tocar(_player_estadio)
-		if not _audio_pausado and _player_estadio.stream_paused:
-			_player_estadio.stream_paused = false
+	if is_instance_valid(player_estadio) and estadio_ativo:
+		_tocar(player_estadio)
+		if not audio_pausado and player_estadio.stream_paused:
+			player_estadio.stream_paused = false
 
-		if _tween_ducking and _tween_ducking.is_valid():
-			_tween_ducking.kill()
-		_tween_ducking = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_STOP)
-		_tween_ducking.tween_property(_player_estadio, "volume_db", -14.0, 0.12)
-		_tween_ducking.tween_property(_player_estadio, "volume_db", -8.0, 1.4).set_delay(0.35)
+		if tween_ducking and tween_ducking.is_valid():
+			tween_ducking.kill()
+		tween_ducking = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_STOP)
+		tween_ducking.tween_property(player_estadio, "volume_db", -14.0, 0.12)
+		tween_ducking.tween_property(player_estadio, "volume_db", -8.0, 1.4).set_delay(0.35)
 
 
 func parar_torcida_queda() -> void:
-	_parar(_player_torcida_queda)
+	_parar(player_torcida_queda)
 
 
 func tocar_linha_chegada() -> void:
 	var tempo_atual_ms: int = Time.get_ticks_msec()
-	if (tempo_atual_ms - _ultimo_tempo_chegada_ms) >= COOLDOWN_CHEGADA_MS:
-		_ultimo_tempo_chegada_ms = tempo_atual_ms
-		if is_instance_valid(_player_linha_chegada):
-			_player_linha_chegada.stop()
-			_player_linha_chegada.play()
+	if (tempo_atual_ms - ultimo_tempo_chegada_ms) >= COOLDOWN_CHEGADA_MS:
+		ultimo_tempo_chegada_ms = tempo_atual_ms
+		if is_instance_valid(player_linha_chegada):
+			player_linha_chegada.stop()
+			player_linha_chegada.play()
 
 
 func parar_linha_chegada() -> void:
-	_parar(_player_linha_chegada)
+	_parar(player_linha_chegada)
 
 
 # --- MÉTODOS DE CONTROLE DA TELA DE COLOCAÇÃO / PÓDIO ---
@@ -208,59 +208,59 @@ func parar_linha_chegada() -> void:
 func tocar_podio() -> void:
 	parar_audios_corrida()
 	parar_audios_colocacao()
-	_tocar(_player_podio)
+	_tocar(player_podio)
 
 
 func tocar_quarto_lugar() -> void:
 	parar_audios_corrida()
 	parar_audios_colocacao()
-	_tocar(_player_4_lugar)
+	_tocar(player_4_lugar)
 
 
 func parar_audios_colocacao() -> void:
-	_parar(_player_podio)
-	_parar(_player_4_lugar)
+	_parar(player_podio)
+	_parar(player_4_lugar)
 
 
 # --- MÉTODOS DE CONTROLE DA TELA DE HOSPITAL / GAME OVER ---
 
 func tocar_game_over() -> void:
-	_tocar(_player_game_over)
+	_tocar(player_game_over)
 
 
 func parar_game_over() -> void:
-	_parar(_player_game_over)
+	_parar(player_game_over)
 
 
 func tocar_ambulancia() -> void:
-	_tocar(_player_ambulancia)
+	_tocar(player_ambulancia)
 
 
 func parar_ambulancia() -> void:
-	_parar(_player_ambulancia)
+	_parar(player_ambulancia)
 
 
 # --- MÉTODOS DE CONTROLE DA TELA DE TEMPO ESGOTADO / VAIA ---
 
 func tocar_vaia() -> void:
 	parar_audios_corrida()
-	_vaia_ativa = true
-	if is_instance_valid(_player_vaia) and not _player_vaia.playing:
-		_player_vaia.play()
+	vaia_ativa = true
+	if is_instance_valid(player_vaia) and not player_vaia.playing:
+		player_vaia.play()
 
 
 func parar_vaia() -> void:
-	_vaia_ativa = false
-	if is_instance_valid(_player_vaia) and _player_vaia.playing:
-		_player_vaia.stop()
+	vaia_ativa = false
+	if is_instance_valid(player_vaia) and player_vaia.playing:
+		player_vaia.stop()
 
 
 # --- PARADA GERAL E MÉTODOS AUXILIARES ---
 
 func parar_todos() -> void:
-	_estadio_ativo = false
-	_vaia_ativa = false
-	for p in _todos_players:
+	estadio_ativo = false
+	vaia_ativa = false
+	for p in todos_players:
 		if is_instance_valid(p) and p.playing:
 			p.stop()
 

@@ -11,9 +11,9 @@ extends CanvasLayer
 @onready var moto_vida_2: Sprite2D = get_node_or_null("Control/Vidas/MotoVida2")
 @onready var moto_vida_3: Sprite2D = get_node_or_null("Control/Vidas/MotoVida3")
 
-var _vidas_sprites: Array[Sprite2D] = []
-var _posicoes_originais_y: Dictionary = {}
-var _vidas_ativas: int = 3
+var vidas_sprites: Array[Sprite2D] = []
+var posicoes_originais_y: Dictionary = {}
+var vidas_ativas: int = 3
 
 enum TipoTempo {
 	ATUAL,
@@ -22,10 +22,10 @@ enum TipoTempo {
 
 
 func _ready() -> void:
-	_vidas_sprites = [moto_vida_1, moto_vida_2, moto_vida_3]
-	for sp in _vidas_sprites:
+	vidas_sprites = [moto_vida_1, moto_vida_2, moto_vida_3]
+	for sp in vidas_sprites:
 		if is_instance_valid(sp):
-			_posicoes_originais_y[sp] = sp.position.y
+			posicoes_originais_y[sp] = sp.position.y
 	resetar_vidas()
 
 
@@ -70,25 +70,25 @@ func set_temp_limite(temp: float) -> void:
 
 ## Restaura todas as mini-motos para o estado pleno
 func resetar_vidas() -> void:
-	_vidas_ativas = 3
-	for sp in _vidas_sprites:
+	vidas_ativas = 3
+	for sp in vidas_sprites:
 		if is_instance_valid(sp):
 			sp.visible = true
 			sp.modulate = Color.WHITE
-			if _posicoes_originais_y.has(sp):
-				sp.position.y = _posicoes_originais_y[sp]
+			if posicoes_originais_y.has(sp):
+				sp.position.y = posicoes_originais_y[sp]
 
 
 ## Atualiza as vidas restantes com base na quantidade de acidentes (0, 1, 2, 3)
 func set_quedas(qtd: int) -> void:
 	var vidas_alvo: int = clampi(3 - qtd, 0, 3)
 
-	if vidas_alvo < _vidas_ativas:
-		for v in range(_vidas_ativas - 1, vidas_alvo - 1, -1):
-			if v >= 0 and v < _vidas_sprites.size():
-				_animar_perda_vida(_vidas_sprites[v])
-		_vidas_ativas = vidas_alvo
-	elif vidas_alvo > _vidas_ativas:
+	if vidas_alvo < vidas_ativas:
+		for v in range(vidas_ativas - 1, vidas_alvo - 1, -1):
+			if v >= 0 and v < vidas_sprites.size():
+				_animar_perda_vida(vidas_sprites[v])
+		vidas_ativas = vidas_alvo
+	elif vidas_alvo > vidas_ativas:
 		resetar_vidas()
 
 

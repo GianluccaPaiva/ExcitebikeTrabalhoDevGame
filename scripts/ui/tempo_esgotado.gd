@@ -23,7 +23,7 @@ static func formatar_tempo(tempo: float) -> String:
 @onready var fumaca_sprite: ColorRect = $Cenario/FumacaMotor
 @onready var luz_alerta: PointLight2D = get_node_or_null("Cenario/LuzAlerta")
 
-var _tempo_anim: float = 0.0
+var tempo_anim: float = 0.0
 
 
 func _ready() -> void:
@@ -47,12 +47,12 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
-	_tempo_anim += delta
-	
+	tempo_anim += delta
+
 	# Efeito de fumaça saindo do escapamento
 	if fumaca_sprite:
-		fumaca_sprite.position.y = 150.0 - fmod(_tempo_anim * 18.0, 14.0)
-		fumaca_sprite.modulate.a = maxf(0.0, 0.8 - (fmod(_tempo_anim * 18.0, 14.0) / 14.0))
+		fumaca_sprite.position.y = 150.0 - fmod(tempo_anim * 18.0, 14.0)
+		fumaca_sprite.modulate.a = maxf(0.0, 0.8 - (fmod(tempo_anim * 18.0, 14.0) / 14.0))
 
 
 func _iniciar_animacao_alerta() -> void:

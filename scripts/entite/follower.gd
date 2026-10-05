@@ -36,13 +36,13 @@ var percurso_finalizado: bool = false
 var em_desaceleracao: bool = false
 var tempo_efeito_restante: float = 0.0
 
-var _posicao_anterior: Vector2 = Vector2.ZERO
-var _pulos_de_quadro_ativo: int = 0
-var _contador_quadros: int = 0
-var _delta_acumulado: float = 0.0
+var posicao_anterior: Vector2 = Vector2.ZERO
+var pulos_de_quadro_ativo: int = 0
+var contador_quadros: int = 0
+var delta_acumulado: float = 0.0
 
-@onready var _sprite_cache: Sprite2D = get_node_or_null("Enemy/Sprite2D")
-@onready var _animacao_cache: AnimationPlayer = get_node_or_null("Enemy/AnimationPlayer")
+@onready var sprite_cache: Sprite2D = get_node_or_null("Enemy/Sprite2D")
+@onready var animacao_cache: AnimationPlayer = get_node_or_null("Enemy/AnimationPlayer")
 
 
 func _ready() -> void:
@@ -60,7 +60,7 @@ func _ready() -> void:
 	if initial_progress > 0.0 and progress == 0.0:
 		progress = initial_progress
 
-	_posicao_anterior = global_position
+	posicao_anterior = global_position
 
 	# Se a corrida ainda não começou, pausa a animação das rodas no grid
 	if not corrida_iniciada:
@@ -72,7 +72,7 @@ func _ready() -> void:
 func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
 	velocidade_atual = velocidade_base * fator
 	tempo_efeito_restante = duracao
-	_pulos_de_quadro_ativo = saltos_de_frame
+	pulos_de_quadro_ativo = saltos_de_frame
 
 
 ## Movimento físico executado em taxa fixa de quadros (60Hz)
@@ -86,7 +86,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	if not corrida_iniciada:
-		_posicao_anterior = global_position
+		posicao_anterior = global_position
 		rotation = 0.0
 		return
 
@@ -109,7 +109,7 @@ func _physics_process(delta: float) -> void:
 			if anim and anim.is_playing() and anim.current_animation != "RESET":
 				anim.pause()
 			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * delta)
-			_posicao_anterior = global_position
+			posicao_anterior = global_position
 			if not percurso_finalizado:
 				percurso_finalizado = true
 				percurso_concluido.emit(self)
@@ -117,21 +117,21 @@ func _physics_process(delta: float) -> void:
 	else:
 		if tempo_efeito_restante <= 0.0:
 			velocidade_atual = move_toward(velocidade_atual, velocidade_base, 120.0 * delta)
-			_pulos_de_quadro_ativo = 0
+			pulos_de_quadro_ativo = 0
 
 	# Lógica visual de frame skip na lama
 	var passo_delta: float = delta
-	if _pulos_de_quadro_ativo > 0 and tempo_efeito_restante > 0.0:
-		_delta_acumulado += delta
-		_contador_quadros += 1
-		if _contador_quadros <= _pulos_de_quadro_ativo:
+	if pulos_de_quadro_ativo > 0 and tempo_efeito_restante > 0.0:
+		delta_acumulado += delta
+		contador_quadros += 1
+		if contador_quadros <= pulos_de_quadro_ativo:
 			return
-		passo_delta = _delta_acumulado
-		_delta_acumulado = 0.0
-		_contador_quadros = 0
+		passo_delta = delta_acumulado
+		delta_acumulado = 0.0
+		contador_quadros = 0
 	else:
-		_delta_acumulado = 0.0
-		_contador_quadros = 0
+		delta_acumulado = 0.0
+		contador_quadros = 0
 
 	# Checa se atingiu o fim da curva da trilha
 	if get_parent() is Path2D and get_parent().curve:
@@ -141,7 +141,7 @@ func _physics_process(delta: float) -> void:
 			if anim and anim.is_playing() and anim.current_animation != "RESET":
 				anim.pause()
 			rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
-			_posicao_anterior = global_position
+			posicao_anterior = global_position
 			if not percurso_finalizado:
 				percurso_finalizado = true
 				percurso_concluido.emit(self)
@@ -149,7 +149,7 @@ func _physics_process(delta: float) -> void:
 
 	progress += velocidade_atual * passo_delta
 
-	var deslocamento: Vector2 = global_position - _posicao_anterior
+	var deslocamento: Vector2 = global_position - posicao_anterior
 	if deslocamento.length_squared() > 0.0001:
 		if deslocamento.x > 0.001:
 			var angulo_alvo: float = deslocamento.angle()
@@ -160,7 +160,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		rotation = lerp_angle(rotation, 0.0, rotation_smoothing_speed * passo_delta)
 
-	_posicao_anterior = global_position
+	posicao_anterior = global_position
 
 
 func _aplicar_textura() -> void:
@@ -186,27 +186,27 @@ func _aplicar_modulate() -> void:
 
 
 func _obter_sprite() -> Sprite2D:
-	if is_instance_valid(_sprite_cache):
-		return _sprite_cache
-	_sprite_cache = get_node_or_null("Enemy/Sprite2D")
-	if not _sprite_cache:
-		_sprite_cache = find_child("Sprite2D", true, false) as Sprite2D
-	return _sprite_cache
+	if is_instance_valid(sprite_cache):
+		return sprite_cache
+	sprite_cache = get_node_or_null("Enemy/Sprite2D")
+	if not sprite_cache:
+		sprite_cache = find_child("Sprite2D", true, false) as Sprite2D
+	return sprite_cache
 
 
 func _obter_animation_player() -> AnimationPlayer:
-	if is_instance_valid(_animacao_cache):
-		return _animacao_cache
-	_animacao_cache = get_node_or_null("Enemy/AnimationPlayer")
-	if not _animacao_cache:
-		_animacao_cache = find_child("AnimationPlayer", true, false) as AnimationPlayer
-	return _animacao_cache
+	if is_instance_valid(animacao_cache):
+		return animacao_cache
+	animacao_cache = get_node_or_null("Enemy/AnimationPlayer")
+	if not animacao_cache:
+		animacao_cache = find_child("AnimationPlayer", true, false) as AnimationPlayer
+	return animacao_cache
 
 
 ## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
 func iniciar_corrida() -> void:
 	corrida_iniciada = true
-	_posicao_anterior = global_position
+	posicao_anterior = global_position
 	var anim: AnimationPlayer = _obter_animation_player()
 	if anim:
 		anim.play("andar")

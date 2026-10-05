@@ -17,11 +17,11 @@ extends Control
 
 @export var lista_png_falcao: Array[Texture2D] = []
 
-var _tempo_anim: float = 0.0
-var _doc_base_y: float = 0.0
-var _tigreso_base_y: float = 0.0
-var _player_base_pos: Vector2 = Vector2.ZERO
-var _player_base_rot: float = 0.0
+var tempo_anim: float = 0.0
+var doc_base_y: float = 0.0
+var tigreso_base_y: float = 0.0
+var player_base_pos: Vector2 = Vector2.ZERO
+var player_base_rot: float = 0.0
 
 
 func _aleatoriza_falcao() -> void:
@@ -31,12 +31,12 @@ func _aleatoriza_falcao() -> void:
 
 func _ready() -> void:
 	if doc_girl:
-		_doc_base_y = doc_girl.position.y
+		doc_base_y = doc_girl.position.y
 	if tigreso:
-		_tigreso_base_y = tigreso.position.y
+		tigreso_base_y = tigreso.position.y
 	if player_sprite:
-		_player_base_pos = player_sprite.position
-		_player_base_rot = player_sprite.rotation_degrees
+		player_base_pos = player_sprite.position
+		player_base_rot = player_sprite.rotation_degrees
 
 	AudioManager.parar_audios_corrida()
 
@@ -55,16 +55,16 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_tempo_anim += delta
+	tempo_anim += delta
 	# Respiração sutil dos médicos
 	if doc_girl:
-		doc_girl.position.y = _doc_base_y + sin(_tempo_anim * 2.5) * 1.0
+		doc_girl.position.y = doc_base_y + sin(tempo_anim * 2.5) * 1.0
 	if tigreso:
-		tigreso.position.y = _tigreso_base_y + cos(_tempo_anim * 2.0) * 0.8
+		tigreso.position.y = tigreso_base_y + cos(tempo_anim * 2.0) * 0.8
 	# Tremedeira leve do paciente preservando a posição exata
 	if player_sprite:
-		player_sprite.position.x = _player_base_pos.x + (randf() - 0.5) * 0.5
-		player_sprite.position.y = _player_base_pos.y
+		player_sprite.position.x = player_base_pos.x + (randf() - 0.5) * 0.5
+		player_sprite.position.y = player_base_pos.y
 
 
 func _executar_dialogo() -> void:
@@ -91,9 +91,9 @@ func _executar_dialogo() -> void:
 	# Efeito de tremor dramático no paciente
 	if player_sprite:
 		var tween_p: Tween = create_tween()
-		tween_p.tween_property(player_sprite, "rotation_degrees", _player_base_rot + 4.0, 0.08)
-		tween_p.tween_property(player_sprite, "rotation_degrees", _player_base_rot - 4.0, 0.08)
-		tween_p.tween_property(player_sprite, "rotation_degrees", _player_base_rot, 0.08)
+		tween_p.tween_property(player_sprite, "rotation_degrees", player_base_rot + 4.0, 0.08)
+		tween_p.tween_property(player_sprite, "rotation_degrees", player_base_rot - 4.0, 0.08)
+		tween_p.tween_property(player_sprite, "rotation_degrees", player_base_rot, 0.08)
 
 
 ## Botão Reiniciar: recarrega a fase principal
