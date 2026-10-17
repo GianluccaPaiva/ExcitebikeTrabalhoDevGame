@@ -2,8 +2,10 @@
 class_name Follower
 extends PathFollow2D
 
+# --- SINAIS DO SEGUIDOR ---
 signal percurso_concluido(bot: Node2D)
 
+# --- PARAMETROS CONFIGURAVEIS ---
 @export var speed: float = 140.0:
 	set(val):
 		speed = val
@@ -29,7 +31,7 @@ signal percurso_concluido(bot: Node2D)
 @export var corrida_iniciada: bool = false
 @export var taxa_desaceleracao: float = 215.0
 
-# Variáveis em PT-BR
+# --- ESTADO DO PERCURSO ---
 var velocidade_base: float = 140.0
 var velocidade_atual: float = -1.0
 var percurso_finalizado: bool = false
@@ -41,13 +43,15 @@ var pulos_de_quadro_ativo: int = 0
 var contador_quadros: int = 0
 var delta_acumulado: float = 0.0
 
+# --- REFERENCIAS A NODES ---
 @onready var sprite_cache: Sprite2D = get_node_or_null("Enemy/Sprite2D")
 @onready var animacao_cache: AnimationPlayer = get_node_or_null("Enemy/AnimationPlayer")
 
 
+# --- INICIALIZACAO E MOVIMENTO NO TRILHO ---
 func _ready() -> void:
 	velocidade_base = speed
-	rotates = false # Impede que a engine rotacione o seguidor automaticamente
+	rotates = false
 	loop = false
 	rotation = 0.0
 	_aplicar_textura()
@@ -62,13 +66,12 @@ func _ready() -> void:
 
 	posicao_anterior = global_position
 
-	# Se a corrida ainda não começou, pausa a animação das rodas no grid
 	if not corrida_iniciada:
 		var anim: AnimationPlayer = _obter_animation_player()
 		if anim:
 			anim.pause()
 
-## Movimento físico executado em taxa fixa de quadros (60Hz)
+
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		_aplicar_textura()
@@ -86,11 +89,9 @@ func _physics_process(delta: float) -> void:
 	if velocidade_atual < 0.0:
 		velocidade_atual = velocidade_base
 
-	# Temporizador do efeito da pista (boost ou lama)
 	if tempo_efeito_restante > 0.0 and not em_desaceleracao:
 		tempo_efeito_restante -= delta
 
-	# Ponto pós-chegada para desaceleração
 	if global_position.x >= 17640.0:
 		em_desaceleracao = true
 
@@ -104,7 +105,6 @@ func _physics_process(delta: float) -> void:
 			velocidade_atual = move_toward(velocidade_atual, velocidade_base, 120.0 * delta)
 			pulos_de_quadro_ativo = 0
 
-	# Lógica visual de frame skip na lama
 	var passo_delta: float = delta
 	if pulos_de_quadro_ativo > 0 and tempo_efeito_restante > 0.0:
 		delta_acumulado += delta
@@ -118,7 +118,6 @@ func _physics_process(delta: float) -> void:
 		delta_acumulado = 0.0
 		contador_quadros = 0
 
-	# Checa se atingiu o fim da curva da trilha
 	if get_parent() is Path2D and get_parent().curve:
 		var comprimento_total: float = get_parent().curve.get_baked_length()
 		if progress >= comprimento_total - 2.0:
@@ -141,11 +140,7 @@ func _physics_process(delta: float) -> void:
 	posicao_anterior = global_position
 
 
-# ==============================================================================
-# --- API PÚBLICA (CONTROLE DE CORRIDA E EFEITOS) ---
-# ==============================================================================
-
-## Chamado pelo CountdownUI ao exibir "VAI!" para iniciar a corrida
+# --- CONTROLE EXTERNO DO BOT ---
 func iniciar_corrida() -> void:
 	corrida_iniciada = true
 	posicao_anterior = global_position
@@ -154,28 +149,21 @@ func iniciar_corrida() -> void:
 		anim.play("andar")
 
 
-## Aplica boost ou desaceleração ao passar por sensores de pista
 func aplicar_efeito_pista(fator: float, duracao: float, saltos_de_frame: int = 0) -> void:
 	velocidade_atual = velocidade_base * fator
 	tempo_efeito_restante = duracao
 	pulos_de_quadro_ativo = saltos_de_frame
 
 
-## Inicia a desaceleração do bot ao atingir a reta pós-chegada
 func iniciar_desaceleracao_automatica(_x_alvo: float = 0.0) -> void:
 	em_desaceleracao = true
 
 
-## Retorna se o bot concluiu todo o percurso da trilha
 func is_percurso_finalizado() -> bool:
 	return percurso_finalizado
 
 
-# ==============================================================================
-# --- MÉTODOS AUXILIARES E VISUAIS ---
-# ==============================================================================
-
-## Congela movimento, alinha rotação e emite sinal de conclusão de percurso
+# --- FINALIZACAO DO PERCURSO ---
 func _parar_e_finalizar_percurso(delta_rotacao: float) -> void:
 	velocidade_atual = 0.0
 	var anim: AnimationPlayer = _obter_animation_player()
@@ -188,6 +176,7 @@ func _parar_e_finalizar_percurso(delta_rotacao: float) -> void:
 		percurso_concluido.emit(self)
 
 
+# --- SPRITE E ANIMACAO ---
 func _aplicar_textura() -> void:
 	var sprite: Sprite2D = _obter_sprite()
 	if sprite:

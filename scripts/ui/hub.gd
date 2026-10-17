@@ -1,8 +1,13 @@
 class_name Hub
 extends CanvasLayer
 
-## Hub / HUD do Player com telemetria e contador visual de vidas (mini-motos)
+# --- ENUMS DO HUD ---
+enum TipoTempo {
+	ATUAL,
+	LIMITE
+}
 
+# --- REFERENCIAS A NODES ---
 @onready var temp_atual: Label = $Control/TempAtual
 @onready var km_h: Label = $Control/KmH
 @onready var temp_limite: Label = $Control/TempLimite
@@ -11,16 +16,12 @@ extends CanvasLayer
 @onready var moto_vida_2: Sprite2D = get_node_or_null("Control/Vidas/MotoVida2")
 @onready var moto_vida_3: Sprite2D = get_node_or_null("Control/Vidas/MotoVida3")
 
+# --- ESTADO DO HUD ---
 var vidas_sprites: Array[Sprite2D] = []
 var posicoes_originais_y: Dictionary = {}
 var vidas_ativas: int = 3
 
-enum TipoTempo {
-	ATUAL,
-	LIMITE
-}
-
-
+# --- INICIALIZACAO ---
 func _ready() -> void:
 	vidas_sprites = [moto_vida_1, moto_vida_2, moto_vida_3]
 	for sp in vidas_sprites:
@@ -28,8 +29,7 @@ func _ready() -> void:
 			posicoes_originais_y[sp] = sp.position.y
 	resetar_vidas()
 
-
-## Formata tempo em segundos para o padrão MM:SS:CC
+# --- CRONOMETRO MM:SS:CC ---
 static func formatar_tempo(tempo: float) -> String:
 	var minutos: int = int(tempo / 60.0)
 	var segundos: int = int(fmod(tempo, 60.0))
@@ -37,7 +37,6 @@ static func formatar_tempo(tempo: float) -> String:
 	return "%02d:%02d:%02d" % [minutos, segundos, centesimos]
 
 
-## Formata e aplica o tempo em MM:SS:CC no display correspondente
 func _set_timer(tempo: float, tipo: TipoTempo) -> void:
 	var tempo_formatado: String = formatar_tempo(tempo)
 	match tipo:
@@ -49,17 +48,18 @@ func _set_timer(tempo: float, tipo: TipoTempo) -> void:
 				temp_limite.text = tempo_formatado
 
 
-## Atualiza o tempo atual no HUD
 func set_temp_atual(tempo: float) -> void:
 	_set_timer(tempo, TipoTempo.ATUAL)
 
 
-## Alias retrocompatível
 func set_timer_atual(tempo: float) -> void:
 	set_temp_atual(tempo)
 
 
-## Atualiza a exibição de velocidade em km/h
+func set_temp_limite(temp: float) -> void:
+	_set_timer(temp, TipoTempo.LIMITE)
+
+# --- VELOCIMETRO ---
 func set_km_h(km: Variant) -> void:
 	if km_h:
 		if km is float or km is int:
@@ -67,13 +67,7 @@ func set_km_h(km: Variant) -> void:
 		else:
 			km_h.text = str(km)
 
-
-## Atualiza o tempo limite no HUD
-func set_temp_limite(temp: float) -> void:
-	_set_timer(temp, TipoTempo.LIMITE)
-
-
-## Restaura todas as mini-motos para o estado pleno
+# --- VIDAS E EXPRESSOES ---
 func resetar_vidas() -> void:
 	vidas_ativas = 3
 	for sp in vidas_sprites:
@@ -84,7 +78,6 @@ func resetar_vidas() -> void:
 				sp.position.y = posicoes_originais_y[sp]
 
 
-## Atualiza as vidas restantes com base na quantidade de acidentes (0, 1, 2, 3)
 func set_quedas(qtd: int) -> void:
 	var vidas_alvo: int = clampi(3 - qtd, 0, 3)
 
@@ -97,7 +90,10 @@ func set_quedas(qtd: int) -> void:
 		resetar_vidas()
 
 
-## Anima a perda de uma mini-moto com alerta e fade-out
+func set_acidentes(qtd: int) -> void:
+	set_quedas(qtd)
+
+
 func _animar_perda_vida(sp: Sprite2D) -> void:
 	if not is_instance_valid(sp):
 		return
@@ -110,8 +106,3 @@ func _animar_perda_vida(sp: Sprite2D) -> void:
 	var tween_sumir: Tween = create_tween().set_parallel(true)
 	tween_sumir.tween_property(sp, "modulate:a", 0.0, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween_sumir.tween_property(sp, "position:y", sp.position.y - 3.0, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-
-
-## Alias para compatibilidade
-func set_acidentes(qtd: int) -> void:
-	set_quedas(qtd)

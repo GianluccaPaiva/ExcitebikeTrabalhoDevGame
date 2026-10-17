@@ -1,9 +1,6 @@
 extends Node
 
-## Gerenciador global de áudio (Singleton / Autoload)
-## Centraliza a reprodução de trilhas, ambientes e efeitos sonoros globais (one-shots),
-## utilizando barramentos nativos de áudio (Audio Buses) para controle limpo e eficiente de pausa.
-
+# --- CONSTANTES DE AUDIO E COOLDOWNS ---
 const STREAM_ESTADIO: AudioStream = preload("res://assets/sounds/somEstadio.mp3")
 const STREAM_LINHA_CHEGADA: AudioStream = preload("res://assets/sounds/somLinhaChegada.mp3")
 const STREAM_PODIO: AudioStream = preload("res://assets/sounds/podio.mp3")
@@ -12,8 +9,9 @@ const STREAM_GAME_OVER: AudioStream = preload("res://assets/sounds/somGameOver.m
 const STREAM_AMBULANCIA: AudioStream = preload("res://assets/sounds/Ambulance.mp3")
 const STREAM_TORCIDA_QUEDA: AudioStream = preload("res://assets/sounds/somTorcidaQueda.wav")
 const STREAM_VAIA: AudioStream = preload("res://assets/sounds/somVaia.mp3")
+const COOLDOWN_CHEGADA_MS: int = 1500
 
-# Nós de reprodução dedicados
+# --- PLAYERS DE AUDIO ---
 var player_estadio: AudioStreamPlayer
 var player_linha_chegada: AudioStreamPlayer
 var player_podio: AudioStreamPlayer
@@ -22,23 +20,19 @@ var player_game_over: AudioStreamPlayer
 var player_ambulancia: AudioStreamPlayer
 var player_torcida_queda: AudioStreamPlayer
 var player_vaia: AudioStreamPlayer
+var todos_players: Array[AudioStreamPlayer] = []
 
+# --- ESTADO DE REPRODUCAO ---
 var tween_ducking: Tween = null
 var estadio_ativo: bool = false
 var vaia_ativa: bool = false
 var audio_pausado: bool = false
 var arvore_estava_pausada: bool = false
-
-# Lista de todos os reprodutores nativos para operações em lote
-var todos_players: Array[AudioStreamPlayer] = []
-
-# Controle de cooldown do som da linha de chegada
 var ultimo_tempo_chegada_ms: int = -999999
-const COOLDOWN_CHEGADA_MS: int = 1500
 
 
+# --- INICIALIZACAO E LOOP DE PROCESSAMENTO ---
 func _ready() -> void:
-	# Garante que o AudioManager receba notificações de pausa mesmo com a árvore pausada
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	arvore_estava_pausada = get_tree().paused
 	audio_pausado = arvore_estava_pausada
@@ -75,8 +69,7 @@ func _process(_delta: float) -> void:
 		pausar_audio_jogo(arvore_pausada)
 
 
-## Pausa ou despausa os barramentos de jogo (SFX e Ambiente) durante a pausa,
-## permitindo que os sons de interface (UI) continuem funcionando normalmente
+# --- PAUSA E RETOMADA DO AUDIO ---
 func pausar_audio_jogo(pausar: bool) -> void:
 	if pausar == audio_pausado:
 		return
@@ -90,7 +83,6 @@ func pausar_audio_jogo(pausar: bool) -> void:
 	if idx_amb >= 0:
 		AudioServer.set_bus_mute(idx_amb, pausar)
 
-	# Pausa fluxos dos reprodutores nativos do gerenciador
 	for p in todos_players:
 		if is_instance_valid(p):
 			p.stream_paused = pausar
@@ -102,8 +94,7 @@ func pausar_audio_jogo(pausar: bool) -> void:
 			player_estadio.volume_db = -8.0
 
 
-# --- MÉTODOS DE CONTROLE DE ÁUDIO DO ESTÁDIO / CORRIDA ---
-
+# --- MUSICA E AMBIENTE DO ESTADIO NA CORRIDA ---
 func tocar_estadio() -> void:
 	estadio_ativo = true
 	if is_instance_valid(player_estadio):
@@ -113,7 +104,6 @@ func tocar_estadio() -> void:
 			player_estadio.play()
 
 
-## Inicia a torcida no grid de largada em volume atenuado (-16 dB) para não abafar o countdown
 func iniciar_estadio_largada() -> void:
 	parar_vaia()
 	estadio_ativo = true
@@ -124,7 +114,6 @@ func iniciar_estadio_largada() -> void:
 			player_estadio.play()
 
 
-## Eleva o estádio para o volume habitual de corrida (-8 dB) ao sinal de largada (VAI!)
 func elevar_estadio_corrida() -> void:
 	estadio_ativo = true
 	if is_instance_valid(player_estadio):
@@ -151,7 +140,6 @@ func parar_estadio() -> void:
 	parar_linha_chegada()
 
 
-## Interrompe todos os sons relacionados ao percurso e torcida da corrida
 func parar_audios_corrida() -> void:
 	parar_estadio()
 	parar_torcida_queda()
@@ -159,9 +147,8 @@ func parar_audios_corrida() -> void:
 	parar_vaia()
 
 
+# --- REACAO DA TORCIDA NA QUEDA ---
 func tocar_torcida_queda() -> void:
-	# Micro-atraso de reação da torcida (110ms) para que o impacto da queda no chão
-	# soe com total presença e clareza no primeiro plano antes do susto do público
 	await get_tree().create_timer(0.11, false).timeout
 	_executar_torcida_queda()
 
@@ -173,7 +160,6 @@ func _executar_torcida_queda() -> void:
 		if audio_pausado:
 			player_torcida_queda.stream_paused = true
 
-	# Ducking dinâmico: atenua momentaneamente o fundo do estádio para dar destaque à reação
 	if is_instance_valid(player_estadio) and estadio_ativo:
 		_tocar(player_estadio)
 		if not audio_pausado and player_estadio.stream_paused:
@@ -190,6 +176,7 @@ func parar_torcida_queda() -> void:
 	_parar(player_torcida_queda)
 
 
+# --- SOM DA LINHA DE CHEGADA ---
 func tocar_linha_chegada() -> void:
 	var tempo_atual_ms: int = Time.get_ticks_msec()
 	if (tempo_atual_ms - ultimo_tempo_chegada_ms) >= COOLDOWN_CHEGADA_MS:
@@ -203,8 +190,7 @@ func parar_linha_chegada() -> void:
 	_parar(player_linha_chegada)
 
 
-# --- MÉTODOS DE CONTROLE DA TELA DE COLOCAÇÃO / PÓDIO ---
-
+# --- MUSICA DE COLOCACAO E PODIO ---
 func tocar_podio() -> void:
 	parar_audios_corrida()
 	parar_audios_colocacao()
@@ -222,8 +208,7 @@ func parar_audios_colocacao() -> void:
 	_parar(player_4_lugar)
 
 
-# --- MÉTODOS DE CONTROLE DA TELA DE HOSPITAL / GAME OVER ---
-
+# --- AUDIO DE HOSPITAL E GAME OVER ---
 func tocar_game_over() -> void:
 	_tocar(player_game_over)
 
@@ -240,8 +225,7 @@ func parar_ambulancia() -> void:
 	_parar(player_ambulancia)
 
 
-# --- MÉTODOS DE CONTROLE DA TELA DE TEMPO ESGOTADO / VAIA ---
-
+# --- VAIA DA TORCIDA ---
 func tocar_vaia() -> void:
 	parar_audios_corrida()
 	vaia_ativa = true
@@ -255,8 +239,7 @@ func parar_vaia() -> void:
 		player_vaia.stop()
 
 
-# --- PARADA GERAL E MÉTODOS AUXILIARES ---
-
+# --- PARAR TODOS OS SONS E FUNCOES AUXILIARES ---
 func parar_todos() -> void:
 	estadio_ativo = false
 	vaia_ativa = false

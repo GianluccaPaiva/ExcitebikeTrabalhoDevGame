@@ -1,22 +1,20 @@
 class_name Player
 extends CharacterBody2D
 
-## Entidade principal do Jogador
-## Controla aceleração, física de solo e rampa, rotação angular procedural em voo
-## e transições reativas de estado com temporizadores nativos.
-
+# --- ENUMS DE ESTADO ---
 enum Estado {
 	NO_CHAO,
 	NO_AR,
 	ACIDENTE
 }
 
+# --- SINAIS DO PLAYER ---
 signal hospital
 signal desaceleracao_concluida
 signal manobra_sucesso(quantidade_giros: int)
 signal queda_ocorreu(quantidade: int)
 
-# --- CONSTANTES DE FÍSICA E MANOBRA (PT-BR) ---
+# --- CONSTANTES DE FISICA ---
 const PX_PARA_KMH: float = 0.36
 const ANGULO_PLANEIO_MIN: float = -0.62
 const ANGULO_PLANEIO_MAX: float = -0.12
@@ -25,7 +23,7 @@ const FATOR_PLANEIO: float = 0.85
 const FATOR_MERGULHO: float = 1.15
 const TEMPO_MINIMO_MANOBRA: float = 0.4
 
-# --- CONFIGURAÇÕES DE FÍSICA (Ajustáveis no Inspetor) ---
+# --- PARAMETROS CONFIGURAVEIS ---
 @export_group("Movimento no Solo")
 @export var max_speed: float = 260.0
 @export var acceleration: float = 200.0
@@ -35,7 +33,7 @@ const TEMPO_MINIMO_MANOBRA: float = 0.4
 @export_group("Física Aérea e Flips")
 @export var gravity: float = 580.0
 @export var max_fall_speed: float = 480.0
-@export var air_rotation_speed: float = 12.5 # ~716 graus/s
+@export var air_rotation_speed: float = 12.5
 @export var ramp_inertia_multiplier: float = 1.18
 
 @export_group("Pouso e Acidente")
@@ -44,7 +42,7 @@ const TEMPO_MINIMO_MANOBRA: float = 0.4
 @export var crash_duration: float = 1.6
 @export var limite_acidentes_hospital: int = 3
 
-# --- REFERÊNCIAS DE NÓS ---
+# --- REFERENCIAS A NODES ---
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var moto_caida_sprite: Sprite2D = $MotoCaidaSprite
@@ -54,7 +52,7 @@ const TEMPO_MINIMO_MANOBRA: float = 0.4
 @onready var temporizador_queda: Timer = $CrashTimer
 @onready var temporizador_efeito: Timer = $EfeitoTimer
 
-# --- VARIÁVEIS DE CONTROLE E ESTADO ---
+# --- ESTADO DO PLAYER ---
 @export var controles_bloqueados: bool = true
 var estado: Estado = Estado.NO_CHAO
 var estava_no_chao: bool = true
@@ -70,7 +68,7 @@ var velocidade_maxima_base: float = 0.0
 var rotacao_inicio_salto: float = 0.0
 var tempo_no_ar: float = 0.0
 
-# Aliases para retrocompatibilidade
+# --- ATALHOS E VARIAVEIS DERIVADAS ---
 var current_speed: float:
 	get: return velocidade_atual
 	set(v): velocidade_atual = v
@@ -84,6 +82,7 @@ var state: Estado:
 	set(v): estado = v
 
 
+# --- INICIALIZACAO E LOOP DE FISICA ---
 func _ready() -> void:
 	floor_snap_length = 8.0
 	velocidade_maxima_base = max_speed
@@ -105,7 +104,6 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Enquanto a contagem regressiva estiver rodando, mantém estático no grid
 	if controles_bloqueados and not em_desaceleracao_automatica:
 		velocity = Vector2.ZERO
 		velocidade_atual = 0.0
@@ -134,20 +132,14 @@ func _physics_process(delta: float) -> void:
 		player_audio.atualizar_motor(Input.is_action_pressed("acelerar"), velocidade_atual, max_speed, impedido)
 
 
-# ==============================================================================
-# --- PROCESSADORES DE ESTADO FÍSICO ---
-# ==============================================================================
-
-## Estado: NO CHÃO (Deslocamento vetorial alinhado ao relevo)
+# --- MOVIMENTO E CONTROLE NO CHAO ---
 func _processar_chao(delta: float) -> void:
 	var geom: Dictionary = _calcular_geometria_solo()
 	var angulo_solo: float = geom.angulo
 	var direcao_solo: Vector2 = geom.direcao
 
-	# Inviolabilidade: rotação puramente vetorial/procedural
 	rotation = angulo_solo
 
-	# Aceleração, freio e atrito
 	if em_desaceleracao_automatica:
 		velocidade_atual = move_toward(velocidade_atual, 0.0, taxa_freio_automatico * delta)
 		if limite_x_parada > 0.0 and global_position.x >= (limite_x_parada - 25.0):
@@ -173,10 +165,8 @@ func _processar_chao(delta: float) -> void:
 	else:
 		velocidade_atual = move_toward(velocidade_atual, 0.0, friction * delta)
 
-	# Vetor segue integralmente a tangente da rampa/chão
 	velocity = direcao_solo * velocidade_atual
 
-	# Registra inércia de subida de rampa
 	if direcao_solo.y < -0.08:
 		ultimo_vetor_rampa = direcao_solo
 		ultima_velocidade_rampa = velocidade_atual
@@ -187,15 +177,37 @@ func _processar_chao(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	# Animações de corrida
 	_atualizar_animacao_movimento()
 
 
-## Estado: NO AR (Manobras, flips e rotação procedural)
+func _calcular_geometria_solo() -> Dictionary:
+	var normal_piso: Vector2 = get_floor_normal()
+	if normal_piso.length_squared() < 0.01:
+		normal_piso = up_direction
+	var angulo: float = normal_piso.angle() + (PI / 2.0)
+	return {
+		"angulo": angulo,
+		"direcao": Vector2.RIGHT.rotated(angulo)
+	}
+
+
+func _atualizar_animacao_movimento() -> void:
+	if not animation_player:
+		return
+	if velocidade_atual > 5.0:
+		if animation_player.current_animation != "andar":
+			animation_player.play("andar")
+		animation_player.speed_scale = clampf(velocidade_atual / max_speed, 0.3, 1.3)
+	else:
+		if animation_player.current_animation != "parado":
+			animation_player.play("parado")
+		animation_player.speed_scale = 1.0
+
+
+# --- FISICA E ROTACAO NO AR ---
 func _processar_ar(delta: float) -> void:
 	tempo_no_ar += delta
 
-	# Efeito aerodinâmico por inclinação
 	var gravidade_efetiva: float = gravity
 	if rotation < ANGULO_PLANEIO_MAX and rotation > ANGULO_PLANEIO_MIN:
 		gravidade_efetiva = gravity * FATOR_PLANEIO
@@ -212,7 +224,6 @@ func _processar_ar(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, (taxa_freio_automatico * 0.5) * delta)
 		velocidade_atual = move_toward(velocidade_atual, 0.0, (taxa_freio_automatico * 0.5) * delta)
 
-	# Input de rotação procedural (W / S)
 	var input_rotacao: float = 0.0
 	if not em_desaceleracao_automatica:
 		if Input.is_action_pressed("inclinar_tras"):
@@ -226,7 +237,7 @@ func _processar_ar(delta: float) -> void:
 		animation_player.pause()
 
 
-## Estado: ACIDENTE (Crash)
+# --- ESTADO DE ACIDENTE ---
 func _processar_acidente(delta: float) -> void:
 	velocidade_atual = 0.0
 	velocity.x = 0.0
@@ -237,10 +248,7 @@ func _processar_acidente(delta: float) -> void:
 		velocity.y = 0.0
 
 
-# ==============================================================================
-# --- TRANSIÇÕES DE PISO E MECÂNICAS DE SALTO / POUSO ---
-# ==============================================================================
-
+# --- TRANSICOES ENTRE CHAO E AR ---
 func _verificar_transicoes_piso() -> void:
 	var no_piso_agora: bool = is_on_floor()
 
@@ -278,7 +286,6 @@ func _processar_aterrissagem() -> void:
 	var limite_seguro_rad: float = deg_to_rad(limite_seguro_graus)
 
 	if diferenca_absoluta <= limite_seguro_rad:
-		# Pouso seguro com bônus de manobra (360° / acrobacia)
 		if tempo_no_ar >= TEMPO_MINIMO_MANOBRA:
 			manobra_sucesso.emit(1)
 
@@ -353,21 +360,15 @@ func _mudar_estado(novo_estado: Estado) -> void:
 		temporizador_salto_rampa = 0.0
 
 
-# ==============================================================================
-# --- API PÚBLICA (CONTROLE DE CORRIDA E EFEITOS) ---
-# ==============================================================================
-
-## Chamado para liberar os controles no sinal "VAI!"
+# --- API PUBLICA DE CONTROLE ---
 func liberar_controles() -> void:
 	controles_bloqueados = false
 
 
-## Chamado por grupos de corrida
 func iniciar_corrida() -> void:
 	liberar_controles()
 
 
-## Inicia a desaceleração automática suave pós-chegada
 func iniciar_desaceleracao_automatica(x_alvo: float = 17855.0) -> void:
 	if em_desaceleracao_automatica:
 		return
@@ -386,6 +387,16 @@ func travar_controles() -> void:
 	iniciar_desaceleracao_automatica()
 
 
+func _calcular_taxa_freio_automatico() -> void:
+	var margem_seguranca: float = 65.0
+	var dist_disponivel: float = maxf((limite_x_parada - margem_seguranca) - global_position.x, 20.0)
+	if velocidade_atual > 10.0:
+		taxa_freio_automatico = clampf((velocidade_atual * velocidade_atual) / (2.0 * dist_disponivel), 100.0, 450.0)
+	else:
+		taxa_freio_automatico = friction
+
+
+# --- EFEITOS APLICADOS PELA PISTA ---
 func aplicar_efeito_pista(fator: float, duracao: float, _saltos_de_frame: int = 0) -> void:
 	max_speed = velocidade_maxima_base * fator
 	if temporizador_efeito:
@@ -401,52 +412,11 @@ func _ao_expirar_efeito() -> void:
 	max_speed = velocidade_maxima_base
 
 
-# ==============================================================================
-# --- MÉTODOS AUXILIARES, GEOMETRIA E TELEMETRIA ---
-# ==============================================================================
-
-## Calcula a inclinação angular e o vetor diretor tangente ao solo
-func _calcular_geometria_solo() -> Dictionary:
-	var normal_piso: Vector2 = get_floor_normal()
-	if normal_piso.length_squared() < 0.01:
-		normal_piso = up_direction
-	var angulo: float = normal_piso.angle() + (PI / 2.0)
-	return {
-		"angulo": angulo,
-		"direcao": Vector2.RIGHT.rotated(angulo)
-	}
-
-
-## Atualiza os frames de rotação de rodas e animações de movimento no solo
-func _atualizar_animacao_movimento() -> void:
-	if not animation_player:
-		return
-	if velocidade_atual > 5.0:
-		if animation_player.current_animation != "andar":
-			animation_player.play("andar")
-		animation_player.speed_scale = clampf(velocidade_atual / max_speed, 0.3, 1.3)
-	else:
-		if animation_player.current_animation != "parado":
-			animation_player.play("parado")
-		animation_player.speed_scale = 1.0
-
-
-## Calcula cinematicamente a desaceleração suave após cruzar a linha de chegada
-func _calcular_taxa_freio_automatico() -> void:
-	var margem_seguranca: float = 65.0
-	var dist_disponivel: float = maxf((limite_x_parada - margem_seguranca) - global_position.x, 20.0)
-	if velocidade_atual > 10.0:
-		taxa_freio_automatico = clampf((velocidade_atual * velocidade_atual) / (2.0 * dist_disponivel), 100.0, 450.0)
-	else:
-		taxa_freio_automatico = friction
-
-
-## Retorna a velocidade escalar real calculada pelo motor de física
+# --- TELEMETRIA PARA HUD E AUDIO ---
 func obter_velocidade_real() -> float:
 	return get_real_velocity().length()
 
 
-## Converte a velocidade física para km/h exibida no velocímetro do HUD
 func obter_velocidade_kmh() -> float:
 	var vel: float = obter_velocidade_real() if not is_zero_approx(velocidade_atual) else 0.0
 	return vel * PX_PARA_KMH

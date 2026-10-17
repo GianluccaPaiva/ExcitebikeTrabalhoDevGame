@@ -1,20 +1,19 @@
 extends Node2D
 
-## Componente de áudio exclusivo do Player
-## Encapsula os reprodutores de som da moto (motor, parada, quedas e morte)
-## utilizando o barramento SFX do projeto para controle limpo de pausa e decibéis.
-
+# --- PARAMETROS DE SOM ---
 @export var volume_moto_db: float = -6.0
 @export var volume_parando_db: float = -4.0
 @export var volume_queda_db: float = 2.5
 @export var volume_morte_db: float = 2.0
 
+# --- REFERENCIAS A NODES DE AUDIO ---
 @onready var audio_moto: AudioStreamPlayer = get_node_or_null("AudioMoto")
 @onready var audio_moto_parando: AudioStreamPlayer = get_node_or_null("AudioMotoParando")
 @onready var audio_queda: AudioStreamPlayer = get_node_or_null("AudioQueda")
 @onready var audio_morte: AudioStreamPlayer = get_node_or_null("AudioMorte")
 
 
+# --- INICIALIZACAO ---
 func _ready() -> void:
 	if audio_moto:
 		audio_moto.volume_db = volume_moto_db
@@ -26,7 +25,7 @@ func _ready() -> void:
 		audio_morte.volume_db = volume_morte_db
 
 
-## Atualiza o motor contínuo e a modulação de pitch de acordo com a velocidade do jogador
+# --- SOM DO MOTOR ---
 func atualizar_motor(acelerando: bool, velocidade_atual: float, velocidade_maxima: float, impedido: bool) -> void:
 	if not audio_moto:
 		return
@@ -40,7 +39,6 @@ func atualizar_motor(acelerando: bool, velocidade_atual: float, velocidade_maxim
 		parar_motor()
 		return
 
-	# Modula dinamicamente o tom (pitch) do motor pela proporção da velocidade
 	var fator_velocidade: float = clampf(velocidade_atual / maxf(velocidade_maxima, 1.0), 0.0, 1.0)
 	audio_moto.pitch_scale = lerpf(0.85, 1.35, fator_velocidade)
 
@@ -49,39 +47,36 @@ func atualizar_motor(acelerando: bool, velocidade_atual: float, velocidade_maxim
 		audio_moto.play()
 
 
-## Interrompe o som contínuo do motor
 func parar_motor() -> void:
 	if audio_moto and audio_moto.playing:
 		audio_moto.stop()
 
 
-## Dispara o som de derrapagem / desaceleração da moto
+# --- SOM DE DESACELERACAO ---
 func tocar_parando() -> void:
 	if audio_moto_parando and not audio_moto_parando.playing:
 		audio_moto_parando.play()
 
 
-## Interrompe o som de desaceleração
 func parar_parando() -> void:
 	if audio_moto_parando and audio_moto_parando.playing:
 		audio_moto_parando.stop()
 
 
-## Dispara o som de queda padrão (1ª e 2ª quedas)
+# --- SONS DE QUEDA E MORTE ---
 func tocar_queda() -> void:
 	if audio_queda:
 		audio_queda.stop()
 		audio_queda.play()
 
 
-## Dispara o som de morte (3ª queda / hospital)
 func tocar_morte() -> void:
 	if audio_morte:
 		audio_morte.stop()
 		audio_morte.play()
 
 
-## Interrompe todos os sons da moto
+# --- PARAR TODOS OS SONS ---
 func parar_tudo() -> void:
 	parar_motor()
 	parar_parando()

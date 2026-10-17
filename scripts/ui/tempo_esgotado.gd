@@ -1,17 +1,10 @@
 class_name TempoEsgotado
 extends Control
 
-## Cenário de Derrota por Tempo Esgotado (Timeout / Desqualificação)
-
-## Tempo limite da corrida para exibição dinâmica (padrão 110.0s = 01:50:00)
+# --- ESTADO ESTATICO COMPARTILHADO ---
 static var tempo_limite_configurado: float = 110.0
 
-static func definir_tempo_limite(tempo: float) -> void:
-	tempo_limite_configurado = tempo
-
-static func formatar_tempo(tempo: float) -> String:
-	return Hub.formatar_tempo(tempo)
-
+# --- REFERENCIAS A NODES ---
 @onready var label_titulo: Label = $UI/Header/LabelTitulo
 @onready var label_subtitulo: Label = $UI/Header/LabelSubtitulo
 @onready var btn_restart: Button = $UI/Botoes/Restart
@@ -20,9 +13,18 @@ static func formatar_tempo(tempo: float) -> String:
 @onready var fumaca_sprite: ColorRect = $Cenario/FumacaMotor
 @onready var luz_alerta: PointLight2D = get_node_or_null("Cenario/LuzAlerta")
 
+# --- ESTADO DA TELA ---
 var tempo_anim: float = 0.0
 
+# --- TEMPO LIMITE DA CORRIDA ---
+static func definir_tempo_limite(tempo: float) -> void:
+	tempo_limite_configurado = tempo
 
+
+static func formatar_tempo(tempo: float) -> String:
+	return Hub.formatar_tempo(tempo)
+
+# --- INICIALIZACAO ---
 func _ready() -> void:
 	AudioManager.parar_audios_corrida()
 	AudioManager.tocar_game_over()
@@ -38,33 +40,30 @@ func _ready() -> void:
 	_iniciar_animacao_alerta()
 
 
-func _exit_tree() -> void:
-	AudioManager.parar_vaia()
-	AudioManager.parar_game_over()
-
-
 func _process(delta: float) -> void:
 	tempo_anim += delta
 
-	# Efeito de fumaça saindo do escapamento
 	if fumaca_sprite:
 		fumaca_sprite.position.y = 150.0 - fmod(tempo_anim * 18.0, 14.0)
 		fumaca_sprite.modulate.a = maxf(0.0, 0.8 - (fmod(tempo_anim * 18.0, 14.0) / 14.0))
 
 
+func _exit_tree() -> void:
+	AudioManager.parar_vaia()
+	AudioManager.parar_game_over()
+
+# --- ANIMACAO DA TELA ---
 func _iniciar_animacao_alerta() -> void:
 	if label_titulo:
 		label_titulo.scale = Vector2(1.3, 1.3)
 		var tween: Tween = create_tween()
 		tween.tween_property(label_titulo, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 
-
-## Reinicia a corrida recarregando a fase
+# --- BOTOES E TRANSICAO DE CENA ---
 func _on_restart_pressed() -> void:
 	_transicionar_para("res://scenes/levels/main_game.tscn")
 
 
-## Retorna ao Menu Principal
 func _on_menu_pressed() -> void:
 	_transicionar_para("res://scenes/ui/menu_game.tscn")
 

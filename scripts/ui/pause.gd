@@ -1,18 +1,18 @@
 extends CanvasLayer
 
+# --- PARAMETROS CONFIGURAVEIS ---
 @export var pausar_ao_iniciar: bool = false
 
+# --- REFERENCIAS A NODES ---
 @onready var sounds: Sounds = $Sounds
 @onready var control: Control = $Control
 @onready var btn_continue: Button = $Control/Continue
 @onready var btn_restart: Button = $Control/Restart
 @onready var btn_menu: Button = $Control/Menu
 
-
+# --- INICIALIZACAO ---
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	# Se a cena for executada diretamente no editor (F6) ou pausar_ao_iniciar for true, abre pausada para teste.
-	# Quando instanciada no jogo (main_game), inicia oculta para a corrida começar normalmente.
 	if get_tree().current_scene == self or pausar_ao_iniciar:
 		pausar()
 	else:
@@ -26,7 +26,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			pausar()
 
-
+# --- ABRIR E FECHAR PAUSA ---
 func pausar() -> void:
 	visible = true
 	get_tree().paused = true
@@ -49,7 +49,7 @@ func _ativar_botoes(ativo: bool) -> void:
 	if btn_menu:
 		btn_menu.disabled = not ativo
 
-
+# --- BOTOES E TRANSICAO DE CENA ---
 func _on_continue_pressed() -> void:
 	_ativar_botoes(false)
 	if sounds:
@@ -73,4 +73,3 @@ func _transicionar_para(caminho_cena: String) -> void:
 	AudioManager.parar_todos()
 	get_tree().paused = false
 	get_tree().change_scene_to_file(caminho_cena)
-

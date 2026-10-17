@@ -1,8 +1,6 @@
 extends Control
 
-## Tela de Hospital (Game Over após 3 acidentes)
-## Apresenta frases bem-humoradas e gerencia o Easter Egg da tela Extra.
-
+# --- CONSTANTES DE TEXTO E TEMPO ---
 const FRASES_GAME_OVER: Array[String] = [
 	"FIM DE JOGO!",
 	"SE FODEU!",
@@ -18,17 +16,19 @@ const FRASES_GAME_OVER: Array[String] = [
 	"MORREU MAS PASSA BEM!",
 ]
 
+# --- REFERENCIAS A NODES ---
 @onready var label_status: Label = $Label
 @onready var ambulance: Sprite2D = $Ambulance
 @onready var btn_restart: Button = $Restart
 @onready var btn_menu: Button = $Menu
 @onready var sounds: Sounds = $Sounds
 
+# --- ESTADO DA TELA ---
 var temporizador_vibracao: float = 0.0
 var posicao_base_ambulancia_y: float = 98.0
 var transicionando: bool = false
 
-
+# --- INICIALIZACAO ---
 func _ready() -> void:
 	AudioManager.parar_audios_corrida()
 	AudioManager.tocar_game_over()
@@ -41,7 +41,17 @@ func _ready() -> void:
 	_iniciar_timer_extra()
 
 
-## Timer de 10 segundos com 30% de chance de abrir a tela Extra
+func _process(delta: float) -> void:
+	if ambulance:
+		temporizador_vibracao += delta * 24.0
+		ambulance.position.y = posicao_base_ambulancia_y + sin(temporizador_vibracao) * 0.7
+
+# --- FRASE E TIMER EXTRA ---
+func _sortear_frase() -> void:
+	if label_status:
+		label_status.text = FRASES_GAME_OVER.pick_random()
+
+
 func _iniciar_timer_extra() -> void:
 	await get_tree().create_timer(10.0).timeout
 	if not is_inside_tree() or transicionando:
@@ -51,18 +61,7 @@ func _iniciar_timer_extra() -> void:
 	if sorteio <= 30.0:
 		_transicionar_para("res://scenes/referencia/extra.tscn", false)
 
-
-func _process(delta: float) -> void:
-	if ambulance:
-		temporizador_vibracao += delta * 24.0
-		ambulance.position.y = posicao_base_ambulancia_y + sin(temporizador_vibracao) * 0.7
-
-
-func _sortear_frase() -> void:
-	if label_status:
-		label_status.text = FRASES_GAME_OVER.pick_random()
-
-
+# --- BOTOES E TRANSICAO DE CENA ---
 func _on_restart_pressed() -> void:
 	_transicionar_para("res://scenes/levels/main_game.tscn")
 

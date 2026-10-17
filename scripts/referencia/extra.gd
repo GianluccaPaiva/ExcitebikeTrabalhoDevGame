@@ -1,8 +1,9 @@
 extends Control
 
-## Cena de Referência / Consultório: Easter Egg do Hospital
-## Exibe diálogo temático dos médicos com o jogador acidentado.
+# --- PARAMETROS CONFIGURAVEIS ---
+@export var lista_png_falcao: Array[Texture2D] = []
 
+# --- REFERENCIAS A NODES ---
 @onready var balao_doc: PanelContainer = $UI/BalaoDoc
 @onready var label_doc: Label = $UI/BalaoDoc/Margin/LabelDoc
 @onready var balao_tigreso: PanelContainer = $UI/BalaoTigreso
@@ -15,8 +16,7 @@ extends Control
 @onready var sounds: Sounds = get_node_or_null("Sounds")
 @onready var falcao: Sprite2D = $Cenario/Quadro/Falcao
 
-@export var lista_png_falcao: Array[Texture2D] = []
-
+# --- ESTADO DA CENA ---
 var tempo_anim: float = 0.0
 var doc_base_y: float = 0.0
 var tigreso_base_y: float = 0.0
@@ -24,11 +24,7 @@ var player_base_pos: Vector2 = Vector2.ZERO
 var player_base_rot: float = 0.0
 
 
-func _aleatoriza_falcao() -> void:
-	if falcao and lista_png_falcao.size() > 0:
-		falcao.texture = lista_png_falcao.pick_random()
-
-
+# --- INICIALIZACAO ---
 func _ready() -> void:
 	if doc_girl:
 		doc_base_y = doc_girl.position.y
@@ -56,15 +52,19 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	tempo_anim += delta
-	# Respiração sutil dos médicos
 	if doc_girl:
 		doc_girl.position.y = doc_base_y + sin(tempo_anim * 2.5) * 1.0
 	if tigreso:
 		tigreso.position.y = tigreso_base_y + cos(tempo_anim * 2.0) * 0.8
-	# Tremedeira leve do paciente preservando a posição exata
 	if player_sprite:
 		player_sprite.position.x = player_base_pos.x + (randf() - 0.5) * 0.5
 		player_sprite.position.y = player_base_pos.y
+
+
+# --- VISUAL E DIALOGO ---
+func _aleatoriza_falcao() -> void:
+	if falcao and lista_png_falcao.size() > 0:
+		falcao.texture = lista_png_falcao.pick_random()
 
 
 func _executar_dialogo() -> void:
@@ -72,7 +72,6 @@ func _executar_dialogo() -> void:
 	if not is_inside_tree():
 		return
 
-	# Fala da Doc Girl
 	if balao_doc:
 		balao_doc.scale = Vector2.ONE
 		var tween_doc: Tween = create_tween()
@@ -82,13 +81,11 @@ func _executar_dialogo() -> void:
 	if not is_inside_tree():
 		return
 
-	# Resposta do Absolute Tigreso
 	if balao_tigreso:
 		balao_tigreso.scale = Vector2.ONE
 		var tween_tigreso: Tween = create_tween()
 		tween_tigreso.tween_property(balao_tigreso, "modulate:a", 1.0, 0.2)
 
-	# Efeito de tremor dramático no paciente
 	if player_sprite:
 		var tween_p: Tween = create_tween()
 		tween_p.tween_property(player_sprite, "rotation_degrees", player_base_rot + 4.0, 0.08)
@@ -96,12 +93,11 @@ func _executar_dialogo() -> void:
 		tween_p.tween_property(player_sprite, "rotation_degrees", player_base_rot, 0.08)
 
 
-## Botão Reiniciar: recarrega a fase principal
+# --- BOTOES E TRANSICAO DE CENA ---
 func _on_restart_pressed() -> void:
 	_transicionar_para("res://scenes/levels/main_game.tscn")
 
 
-## Botão Menu: retorna ao menu principal
 func _on_menu_pressed() -> void:
 	_transicionar_para("res://scenes/ui/menu_game.tscn")
 

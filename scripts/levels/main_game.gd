@@ -1,21 +1,11 @@
 extends Node2D
 
-## Sinal disparado quando qualquer competidor cruza a linha de chegada
+# --- SINAIS DA CORRIDA ---
 signal corredor_chegou(corredor: Node2D, colocacao: int)
 
-## Sinal disparado quando o jogador colide com o barramento do fim da pista
 signal barramento_atingido(corredor: Node2D)
 
-## Vetor dinâmico que armazena os competidores na ordem exata de chegada
-var colocacoes: Array[Node2D] = []
-
-## Rastreamento de conclusão do percurso e transição de cena
-var bots: Array[Node2D] = []
-var bots_concluidos: Array[Node2D] = []
-var player_desacelerou: bool = false
-var transicao_em_andamento: bool = false
-
-# --- CRONÔMETRO E LIMITES ---
+# --- PARAMETROS CONFIGURAVEIS ---
 @export_group("Cronômetro & Limites")
 @export var tempo_limite: float = 110.0
 @export var bonus_tempo_manobra: float = 2.0
@@ -26,6 +16,14 @@ var transicao_em_andamento: bool = false
 @export var fator_slower: float = 0.6
 @export var saltos_de_frame_bots: int = 2
 
+# --- ESTADO DA CORRIDA ---
+var colocacoes: Array[Node2D] = []
+
+var bots: Array[Node2D] = []
+var bots_concluidos: Array[Node2D] = []
+var player_desacelerou: bool = false
+var transicao_em_andamento: bool = false
+
 var cronometro_ativo: bool = false
 var tempo_decorrido: float = 0.0
 var tempo_real_decorrido: float = 0.0
@@ -33,6 +31,7 @@ var total_tempo_descontado_manobras: float = 0.0
 var corrida_ativa_geral: bool = false
 var chegada_registrada_player: bool = false
 
+# --- REFERENCIAS A NODES ---
 @onready var player: CharacterBody2D = get_node_or_null("Entities/Player")
 @onready var sensor_chegada: Area2D = get_node_or_null("PistaVisual/Chegada/SensorChegada")
 @onready var sensor_barramento: Area2D = get_node_or_null("PistaVisual/Barramento/SensorBarramento")
@@ -41,6 +40,7 @@ var chegada_registrada_player: bool = false
 @onready var temporizador_corrida: Timer = get_node_or_null("RaceTimer")
 
 
+# --- INICIALIZACAO DA CENA ---
 func _ready() -> void:
 	AudioManager.iniciar_estadio_largada()
 	if not hub_ui and player:
@@ -78,24 +78,6 @@ func _ready() -> void:
 	_conectar_countdown()
 
 
-func _conectar_countdown() -> void:
-	if countdown_ui and countdown_ui.has_signal("corrida_iniciada"):
-		if not countdown_ui.corrida_iniciada.is_connected(_on_corrida_iniciada):
-			countdown_ui.corrida_iniciada.connect(_on_corrida_iniciada)
-
-
-func _on_corrida_iniciada() -> void:
-	AudioManager.elevar_estadio_corrida()
-	corrida_ativa_geral = true
-	if not cronometro_ativo and not chegada_registrada_player:
-		cronometro_ativo = true
-		tempo_decorrido = 0.0
-		tempo_real_decorrido = 0.0
-		total_tempo_descontado_manobras = 0.0
-		if temporizador_corrida and tempo_limite > 0.0:
-			temporizador_corrida.start(tempo_limite)
-
-
 func _process(delta: float) -> void:
 	if not cronometro_ativo and not chegada_registrada_player:
 		if player and player.velocity.x > 10.0 and not player_desacelerou and not transicao_em_andamento:
@@ -115,12 +97,29 @@ func _process(delta: float) -> void:
 			if hub_ui.has_method("set_temp_limite"):
 				hub_ui.set_temp_limite(tempo_limite_restante)
 
-		# Quando o tempo limite reduz até zerar
 		if tempo_limite > 0.0 and tempo_limite_restante <= 0.0 and not transicao_em_andamento and not chegada_registrada_player:
 			_on_tempo_esgotado()
 
 
-## Callback executado quando o tempo limite do hub zera
+# --- CRONOMETRO E CONTAGEM REGRESSIVA ---
+func _conectar_countdown() -> void:
+	if countdown_ui and countdown_ui.has_signal("corrida_iniciada"):
+		if not countdown_ui.corrida_iniciada.is_connected(_on_corrida_iniciada):
+			countdown_ui.corrida_iniciada.connect(_on_corrida_iniciada)
+
+
+func _on_corrida_iniciada() -> void:
+	AudioManager.elevar_estadio_corrida()
+	corrida_ativa_geral = true
+	if not cronometro_ativo and not chegada_registrada_player:
+		cronometro_ativo = true
+		tempo_decorrido = 0.0
+		tempo_real_decorrido = 0.0
+		total_tempo_descontado_manobras = 0.0
+		if temporizador_corrida and tempo_limite > 0.0:
+			temporizador_corrida.start(tempo_limite)
+
+
 func _on_tempo_esgotado() -> void:
 	if transicao_em_andamento or chegada_registrada_player:
 		return
@@ -132,7 +131,7 @@ func _on_tempo_esgotado() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/tempo_esgotado.tscn")
 
 
-## Conecta sinais emitidos pelo Player
+# --- EVENTOS DO PLAYER ---
 func _conectar_player() -> void:
 	if player:
 		if player.has_signal("hospital") and not player.hospital.is_connected(_on_hospital):
@@ -149,14 +148,26 @@ func _on_player_manobra_sucesso(giros: int) -> void:
 	tempo_decorrido = maxf(0.0, tempo_decorrido - tempo_reduzido)
 
 
-## Mapeia e conecta os adversários autônomos na pista utilizando Grupos
+func _on_hospital() -> void:
+	transicao_em_andamento = true
+	AudioManager.parar_audios_corrida()
+	await get_tree().create_timer(1.4).timeout
+	get_tree().change_scene_to_file("res://scenes/ui/hospital.tscn")
+
+
+func _is_player_corredor(corredor: Node2D) -> bool:
+	if corredor == null:
+		return false
+	return corredor == player or corredor is CharacterBody2D or corredor.name == "Player"
+
+
+# --- BOTS E TRANSICAO DE CENA ---
 func _conectar_bots() -> void:
 	bots.clear()
 	bots_concluidos.clear()
 
 	var lista_bots: Array[Node] = get_tree().get_nodes_in_group("bots")
 	if lista_bots.is_empty():
-		# Fallback para busca hierárquica caso a cena seja instanciada sem grupos
 		var pistas: Node = get_node_or_null("Entities/PistasInimigos")
 		if pistas:
 			for trilha in pistas.get_children():
@@ -172,20 +183,17 @@ func _conectar_bots() -> void:
 				bot_2d.percurso_concluido.connect(_on_bot_percurso_concluido)
 
 
-## Callback executado quando um bot conclui seu percurso na trilha
 func _on_bot_percurso_concluido(bot: Node2D) -> void:
 	if bot and not bots_concluidos.has(bot):
 		bots_concluidos.append(bot)
 	_verificar_condicao_transicao()
 
 
-## Callback executado quando o jogador conclui a desaceleração após cruzar a chegada
 func _on_player_desaceleracao_concluida() -> void:
 	player_desacelerou = true
 	_verificar_condicao_transicao()
 
 
-## Verifica se todos os bots concluíram o percurso da pista
 func _todos_bots_concluiram() -> bool:
 	if bots.is_empty():
 		return true
@@ -198,9 +206,6 @@ func _todos_bots_concluiram() -> bool:
 	return true
 
 
-## Verifica se as condições da transição foram simultaneamente atendidas:
-## 1) Player concluiu a desaceleração
-## 2) Todos os bots concluíram o percurso
 func _verificar_condicao_transicao() -> void:
 	if transicao_em_andamento:
 		return
@@ -216,15 +221,7 @@ func _verificar_condicao_transicao() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/colocacao.tscn")
 
 
-## Callback executado quando o jogador atinge o limite de acidentes
-func _on_hospital() -> void:
-	transicao_em_andamento = true
-	AudioManager.parar_audios_corrida()
-	await get_tree().create_timer(1.4).timeout
-	get_tree().change_scene_to_file("res://scenes/ui/hospital.tscn")
-
-
-## Conecta os sensores de Boost e Slower utilizando Grupos
+# --- SENSORES DE EFEITOS DA PISTA ---
 func _conectar_sensores_efeitos() -> void:
 	_conectar_grupo_sensores("sensores_boost", fator_boost)
 	_conectar_grupo_sensores("boost_sensors", fator_boost)
@@ -249,7 +246,7 @@ func _on_sensor_efeito_entered(corpo_ou_area: Node, fator: float) -> void:
 		corredor.aplicar_efeito_pista(fator, duracao_efeitos_pista, saltos)
 
 
-## Conecta os sinais de colisão dos sensores principais da pista
+# --- SENSORES DE CHEGADA E BARRAMENTO ---
 func _conectar_sensores() -> void:
 	if sensor_chegada:
 		if not sensor_chegada.body_entered.is_connected(_on_sensor_chegada_body_entered):
@@ -299,19 +296,16 @@ func _on_sensor_barramento_body_entered(body: Node2D) -> void:
 		barramento_atingido.emit(body)
 
 
-## Registra a chegada da entidade de forma única e emite o sinal com a colocação
 func _registrar_chegada(corredor: Node2D) -> void:
 	if corredor == null:
 		return
 
-	# Evita que o mesmo competidor seja computado múltiplas vezes
 	if colocacoes.has(corredor):
 		return
 
 	colocacoes.append(corredor)
 	var colocacao: int = colocacoes.size()
 
-	# Dispara a comemoração da torcida na chegada através do AudioManager
 	if not transicao_em_andamento:
 		AudioManager.tocar_linha_chegada()
 
@@ -322,7 +316,6 @@ func _registrar_chegada(corredor: Node2D) -> void:
 	corredor_chegou.emit(corredor, colocacao)
 
 
-## Localiza o competidor a partir do corpo ou área disparadora
 func _resolver_corredor(origem: Node) -> Node2D:
 	if origem == null:
 		return null
@@ -344,6 +337,7 @@ func _resolver_corredor(origem: Node) -> Node2D:
 	return null
 
 
+# --- CALCULO DE POSICOES ---
 func _obter_posicao_fim_pista() -> float:
 	var marker: Marker2D = get_node_or_null("Markers/MarkerFimPista")
 	if marker:
@@ -368,11 +362,11 @@ func _obter_posicao_filmers() -> float:
 	return 17855.0
 
 
+# --- REGISTRO DE COLOCACAO ---
 func obter_colocacoes() -> Array[Node2D]:
 	return colocacoes
 
 
-## Prepara os dados de classificação e textura dos competidores e envia para a tela de colocação
 func _enviar_dados_para_colocacao() -> void:
 	var todos_competidores: Array[Node2D] = []
 	if player and is_instance_valid(player):
@@ -409,12 +403,6 @@ func _enviar_dados_para_colocacao() -> void:
 
 	const ColocacaoScript = preload("res://scripts/ui/colocacao.gd")
 	ColocacaoScript.definir_resultado(dados, pos_player)
-
-
-func _is_player_corredor(corredor: Node2D) -> bool:
-	if corredor == null:
-		return false
-	return corredor == player or corredor is CharacterBody2D or corredor.name == "Player"
 
 
 func _extrair_textura_corredor(corredor: Node2D) -> Texture2D:
